@@ -3,6 +3,7 @@ import { ChevronDown } from 'lucide-react';
 import FloatingGrid from "./FloatingGrid";
 import Header from './Header';
 import HeroGlow from './HeroGlow';
+import CardSection from './CardSection';
 const Hero = () => {
   const textRef = useRef<HTMLHeadingElement>(null);
 
@@ -85,7 +86,7 @@ const Hero = () => {
 </div>
 
       {/* Bottom spacing */}
-      <div className="h-16" />
+      <CardSection/>
     </section>
   );
 };
