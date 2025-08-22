@@ -1,6 +1,5 @@
-import React from "react";
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Autoplay } from "swiper/modules";
+import React, { useRef, useEffect } from "react";
+import { motion, useAnimation, useInView } from "framer-motion";
 
 const cards = [
   {
@@ -21,45 +20,62 @@ const cards = [
 ];
 
 const CardSection: React.FC = () => {
+  const ref = useRef<HTMLDivElement>(null);
+  const inView = useInView(ref, { once: false, amount: 0.6 }); // trigger earlier
+  const controls = useAnimation();
+
+  useEffect(() => {
+    if (inView) {
+      // ✅ On screen → spread horizontally
+      controls.start((i) => ({
+        x: i === 0 ? -300 : i === 2 ? 300 : 0, // left, center, right
+        y: 0,
+        scale: 1,
+        zIndex: 10 - i,
+        transition: { duration: 0.9, ease: "easeOut" },
+      }));
+    } else {
+      // ✅ Leaving → collapse closer, then overlap
+      controls.start((i) => ({
+        x: 0, // move to center
+        y: 0,
+        scale: 1,
+        zIndex: 20 - i, // overlap order
+        transition: { duration: 1.2, ease: "easeInOut" },
+      }));
+    }
+  }, [inView, controls]);
+
   return (
-    <section className="relative z-20 py-16">
-      <div className="max-w-7xl mx-auto px-4">
-        <Swiper
-          modules={[Autoplay]}
-          spaceBetween={40}
-          slidesPerView={1.2}
-          loop={true}
-          centeredSlides={true}
-          autoplay={{
-            delay: 2500,
-            disableOnInteraction: false,
-          }}
-          breakpoints={{
-            768: {
-              slidesPerView: 2.2,
-            },
-            1024: {
-              slidesPerView: 3,
-            },
-          }}
-        >
-          {cards.map((card) => (
-            <SwiperSlide
-              key={card.id}
-              className="flex flex-row items-center justify-center text-center bg-black p-6 rounded-xl shadow-lg"
-            >
-              <img
-                src={card.icon}
-                alt={card.text}
-                className="w-16 h-16 mb-6"
-                loading="lazy"
-              />
-              <div className="text-lg md:text-xl font-medium leading-snug">
-                {card.text}
-              </div>
-            </SwiperSlide>
-          ))}
-        </Swiper>
+    <section className="relative z-[9999] py-20">
+      <div
+        className="relative w-full flex justify-center items-center"
+        ref={ref}
+        style={{ height: "400px" }}
+      >
+        {cards.map((card, i) => (
+          <motion.div
+            key={card.id}
+            custom={i}
+            animate={controls}
+            initial={{
+              x: i === 0 ? -300 : i === 2 ? 300 : 0, // start spread
+              scale: 1,
+              zIndex: 10 - i,
+            }}
+            whileHover={{ scale: 1.05, y: -5 }}
+            className="absolute bg-black rounded-xl shadow-xl w-64 h-48 p-4 cursor-pointer"
+          >
+            <img
+              src={card.icon}
+              alt={card.text}
+              className="w-10 h-10 absolute top-2 left-2"
+            />
+            <div className="text-white text-base font-medium mt-10">
+              {card.text}
+            </div>
+          </motion.div>
+        ))}
       </div>
     </section>
   );

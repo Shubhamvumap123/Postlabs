@@ -8,6 +8,7 @@ import BuildingSection from '../components/BuildingSection';
 import BuildersSection from '../components/BuildersSection';
 import Footer from '../components/Footer';
 import { useScrollAnimations, initSmoothScrolling } from '../hooks/useScrollAnimations';
+import FullWidthVideoSection from '../components/FullWidthVideoSection';
 
 const Index = () => {
   useScrollAnimations();
@@ -23,6 +24,7 @@ const Index = () => {
       <main>
         <Hero />
         <About />
+        <FullWidthVideoSection/>
         <FeatureCards />
         <VideoSection />
         <BuildingSection />
