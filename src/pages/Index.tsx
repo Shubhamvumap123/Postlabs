@@ -9,6 +9,7 @@ import BuildersSection from '../components/BuildersSection';
 import Footer from '../components/Footer';
 import { useScrollAnimations, initSmoothScrolling } from '../hooks/useScrollAnimations';
 import FullWidthVideoSection from '../components/FullWidthVideoSection';
+import PrivacySection from '../components/PrivacySection';
 
 const Index = () => {
   useScrollAnimations();
@@ -25,9 +26,10 @@ const Index = () => {
         <Hero />
         <About />
         <FullWidthVideoSection/>
+        <BuildingSection />
+        <PrivacySection />
         <FeatureCards />
         <VideoSection />
-        <BuildingSection />
         <BuildersSection />
       </main>
       <Footer />

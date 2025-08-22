@@ -22,20 +22,31 @@ const BuildingSection = () => {
   }, []);
 
   return (
-    <section className="section-padding bg-postlabs-light-gray">
-      <div className="max-w-4xl mx-auto text-center">
-        <div className="animate-fade-up">
-          <h2 
-            className="text-display text-postlabs-black reveal-text"
-            data-animation="text"
-            data-speed="1"
-          >
-            What We're Building
-          </h2>
-        </div>
+    <section className="relative z-10 bg-[#fdfcf7]"> 
+      {/* Container */}
+      <div className="container mx-auto px-10 md:px-14 lg:px-20 py-24 border-b border-black">
+        {/* Heading */}
+        <h1
+          className="text-[90px] leading-none ml-0 mb-0 max-md:text-[110px] max-sm:text-5xl"
+          aria-label="What We’re Building"
+        >
+          <span className="inline-block">What</span>{" "}
+          <span className="inline-block">We’re</span>
+          <br />
+          <span className="inline-block">Building</span>
+        </h1>
+      </div>
+
+      {/* Floating Grid */}
+      <div className="absolute inset-0 grid grid-cols-[20%_1fr_20%] md:grid-cols-[40px_1fr_40px] z-0">
+        <div className="border-r border-black/10 opacity-10" />
+        <div className="border-r border-black/10 opacity-10" />
+        <div className="border-r border-black/10 opacity-10" />
+        <div />
       </div>
     </section>
   );
 };
 
 export default BuildingSection;
+
