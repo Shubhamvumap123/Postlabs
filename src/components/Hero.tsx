@@ -66,11 +66,9 @@ const Hero = () => {
             data-speed="0.5"
             data-animation="text"
             aria-label="The Future of News Starts Here"
-            className="font-normal text-[144px] leading-[100%] max-w-[1097px] mb-10 md:mb-0"
+            className="font-normal text-[120px] leading-[100%] max-w-[1097px] mb-10 md:mb-0"
           >
-            <span className="anim-word inline-block">The Future</span>{" "}
-            <span className="anim-word inline-block">of News</span>{" "}
-            <span className="anim-word inline-block">Starts Here</span>{" "}
+            <span className="anim-word inline-block">The Future of News Starts Here</span>{" "}
           </h1>
 
           {/* Down Arrow */}
@@ -78,9 +76,26 @@ const Hero = () => {
             src="https://cdn.prod.website-files.com/681dfdff4444ca819f7050a2/68238111591ea94a69065212_Vector.svg"
             loading="lazy"
             alt="Down arrow"
-            className="down-arrow w-10 h-10 animate-bounce"
+            className="down-arrow w-32 h-32 animate-bounce-slow"
           />
         </div>
+        <style>
+          {`
+            @keyframes bounce-slow {
+              0%, 100% {
+          transform: translateY(0);
+          animation-timing-function: cubic-bezier(0.8,0,1,1);
+              }
+              50% {
+          transform: translateY(-25%);
+          animation-timing-function: cubic-bezier(0,0,0.2,1);
+              }
+            }
+            .animate-bounce-slow {
+              animation: bounce-slow 8s infinite;
+            }
+          `}
+        </style>
       </div>
     </section>
 </div>
