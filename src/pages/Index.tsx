@@ -28,8 +28,8 @@ const Index = () => {
         <FullWidthVideoSection/>
         <BuildingSection />
         <PrivacySection />
-        <FeatureCards />
         <VideoSection />
+        <FeatureCards />
         <BuildersSection />
       </main>
       <Footer />

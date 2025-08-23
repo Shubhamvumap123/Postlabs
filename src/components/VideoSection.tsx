@@ -24,32 +24,61 @@ const VideoSection = () => {
   }, []);
 
   return (
-    <section className="full-width-video-section section-padding bg-postlabs-white">
-      <div 
-        ref={videoRef}
-        className="w-full h-[70vh] bg-gradient-to-br from-postlabs-light-gray to-postlabs-yellow/20 rounded-3xl overflow-hidden relative animate-fade-up"
-      >
-        {/* Video/Image Placeholder */}
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-postlabs-black/20 to-postlabs-black/60" />
-        
-        {/* Overlay Content */}
-        <div className="absolute bottom-8 left-8 right-8 text-postlabs-white">
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-            <button className="btn-secondary bg-postlabs-white/10 backdrop-blur-sm border-postlabs-white/30 text-postlabs-white hover:bg-postlabs-white hover:text-postlabs-black">
-              About
-            </button>
-            <button className="btn-primary bg-postlabs-black/80 backdrop-blur-sm">
-              Contact
-            </button>
+     <section className="relative bg-[#f8f8f2]">
+      {/* Sticky container */}
+      <div className="sticky top-0 z-10 h-screen">
+        <div className="relative flex h-screen items-end justify-start">
+          {/* Video backgrounds */}
+          <div className="absolute inset-0 overflow-hidden">
+            {/* First Video */}
+            <video
+              className="absolute inset-0 h-full w-full object-cover"
+              autoPlay
+              loop
+              muted
+              playsInline
+              poster="https://cdn.prod.website-files.com/681dfdff4444ca819f7050a2%2F6827802fb93caba00853824a_video2-poster-00001.jpg"
+            >
+              <source src="https://cdn.prod.website-files.com/681dfdff4444ca819f7050a2%2F6827802fb93caba00853824a_video2-transcode.mp4" type="video/mp4" />
+              <source src="https://cdn.prod.website-files.com/681dfdff4444ca819f7050a2%2F6827802fb93caba00853824a_video2-transcode.webm" type="video/webm" />
+            </video>
+
+            {/* Example of second video (hidden by default, you can toggle with state) */}
+            <video
+              className="absolute inset-0 h-full w-full object-cover opacity-0"
+              autoPlay
+              loop
+              muted
+              playsInline
+              poster="https://cdn.prod.website-files.com/681dfdff4444ca819f7050a2%2F682dd7a24d93a7df690274d9_post-labs-video-3-poster-00001.jpg"
+            >
+              <source src="https://cdn.prod.website-files.com/681dfdff4444ca819f7050a2%2F682dd7a24d93a7df690274d9_post-labs-video-3-transcode.mp4" type="video/mp4" />
+              <source src="https://cdn.prod.website-files.com/681dfdff4444ca819f7050a2%2F682dd7a24d93a7df690274d9_post-labs-video-3-transcode.webm" type="video/webm" />
+            </video>
+          </div>
+
+          {/* Text Overlay */}
+          <div className="relative z-20 grid gap-4 p-10 md:p-16">
+            <h3 className="text-white text-4xl md:text-6xl lg:text-7xl font-bold leading-tight">
+              Built for
+            </h3>
+            <div className="space-y-2">
+              <h3 className="text-white text-4xl md:text-6xl lg:text-7xl font-bold">
+                Scale
+              </h3>
+              <h3 className="text-white text-4xl md:text-6xl lg:text-7xl font-bold opacity-50">
+                Creators
+              </h3>
+              <h3 className="text-white text-4xl md:text-6xl lg:text-7xl font-bold opacity-50">
+                Canada
+              </h3>
+            </div>
           </div>
         </div>
-
-        {/* Decorative Elements */}
-        <div className="absolute top-12 left-12 w-16 h-16 bg-postlabs-yellow/30 rounded-full blur-xl" />
-        <div className="absolute bottom-12 right-12 w-24 h-24 bg-postlabs-white/20 rounded-full blur-2xl" />
       </div>
     </section>
   );
 };
 
 export default VideoSection;
+
