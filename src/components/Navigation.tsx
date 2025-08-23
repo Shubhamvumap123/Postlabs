@@ -1,9 +1,7 @@
 import { useState, useEffect } from 'react';
-import { Button } from '../components/ui/button';
 
 const Navigation = () => {
   const [isVisible, setIsVisible] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {

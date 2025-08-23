@@ -1,11 +1,8 @@
 import { useEffect, useRef } from 'react';
-import { ChevronDown } from 'lucide-react';
-import FloatingGrid from "./FloatingGrid";
 import Header from './Header';
 import HeroGlow from './HeroGlow';
 import CardSection from './CardSection';
 const Hero = () => {
-  const textRef = useRef<HTMLHeadingElement>(null);
 
   useEffect(() => {
     const observerCallback = (entries: IntersectionObserverEntry[]) => {

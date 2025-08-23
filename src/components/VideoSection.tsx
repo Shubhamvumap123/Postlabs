@@ -1,7 +1,6 @@
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 
 const VideoSection = () => {
-  const videoRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const observerCallback = (entries: IntersectionObserverEntry[]) => {

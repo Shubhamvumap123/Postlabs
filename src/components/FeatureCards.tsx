@@ -9,7 +9,7 @@ function AnimWords({
   speed = 0.25, // mirrors data-speed
 }: {
   text: string;
-  as?: any;
+  as?: string;
   className?: string;
   ariaLabel?: string;
   speed?: number;
