@@ -1,16 +1,6 @@
 import React from "react";
 import { motion, useInView } from "framer-motion";
 
-/**
- * Postlabs-style Contact Section (React + Tailwind)
- *
- * - Mirrors the provided HTML/CSS structure
- * - Word-by-word text animation (like .anim-word)
- * - Responsive grid columns matching the original breakpoints as closely as Tailwind allows
- * - Gradients and layout preserved
- */
-
-// Utility component to animate words like the original .anim-word nodes
 function AnimWords({
   text,
   as: Tag = "div",
