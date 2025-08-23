@@ -40,11 +40,7 @@ const Hero = () => {
           -z-10
         "
       >
-        {/* Vertical lines */}
-        <div className="border-r border-gray-300" />
-        <div className="border-r border-gray-300" />
-        <div className="border-r border-gray-300" />
-        <div />
+        
 
       </div>
 

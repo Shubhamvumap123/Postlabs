@@ -1,5 +1,5 @@
 import React from "react";
-
+ 
 const FloatingGrid: React.FC = () => {
   return (
     <div
@@ -7,9 +7,10 @@ const FloatingGrid: React.FC = () => {
         absolute inset-0 
         grid 
         grid-cols-[20%_1fr_1fr_20%] 
-        grid-rows-[repeat(12,minmax(0,1fr))] 
+        md:grid-cols-[40px_1fr_1fr_40px] 
+        sm:grid-cols-[20px_1fr_1fr_20px] 
         gap-0 
-        -z-10
+        z-[-1]
       "
     >
       {/* Vertical grid columns */}

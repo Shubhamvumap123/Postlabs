@@ -24,7 +24,7 @@ const BuildingSection = () => {
   return (
     <section className="relative z-10 bg-[#fdfcf7]"> 
       {/* Container */}
-      <div className="container mx-auto px-10 md:px-14 lg:px-20 py-24 border-b border-black">
+      <div className="container mx-auto px-10 md:px-14 lg:px-20 py-24  relative z-10 animate-fade-up">
         {/* Heading */}
         <h1
           className="text-[90px] leading-none ml-0 mb-0 max-md:text-[110px] max-sm:text-5xl"
@@ -39,9 +39,9 @@ const BuildingSection = () => {
 
       {/* Floating Grid */}
       <div className="absolute inset-0 grid grid-cols-[20%_1fr_20%] md:grid-cols-[40px_1fr_40px] z-0">
-        <div className="border-r border-black/10 opacity-10" />
-        <div className="border-r border-black/10 opacity-10" />
-        <div className="border-r border-black/10 opacity-10" />
+        <div className="border-r border-gray-200 opacity-10" />
+        <div className="border-r border-gray-200 opacity-10" />
+        <div className="border-r border-gray-200 opacity-10" />
         <div />
       </div>
     </section>
