@@ -5,7 +5,6 @@ import FeatureCards from '../components/FeatureCards';
 import About from '../components/About';
 import VideoSection from '../components/VideoSection';
 import BuildingSection from '../components/BuildingSection';
-import BuildersSection from '../components/BuildersSection';
 import Footer from '../components/Footer';
 import { useScrollAnimations, initSmoothScrolling } from '../hooks/useScrollAnimations';
 import FullWidthVideoSection from '../components/FullWidthVideoSection';
@@ -20,17 +19,17 @@ const Index = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background font-['Inter_Tight',Verdana,sans-serif]">
       <Navigation />
       <main>
-        <Hero />
-        <About />
-        <FullWidthVideoSection/>
-        <BuildingSection />
-        <PrivacySection />
-        <VideoSection />
-        <FeatureCards />
-        <BuildersSection />
+      <Hero />
+      <About />
+      <FullWidthVideoSection/>
+      <BuildingSection />
+      <PrivacySection />
+      <VideoSection />
+      <FeatureCards />
+
       </main>
       <Footer />
     </div>

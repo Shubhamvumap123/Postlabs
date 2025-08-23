@@ -65,7 +65,7 @@ export default function FeatureCards() {
         <div className="col-start-2 col-span-2 py-10 lg:py-16" id="w-node-c15d94b9-0fd6-8d46-7845-1b52e3b32fc3-9f7050be">
           <AnimWords
             as="h1"
-            className="text-3xl md:text-4xl font-semibold leading-tight mb-3"
+            className="text-3xl md:text-9xl font-normal leading-tight mb-3"
             ariaLabel="For Investors"
             text="For Investors"
             speed={0.25}
@@ -79,7 +79,7 @@ export default function FeatureCards() {
 
           <motion.a
             href="mailto:invest@postlabs.com"
-            className="cta-link text-base"
+            className="cta-link text-base underline"
             initial={{ opacity: 0, y: 6 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.4 }}
@@ -92,11 +92,11 @@ export default function FeatureCards() {
       </div>
 
       {/* Grid Block: For Builders */}
-      <div className="grid grid-cols-[20px_1fr_1fr_20px] md:grid-cols-[40px_1fr_1fr_40px] lg:grid-cols-[20%_1fr_1fr_20%] gap-0 border-b border-black/10">
+      <div style={{marginLeft:"80vh"}} className="grid grid-cols-[20px_1fr_1fr_20px] md:grid-cols-[40px_1fr_1fr_40px] lg:grid-cols-[20%_1fr_1fr_20%] gap-0 border-b border-black/10">
         <div className="col-start-2 col-span-2 py-10 lg:py-16" id="w-node-_175dec5a-7319-e46a-37ab-3a79ddfb6555-9f7050be">
           <AnimWords
             as="h1"
-            className="text-3xl md:text-4xl font-semibold leading-tight mb-3"
+            className="text-3xl md:text-9xl font-normal leading-tight mb-3"
             ariaLabel="For Builders"
             text="For Builders"
             speed={0.25}
@@ -127,7 +127,7 @@ export default function FeatureCards() {
 
           <motion.a
             href="mailto:careers@postlabs.com"
-            className="cta-link text-base"
+            className="cta-link text-base underline"
             initial={{ opacity: 0, y: 6 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.4 }}

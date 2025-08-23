@@ -9,7 +9,7 @@ const PrivacySection: React.FC = () => {
   <div className="grid grid-cols-[20%_1fr_1fr_20%] md:grid-cols-[40px_1fr_1fr_40px] py-[220px] md:py-[100px] relative">
     <div className="col-span-1"></div>
     <div className="col-span-2 flex flex-col items-start gap-6">
-      <p className="z-2 text-6xl md:text-4xl font-normal max-w-[650px] leading-snug">
+      <p className="z-2 text-lg md:text-3xl font-normal max-w-[650px] leading-snug">
         Post Labs is building a homegrown platform designed for Canadians
         and the future of Canadian media.
       </p>
@@ -24,7 +24,7 @@ const PrivacySection: React.FC = () => {
   {/* Section 2 (Animate on scroll - Horizontal) */}
   <motion.div
     className="grid grid-cols-[20%_1fr_1fr_20%] md:grid-cols-[40px_1fr_1fr_40px] py-[220px] md:py-[100px] relative"
-    style={{ marginTop: "50vh",marginLeft:"80vh", }} // start halfway down page
+    style={{ marginTop: "50vh",marginLeft:"70vh", }} // start halfway down page
     initial={{ opacity: 0, x: 200 }} // off-screen to the right
     whileInView={{ opacity: 1, x: 0 }} // slide in to normal position
     transition={{ duration: 0.8, ease: "easeOut" }}
@@ -32,7 +32,7 @@ const PrivacySection: React.FC = () => {
   >
     <div className="col-span-1"></div>
     <div className="col-span-2 flex flex-col items-start gap-6">
-      <p className="z-2 text-6xl md:text-4xl font-normal max-w-[650px] leading-snug">
+      <p className="z-2 text-lg md:text-3xl font-normal max-w-[650px] leading-snug">
         At its core is PostOS, our made-in-Canada publishing engine that
         connects local voices, communities, and trusted journalism in one
         seamless digital experience.
@@ -56,7 +56,7 @@ const PrivacySection: React.FC = () => {
   >
     <div className="col-span-1"></div>
     <div className="col-span-2 flex flex-col items-start gap-6">
-      <p className="z-2 text-6xl md:text-4xl font-normal max-w-[650px] leading-snug">
+      <p className="z-2 text-lg md:text-3xl font-normal max-w-[650px] leading-snug">
         Built by Canadians, for Canadians, PostOS is more than just
         technology — it’s a way to bring our stories home.
       </p>
