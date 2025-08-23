@@ -28,70 +28,53 @@ const Navigation = () => {
           isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-5'
         }`}
       >
-        <div className="flex justify-center mx-6 md:mx-8 lg:mx-10">
 <div
   className="
-    w-[250px] bg-white/95 backdrop-blur-md 
-    rounded-full px-6 py-4 shadow-lg border border-gray-200 
-    flex items-center justify-between
+    flex justify-center items-center
+    gap-1
+    p-[5px]
+    bg-black/50
+    rounded-[100px]
+    shadow-lg
+    border
+    border-gray-200
+    backdrop-blur-[5px]
   "
 >
   {/* Desktop Navigation */}
-  <div className="hidden md:flex items-center justify-between space-x-4">
-    <Button variant="ghost" className="btn-ghost">
-      About
-    </Button>
-    <Button variant="ghost" className="btn-ghost">
-      Contact
-    </Button>
-  </div>
+    <div className="flex gap-2">
+      <a
+        href="/"
+        className="
+          inline-block text-center font-['Inter_Tight',Verdana,sans-serif]
+          rounded-full min-w-[100px] px-6 py-3
+          transition-all duration-300
+          bg-white text-black
+          no-underline
+        "
+      >
+        About
+      </a>
 
-  {/* Mobile Menu Button */}
-  <button
-    onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-    className="md:hidden p-2 text-black"
-    aria-label="Toggle menu"
-  >
-    <div className="w-5 h-5 flex flex-col justify-center space-y-1">
-      <span
-        className={`h-0.5 bg-current transition-all duration-300 ${
-          isMobileMenuOpen ? "rotate-45 translate-y-1.5" : ""
-        }`}
-      />
-      <span
-        className={`h-0.5 bg-current transition-all duration-300 ${
-          isMobileMenuOpen ? "opacity-0" : ""
-        }`}
-      />
-      <span
-        className={`h-0.5 bg-current transition-all duration-300 ${
-          isMobileMenuOpen ? "-rotate-45 -translate-y-1.5" : ""
-        }`}
-      />
+      {/* Contact Link */}
+      <a
+        href="/contact-us"
+        className="
+          inline-block text-center font-['Inter_Tight',Verdana,sans-serif]
+          rounded-full min-w-[100px] px-6 py-3
+          transition-all duration-300
+          text-white hover:bg-white hover:text-black
+          no-underline
+        "
+      >
+        Contact
+      </a>
     </div>
-  </button>
 </div>
 
-        </div>
+        
       </nav>
 
-      {/* Mobile Menu Overlay */}
-      {isMobileMenuOpen && (
-        <div className="fixed inset-0 z-30 bg-black/50 backdrop-blur-sm md:hidden">
-          <div className="absolute top-32 left-6 right-6">
-            <div className="bg-white rounded-2xl p-6 shadow-xl">
-              <div className="space-y-4">
-                <Button variant="ghost" className="w-full justify-start text-left" onClick={() => setIsMobileMenuOpen(false)}>
-                  About
-                </Button>
-                <Button variant="ghost" className="w-full justify-start text-left" onClick={() => setIsMobileMenuOpen(false)}>
-                  Contact
-                </Button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
     </>
   );
 };
