@@ -1,32 +1,52 @@
 import React from "react";
 import { motion, useInView } from "framer-motion";
 
-function AnimWords({
-  text,
-  as: Tag = "div",
-  className = "",
-  ariaLabel,
-  speed = 0.25, // mirrors data-speed
-}: {
+type AnimWordsProps = {
   text: string;
-  as?: string;
+  as?: React.ElementType;
   className?: string;
   ariaLabel?: string;
   speed?: number;
-}) {
-  const ref = React.useRef<HTMLDivElement | null>(null);
-  const inView = useInView(ref, { once: true, amount: 0.2 });
+} & React.ComponentPropsWithoutRef<any>;
+
+const AnimWords = React.forwardRef<
+  HTMLElement,
+  AnimWordsProps
+>(function AnimWords(
+  {
+    text,
+    as,
+    className = "",
+    ariaLabel,
+    speed = 0.25,
+    ...rest
+  },
+  ref
+) {
+  const Tag = as || "div";
+  const localRef = React.useRef<HTMLElement | null>(null);
+  const combinedRef = (node: HTMLElement | null) => {
+    if (typeof ref === "function") {
+      ref(node);
+    } else if (ref) {
+      // @ts-ignore
+      (ref as React.MutableRefObject<HTMLElement | null>).current = node;
+    }
+    localRef.current = node;
+  };
+  const inView = useInView(localRef, { once: true, amount: 0.2 });
   const words = React.useMemo(() => text.split(/\s+/), [text]);
 
   return (
     <Tag
-      ref={ref}
+      ref={combinedRef}
       className={className}
       aria-label={ariaLabel || text}
       data-animation="text"
       data-speed={speed}
+      {...rest}
     >
-      {words.map((w, i) => (
+      {words.map((w: string, i: number) => (
         <motion.span
           key={`${w}-${i}`}
           aria-hidden="true"
@@ -41,7 +61,8 @@ function AnimWords({
       ))}
     </Tag>
   );
-}
+});
+AnimWords.displayName = "AnimWords";
 
 export default function FeatureCards() {
   return (
@@ -49,7 +70,7 @@ export default function FeatureCards() {
       className="relative overflow-hidden z-[1] bg-[var(--_neutrals---cream)] text-[var(--_primary---black)]"
       aria-label="Contact Section"
     >
-      {/* Inject the minimal CSS variables + some one-off styles to match the original exactly */}
+      
       <style>{`
         :root {
           --_neutrals---cream: #fff7e6; /* fallback for the original var */

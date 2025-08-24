@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 import Header from './Header';
 import HeroGlow from './HeroGlow';
 import CardSection from './CardSection';
@@ -42,7 +42,7 @@ const Hero = () => {
       </div>
 
       {/* 🌟 Hero Glow Effect */}
-      <div className="hero-glow absolute -top-48 -right-48 w-96 h-96 bg-gradient-radial from-white/20 to-transparent rounded-full blur-3xl pointer-events-none" />
+ 
 <HeroGlow />
       {/* 🔝 Hero Content */}
  <div className="flex-1 flex flex-col justify-center items-center text-center px-6 md:px-12 lg:px-16 relative z-10">

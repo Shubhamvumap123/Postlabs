@@ -72,7 +72,7 @@ export default function Footer() {
 
 
   return (
-    <footer    className={`bg-black text-white transition-all duration-700 ease-in-out z-50 
+    <footer    className={ `bg-black text-white transition-all duration-700 ease-in-out z-50 
         ${atBottom ? "opacity-100 translate-y-0" : "opacity-0 translate-y-full"}
       `}>
       {/* Marquee */}
