@@ -1,3 +1,7 @@
+/**
+ * TaskDashboard Component
+ * Displays a dashboard with tabs, an empty state, and filter chips.
+ */
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Clock, Plus, Zap, Palette, Shield } from 'lucide-react';
