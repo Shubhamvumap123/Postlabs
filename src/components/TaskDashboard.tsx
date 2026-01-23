@@ -1,6 +1,17 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Clock, Plus, Zap, Palette, Shield } from 'lucide-react';
+
+/**
+ * TaskDashboard Component
+ *
+ * A modern, responsive dashboard card component for managing tasks.
+ * Features:
+ * - Dark mode design with rounded corners
+ * - Tabbed navigation with animated pill background
+ * - Empty state handling
+ * - Skill-based agent filtering
+ */
 import { cn } from '../lib/utils';
 
 const tabs = ["All", "Scheduled", "Completed", "Archived"];
