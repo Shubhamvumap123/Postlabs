@@ -39,6 +39,7 @@ export default function TaskDashboard() {
           {tabs.map((tab) => (
             <button
               key={tab}
+              type="button"
               onClick={() => setActiveTab(tab)}
               className={cn(
                 "relative px-4 py-1.5 text-sm font-medium rounded-full transition-colors whitespace-nowrap outline-none focus-visible:ring-2 focus-visible:ring-purple-500",
@@ -57,7 +58,10 @@ export default function TaskDashboard() {
           ))}
         </div>
 
-        <button className="flex items-center justify-center gap-2 px-4 py-2 bg-purple-600 hover:bg-purple-500 text-white text-sm font-medium rounded-lg transition-colors shadow-lg shadow-purple-900/20 cursor-pointer">
+        <button
+          type="button"
+          className="flex items-center justify-center gap-2 px-4 py-2 bg-purple-600 hover:bg-purple-500 text-white text-sm font-medium rounded-lg transition-colors shadow-lg shadow-purple-900/20 cursor-pointer"
+        >
           <Plus className="w-4 h-4" />
           <span>New</span>
         </button>
@@ -80,6 +84,7 @@ export default function TaskDashboard() {
             return (
               <button
                 key={id}
+                type="button"
                 onClick={() => toggleFilter(id)}
                 className={cn(
                   "flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium border transition-all duration-200 cursor-pointer",
