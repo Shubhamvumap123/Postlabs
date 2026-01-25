@@ -40,6 +40,7 @@ export default function TaskDashboard() {
             <button
               type="button"
               key={tab}
+              type="button"
               onClick={() => setActiveTab(tab)}
               className={cn(
                 "relative px-4 py-1.5 text-sm font-medium rounded-full transition-colors whitespace-nowrap outline-none focus-visible:ring-2 focus-visible:ring-purple-500",
@@ -82,6 +83,7 @@ export default function TaskDashboard() {
               <button
                 type="button"
                 key={id}
+                type="button"
                 onClick={() => toggleFilter(id)}
                 className={cn(
                   "flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium border transition-all duration-200 cursor-pointer",
