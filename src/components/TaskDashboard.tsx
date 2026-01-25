@@ -38,6 +38,7 @@ export default function TaskDashboard() {
         <div className="flex p-1 bg-zinc-800/50 rounded-full overflow-x-auto no-scrollbar">
           {tabs.map((tab) => (
             <button
+              type="button"
               key={tab}
               type="button"
               onClick={() => setActiveTab(tab)}
@@ -58,10 +59,7 @@ export default function TaskDashboard() {
           ))}
         </div>
 
-        <button
-          type="button"
-          className="flex items-center justify-center gap-2 px-4 py-2 bg-purple-600 hover:bg-purple-500 text-white text-sm font-medium rounded-lg transition-colors shadow-lg shadow-purple-900/20 cursor-pointer"
-        >
+        <button type="button" className="flex items-center justify-center gap-2 px-4 py-2 bg-purple-600 hover:bg-purple-500 text-white text-sm font-medium rounded-lg transition-colors shadow-lg shadow-purple-900/20 cursor-pointer">
           <Plus className="w-4 h-4" />
           <span>New</span>
         </button>
@@ -83,6 +81,7 @@ export default function TaskDashboard() {
             const isActive = activeFilters.includes(id);
             return (
               <button
+                type="button"
                 key={id}
                 type="button"
                 onClick={() => toggleFilter(id)}
