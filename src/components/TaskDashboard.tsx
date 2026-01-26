@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Clock, Plus, Zap, Palette, Shield } from 'lucide-react';
+import { cn } from '../lib/utils';
 
 /**
  * TaskDashboard Component
@@ -12,7 +13,6 @@ import { Clock, Plus, Zap, Palette, Shield } from 'lucide-react';
  * - Empty state handling
  * - Skill-based agent filtering
  */
-import { cn } from '../lib/utils';
 
 const tabs = ["All", "Scheduled", "Completed", "Archived"];
 const filters = [
