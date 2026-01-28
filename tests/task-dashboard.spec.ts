@@ -11,7 +11,7 @@ test.describe('TaskDashboard Component', () => {
     // Verify Tabs
     const tabs = ['All', 'Scheduled', 'Completed', 'Archived'];
     for (const tab of tabs) {
-      await expect(page.getByRole('button', { name: tab })).toBeVisible();
+      await expect(page.getByRole('tab', { name: tab })).toBeVisible();
     }
 
     // Verify "New" Button
@@ -33,12 +33,12 @@ test.describe('TaskDashboard Component', () => {
     await page.goto('http://localhost:5173/dashboard');
 
     // Default tab is Scheduled
-    const scheduledTab = page.getByRole('button', { name: 'Scheduled' });
+    const scheduledTab = page.getByRole('tab', { name: 'Scheduled' });
     // Active tab has text-white. We can check class.
     await expect(scheduledTab).toHaveClass(/text-white/);
 
     // Click "All" tab
-    const allTab = page.getByRole('button', { name: 'All' });
+    const allTab = page.getByRole('tab', { name: 'All' });
     await allTab.click();
 
     // Verify "All" is active (we can't easily check layoutId animation but we can check the text color class logic)
