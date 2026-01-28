@@ -35,10 +35,12 @@ export default function TaskDashboard() {
     <div className="w-full max-w-2xl mx-auto p-4 sm:p-6 bg-zinc-900 rounded-xl border border-zinc-800 text-zinc-100 shadow-xl">
       {/* Top Navigation */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
-        <div className="flex p-1 bg-zinc-800/50 rounded-full overflow-x-auto no-scrollbar">
+        <div role="tablist" aria-label="Task filters" className="flex p-1 bg-zinc-800/50 rounded-full overflow-x-auto no-scrollbar">
           {tabs.map((tab) => (
             <button
               type="button"
+              role="tab"
+              aria-selected={activeTab === tab}
               key={tab}
               onClick={() => setActiveTab(tab)}
               className={cn(
@@ -81,6 +83,7 @@ export default function TaskDashboard() {
             return (
               <button
                 type="button"
+                aria-pressed={isActive}
                 key={id}
                 onClick={() => toggleFilter(id)}
                 className={cn(
