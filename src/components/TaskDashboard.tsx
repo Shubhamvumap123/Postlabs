@@ -11,6 +11,7 @@ import { Clock, Plus, Zap, Palette, Shield } from 'lucide-react';
  * - Tabbed navigation with animated pill background
  * - Empty state handling
  * - Skill-based agent filtering
+ * - Responsive layout using Tailwind CSS
  */
 import { cn } from '../lib/utils';
 
