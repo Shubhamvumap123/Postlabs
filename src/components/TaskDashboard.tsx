@@ -15,7 +15,9 @@ import { cn } from '../lib/utils';
  * - Responsive layout using Tailwind CSS
  */
 
-const tabs = ["All", "Scheduled", "Completed", "Archived"];
+const tabs = ["All", "Scheduled", "Completed", "Archived"] as const;
+type Tab = typeof tabs[number];
+
 const filters = [
   { id: 'performance', label: 'Performance', icon: Zap },
   { id: 'design', label: 'Design', icon: Palette },
@@ -23,7 +25,7 @@ const filters = [
 ];
 
 export default function TaskDashboard() {
-  const [activeTab, setActiveTab] = useState("Scheduled");
+  const [activeTab, setActiveTab] = useState<Tab>("Scheduled");
   const [activeFilters, setActiveFilters] = useState<string[]>([]);
 
   const toggleFilter = (id: string) => {
