@@ -72,7 +72,7 @@ export default function TaskDashboard() {
       {/* Content Area - Empty State */}
       <div className="min-h-[300px] flex flex-col items-center justify-center text-center p-8 border-2 border-dashed border-zinc-800 rounded-xl bg-zinc-900/50">
         <div className="w-16 h-16 mb-4 rounded-full bg-zinc-800/50 flex items-center justify-center">
-          <Clock className="w-8 h-8 text-zinc-600" />
+          <Clock className="w-8 h-8 text-zinc-600" aria-hidden="true" />
         </div>
         <p className="text-zinc-500 font-medium">Scheduled tasks will show up here</p>
       </div>
