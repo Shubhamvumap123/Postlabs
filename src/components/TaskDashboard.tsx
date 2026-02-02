@@ -13,6 +13,8 @@ import { cn } from '../lib/utils';
  * - Empty state handling
  * - Skill-based agent filtering
  * - Responsive layout using Tailwind CSS
+ *
+ * Implemented by Jules
  */
 
 const tabs = ["All", "Scheduled", "Completed", "Archived"] as const;
