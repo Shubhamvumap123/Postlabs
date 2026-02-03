@@ -1,69 +1,83 @@
 import { test, expect } from '@playwright/test';
 
 test.describe('TaskDashboard Component', () => {
-  test('should render task dashboard with all elements', async ({ page }) => {
-    await page.goto('http://localhost:5173/dashboard');
+  test.beforeEach(async ({ page }) => {
+    await page.goto('/dashboard');
+  });
 
-    // Verify Dashboard Card
-    const dashboard = page.locator('.bg-zinc-900.rounded-xl.border.border-zinc-800');
+  test('should render the dashboard correctly', async ({ page }) => {
+    // Check if the dashboard container is visible
+    const dashboard = page.locator('.w-full.max-w-2xl');
     await expect(dashboard).toBeVisible();
 
-    // Verify Tabs
+    // Check for the "+ New" button
+    const newButton = page.getByRole('button', { name: 'New' });
+    await expect(newButton).toBeVisible();
+    await expect(newButton).toHaveClass(/bg-purple-600/);
+  });
+
+  test('should handle tab navigation', async ({ page }) => {
     const tabs = ['All', 'Scheduled', 'Completed', 'Archived'];
+
+    // Check all tabs exist
     for (const tab of tabs) {
       await expect(page.getByRole('tab', { name: tab })).toBeVisible();
     }
 
-    // Verify "New" Button
-    const newButton = page.getByRole('button', { name: 'New' });
-    await expect(newButton).toBeVisible();
-    await expect(newButton).toHaveClass(/bg-purple-600/);
-
-    // Verify Empty State
-    await expect(page.getByText('Scheduled tasks will show up here')).toBeVisible();
-
-    // Verify Filters
-    const filters = ['Performance', 'Design', 'Security'];
-    for (const filter of filters) {
-      await expect(page.getByRole('button', { name: filter })).toBeVisible();
-    }
-  });
-
-  test('should switch tabs', async ({ page }) => {
-    await page.goto('http://localhost:5173/dashboard');
-
-    // Default tab is Scheduled
+    // Default active tab should be "Scheduled"
     const scheduledTab = page.getByRole('tab', { name: 'Scheduled' });
-    // Active tab has text-white. We can check class.
+    await expect(scheduledTab).toHaveAttribute('aria-selected', 'true');
     await expect(scheduledTab).toHaveClass(/text-white/);
 
-    // Click "All" tab
-    const allTab = page.getByRole('tab', { name: 'All' });
-    await allTab.click();
+    // Click "Completed"
+    const completedTab = page.getByRole('tab', { name: 'Completed' });
+    await completedTab.click();
 
-    // Verify "All" is active (we can't easily check layoutId animation but we can check the text color class logic)
-    // The component logic: activeTab === tab ? "text-white" : "text-zinc-400..."
-    await expect(allTab).toHaveClass(/text-white/);
+    // Verify "Completed" is now active
+    await expect(completedTab).toHaveAttribute('aria-selected', 'true');
+    await expect(completedTab).toHaveClass(/text-white/);
+
+    // Verify "Scheduled" is no longer active
+    await expect(scheduledTab).toHaveAttribute('aria-selected', 'false');
     await expect(scheduledTab).toHaveClass(/text-zinc-400/);
   });
 
-  test('should toggle filters', async ({ page }) => {
-    await page.goto('http://localhost:5173/dashboard');
+  test('should display empty state', async ({ page }) => {
+    const emptyStateText = page.getByText('Scheduled tasks will show up here');
+    await expect(emptyStateText).toBeVisible();
 
-    const performanceFilter = page.getByRole('button', { name: 'Performance' });
+    // Check for the clock icon container (approximate check based on structure)
+    const iconContainer = page.locator('.min-h-\\[300px\\] .rounded-full.bg-zinc-800\\/50');
+    await expect(iconContainer).toBeVisible();
+  });
 
-    // Initial state: inactive
-    // Inactive class: bg-transparent border-zinc-800 text-zinc-500
-    await expect(performanceFilter).toHaveClass(/bg-transparent/);
+  test('should handle filter chips', async ({ page }) => {
+    const performanceChip = page.getByRole('button', { name: 'Performance' });
+    const designChip = page.getByRole('button', { name: 'Design' });
+    const securityChip = page.getByRole('button', { name: 'Security' });
 
-    // Click to toggle on
-    await performanceFilter.click();
+    await expect(performanceChip).toBeVisible();
+    await expect(designChip).toBeVisible();
+    await expect(securityChip).toBeVisible();
 
-    // Active state: bg-zinc-800 border-zinc-700 text-white
-    await expect(performanceFilter).toHaveClass(/bg-zinc-800/);
+    // Initial state: not pressed (bg-transparent)
+    await expect(performanceChip).toHaveAttribute('aria-pressed', 'false');
+    await expect(performanceChip).toHaveClass(/bg-transparent/);
 
-    // Click to toggle off
-    await performanceFilter.click();
-    await expect(performanceFilter).toHaveClass(/bg-transparent/);
+    // Toggle Performance
+    await performanceChip.click();
+    await expect(performanceChip).toHaveAttribute('aria-pressed', 'true');
+    await expect(performanceChip).toHaveClass(/bg-zinc-800/);
+
+    // Toggle again
+    await performanceChip.click();
+    await expect(performanceChip).toHaveAttribute('aria-pressed', 'false');
+    await expect(performanceChip).toHaveClass(/bg-transparent/);
+
+    // Toggle multiple
+    await designChip.click();
+    await securityChip.click();
+    await expect(designChip).toHaveAttribute('aria-pressed', 'true');
+    await expect(securityChip).toHaveAttribute('aria-pressed', 'true');
   });
 });
