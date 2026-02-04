@@ -7,6 +7,7 @@ import { cn } from '../lib/utils';
  * TaskDashboard Component
  *
  * A modern, responsive dashboard card component for managing tasks.
+ * Implemented with React, Tailwind CSS, and Framer Motion.
  * Features:
  * - Dark mode design with rounded corners
  * - Tabbed navigation with animated pill background
