@@ -1,69 +1,82 @@
 import { test, expect } from '@playwright/test';
 
 test.describe('TaskDashboard Component', () => {
-  test('should render task dashboard with all elements', async ({ page }) => {
-    await page.goto('http://localhost:5173/dashboard');
+  test.beforeEach(async ({ page }) => {
+    await page.goto('/dashboard');
+  });
 
-    // Verify Dashboard Card
-    const dashboard = page.locator('.bg-zinc-900.rounded-xl.border.border-zinc-800');
-    await expect(dashboard).toBeVisible();
+  test('should render the dashboard card', async ({ page }) => {
+    // Check for the main card container
+    // We can target it by finding a generic div with specific classes,
+    // or better, since it's the only main content on /dashboard, we can assume it's there if text is visible.
+    // But let's try to be specific with the classes used in TaskDashboard.tsx
+    const card = page.locator('.bg-zinc-900.rounded-xl.border.border-zinc-800');
+    await expect(card).toBeVisible();
+  });
 
-    // Verify Tabs
-    const tabs = ['All', 'Scheduled', 'Completed', 'Archived'];
+  test('should display all tabs', async ({ page }) => {
+    const tabs = ["All", "Scheduled", "Completed", "Archived"];
     for (const tab of tabs) {
       await expect(page.getByRole('tab', { name: tab })).toBeVisible();
     }
+  });
 
-    // Verify "New" Button
+  test('should handle tab switching', async ({ page }) => {
+    const scheduledTab = page.getByRole('tab', { name: 'Scheduled' });
+    const allTab = page.getByRole('tab', { name: 'All' });
+
+    // "Scheduled" is default active
+    await expect(scheduledTab).toHaveAttribute('aria-selected', 'true');
+    await expect(allTab).toHaveAttribute('aria-selected', 'false');
+
+    // Click "All"
+    await allTab.click();
+    await expect(allTab).toHaveAttribute('aria-selected', 'true');
+    await expect(scheduledTab).toHaveAttribute('aria-selected', 'false');
+  });
+
+  test('should render the "New" button correctly', async ({ page }) => {
     const newButton = page.getByRole('button', { name: 'New' });
     await expect(newButton).toBeVisible();
-    await expect(newButton).toHaveClass(/bg-purple-600/);
 
-    // Verify Empty State
+    // Check for specific styling classes
+    await expect(newButton).toHaveClass(/bg-purple-600/);
+    await expect(newButton).toHaveClass(/text-white/);
+  });
+
+  test('should display the empty state', async ({ page }) => {
     await expect(page.getByText('Scheduled tasks will show up here')).toBeVisible();
 
-    // Verify Filters
-    const filters = ['Performance', 'Design', 'Security'];
-    for (const filter of filters) {
-      await expect(page.getByRole('button', { name: filter })).toBeVisible();
-    }
+    // Check if the empty state container is present
+    const emptyState = page.locator('.min-h-\\[300px\\]');
+    await expect(emptyState).toBeVisible();
+
+    // Check for an SVG inside (the clock icon)
+    await expect(emptyState.locator('svg')).toBeVisible();
   });
 
-  test('should switch tabs', async ({ page }) => {
-    await page.goto('http://localhost:5173/dashboard');
-
-    // Default tab is Scheduled
-    const scheduledTab = page.getByRole('tab', { name: 'Scheduled' });
-    // Active tab has text-white. We can check class.
-    await expect(scheduledTab).toHaveClass(/text-white/);
-
-    // Click "All" tab
-    const allTab = page.getByRole('tab', { name: 'All' });
-    await allTab.click();
-
-    // Verify "All" is active (we can't easily check layoutId animation but we can check the text color class logic)
-    // The component logic: activeTab === tab ? "text-white" : "text-zinc-400..."
-    await expect(allTab).toHaveClass(/text-white/);
-    await expect(scheduledTab).toHaveClass(/text-zinc-400/);
-  });
-
-  test('should toggle filters', async ({ page }) => {
-    await page.goto('http://localhost:5173/dashboard');
-
+  test('should handle filter chips', async ({ page }) => {
     const performanceFilter = page.getByRole('button', { name: 'Performance' });
+    const designFilter = page.getByRole('button', { name: 'Design' });
+    const securityFilter = page.getByRole('button', { name: 'Security' });
 
-    // Initial state: inactive
-    // Inactive class: bg-transparent border-zinc-800 text-zinc-500
-    await expect(performanceFilter).toHaveClass(/bg-transparent/);
+    await expect(performanceFilter).toBeVisible();
+    await expect(designFilter).toBeVisible();
+    await expect(securityFilter).toBeVisible();
 
-    // Click to toggle on
+    // Verify initial state (not pressed)
+    await expect(performanceFilter).toHaveAttribute('aria-pressed', 'false');
+
+    // Toggle Performance
     await performanceFilter.click();
-
-    // Active state: bg-zinc-800 border-zinc-700 text-white
+    await expect(performanceFilter).toHaveAttribute('aria-pressed', 'true');
+    // Check for active style (bg-zinc-800)
     await expect(performanceFilter).toHaveClass(/bg-zinc-800/);
 
-    // Click to toggle off
+    // Toggle again
     await performanceFilter.click();
+    await expect(performanceFilter).toHaveAttribute('aria-pressed', 'false');
+    // Check for inactive style (bg-transparent)
     await expect(performanceFilter).toHaveClass(/bg-transparent/);
   });
 });
