@@ -7,8 +7,8 @@ const HeroGlow: React.FC = () => {
     const handleMouseMove = (e: MouseEvent) => {
       setPosition({ x: e.clientX, y: e.clientY });
     };
-    globalThis.addEventListener("mousemove", handleMouseMove);
-    return () => globalThis.removeEventListener("mousemove", handleMouseMove);
+    addEventListener("mousemove", handleMouseMove);
+    return () => removeEventListener("mousemove", handleMouseMove);
   }, []);
 
   return (

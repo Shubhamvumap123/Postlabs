@@ -10,8 +10,8 @@ export default function Footer() {
       setAtBottom(bottom);
     };
 
-    globalThis.addEventListener("scroll", handleScroll);
-    return () => globalThis.removeEventListener("scroll", handleScroll);
+    addEventListener("scroll", handleScroll);
+    return () => removeEventListener("scroll", handleScroll);
   }, []);
 
   useEffect(() => {
