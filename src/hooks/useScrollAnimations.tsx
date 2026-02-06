@@ -70,8 +70,7 @@ export const useScrollAnimations = () => {
 // Smooth scrolling utility
 export const initSmoothScrolling = () => {
   // deno-lint-ignore no-explicit-any
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let lenis: any = null;
+  let lenis: any = null; // eslint-disable-line @typescript-eslint/no-explicit-any
 
   const loadLenis = async () => {
     try {
