@@ -1,3 +1,4 @@
+// deno-lint-ignore-file no-node-globals
 import { defineConfig, devices } from '@playwright/test';
 
 export default defineConfig({

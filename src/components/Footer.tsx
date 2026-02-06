@@ -6,12 +6,12 @@ export default function Footer() {
   useEffect(() => {
     const handleScroll = () => {
       const bottom =
-        window.innerHeight + window.scrollY >= document.body.offsetHeight - 50;
+        globalThis.innerHeight + globalThis.scrollY >= document.body.offsetHeight - 50;
       setAtBottom(bottom);
     };
 
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    globalThis.addEventListener("scroll", handleScroll);
+    return () => globalThis.removeEventListener("scroll", handleScroll);
   }, []);
 
   useEffect(() => {
