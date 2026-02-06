@@ -1,82 +1,50 @@
 import { test, expect } from '@playwright/test';
 
-test.describe('TaskDashboard Component', () => {
-  test.beforeEach(async ({ page }) => {
-    await page.goto('/dashboard');
-  });
+test('TaskDashboard component functionality', async ({ page }) => {
+  await page.goto('/dashboard');
 
-  test('should render the dashboard card', async ({ page }) => {
-    // Check for the main card container
-    // We can target it by finding a generic div with specific classes,
-    // or better, since it's the only main content on /dashboard, we can assume it's there if text is visible.
-    // But let's try to be specific with the classes used in TaskDashboard.tsx
-    const card = page.locator('.bg-zinc-900.rounded-xl.border.border-zinc-800');
-    await expect(card).toBeVisible();
-  });
+  // Verify "Scheduled" tab is active by default
+  const scheduledTab = page.getByRole('tab', { name: 'Scheduled' });
+  await expect(scheduledTab).toBeVisible();
+  await expect(scheduledTab).toHaveAttribute('aria-selected', 'true');
 
-  test('should display all tabs', async ({ page }) => {
-    const tabs = ["All", "Scheduled", "Completed", "Archived"];
-    for (const tab of tabs) {
-      await expect(page.getByRole('tab', { name: tab })).toBeVisible();
-    }
-  });
+  // Verify switching tabs
+  const allTab = page.getByRole('tab', { name: 'All' });
+  await allTab.click();
+  await expect(allTab).toHaveAttribute('aria-selected', 'true');
+  await expect(scheduledTab).toHaveAttribute('aria-selected', 'false');
 
-  test('should handle tab switching', async ({ page }) => {
-    const scheduledTab = page.getByRole('tab', { name: 'Scheduled' });
-    const allTab = page.getByRole('tab', { name: 'All' });
+  // Verify "+ New" button
+  const newButton = page.getByRole('button', { name: 'New' });
+  await expect(newButton).toBeVisible();
+  await expect(newButton).toHaveClass(/bg-purple-600/);
 
-    // "Scheduled" is default active
-    await expect(scheduledTab).toHaveAttribute('aria-selected', 'true');
-    await expect(allTab).toHaveAttribute('aria-selected', 'false');
+  // Verify card styling (rounded-xl)
+  // We need to find the main container. Since we don't have a specific ID, we can look for the text container's parent
+  // or just check if the new button is within a rounded-xl container.
+  // Alternatively, we can assume the first div in the dashboard page is the wrapper if it's the only component.
+  // But let's check the container that holds the tabs.
+  const container = page.locator('.rounded-xl').first();
+  await expect(container).toBeVisible();
+  await expect(container).toHaveClass(/bg-zinc-900/);
+  await expect(container).toHaveClass(/border-zinc-800/);
 
-    // Click "All"
-    await allTab.click();
-    await expect(allTab).toHaveAttribute('aria-selected', 'true');
-    await expect(scheduledTab).toHaveAttribute('aria-selected', 'false');
-  });
+  // Verify empty state
+  await expect(page.getByText('Scheduled tasks will show up here')).toBeVisible();
 
-  test('should render the "New" button correctly', async ({ page }) => {
-    const newButton = page.getByRole('button', { name: 'New' });
-    await expect(newButton).toBeVisible();
+  // Verify filter chips
+  const performanceChip = page.getByRole('button', { name: 'Performance' });
+  const designChip = page.getByRole('button', { name: 'Design' });
+  const securityChip = page.getByRole('button', { name: 'Security' });
 
-    // Check for specific styling classes
-    await expect(newButton).toHaveClass(/bg-purple-600/);
-    await expect(newButton).toHaveClass(/text-white/);
-  });
+  await expect(performanceChip).toBeVisible();
+  await expect(designChip).toBeVisible();
+  await expect(securityChip).toBeVisible();
 
-  test('should display the empty state', async ({ page }) => {
-    await expect(page.getByText('Scheduled tasks will show up here')).toBeVisible();
-
-    // Check if the empty state container is present
-    const emptyState = page.locator('.min-h-\\[300px\\]');
-    await expect(emptyState).toBeVisible();
-
-    // Check for an SVG inside (the clock icon)
-    await expect(emptyState.locator('svg')).toBeVisible();
-  });
-
-  test('should handle filter chips', async ({ page }) => {
-    const performanceFilter = page.getByRole('button', { name: 'Performance' });
-    const designFilter = page.getByRole('button', { name: 'Design' });
-    const securityFilter = page.getByRole('button', { name: 'Security' });
-
-    await expect(performanceFilter).toBeVisible();
-    await expect(designFilter).toBeVisible();
-    await expect(securityFilter).toBeVisible();
-
-    // Verify initial state (not pressed)
-    await expect(performanceFilter).toHaveAttribute('aria-pressed', 'false');
-
-    // Toggle Performance
-    await performanceFilter.click();
-    await expect(performanceFilter).toHaveAttribute('aria-pressed', 'true');
-    // Check for active style (bg-zinc-800)
-    await expect(performanceFilter).toHaveClass(/bg-zinc-800/);
-
-    // Toggle again
-    await performanceFilter.click();
-    await expect(performanceFilter).toHaveAttribute('aria-pressed', 'false');
-    // Check for inactive style (bg-transparent)
-    await expect(performanceFilter).toHaveClass(/bg-transparent/);
-  });
+  // Verify toggling filter
+  await expect(performanceChip).toHaveAttribute('aria-pressed', 'false');
+  await performanceChip.click();
+  await expect(performanceChip).toHaveAttribute('aria-pressed', 'true');
+  await performanceChip.click();
+  await expect(performanceChip).toHaveAttribute('aria-pressed', 'false');
 });

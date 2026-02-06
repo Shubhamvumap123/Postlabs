@@ -7,12 +7,14 @@ import { cn } from '../lib/utils';
  * TaskDashboard Component
  *
  * A modern, responsive dashboard card component for managing tasks.
+ *
  * Features:
- * - Dark mode design with rounded corners
- * - Tabbed navigation with animated pill background
- * - Empty state handling
- * - Skill-based agent filtering
- * - Responsive layout using Tailwind CSS
+ * - Layout: Dark-mode card with rounded corners (xl) and subtle borders.
+ * - Navigation: Tabbed interface (All, Scheduled, Completed, Archived) with animated pill background.
+ * - Actions: Primary "+ New" button with purple accent color.
+ * - Content: Empty state handling with a clock icon and placeholder text.
+ * - Filtering: Skill-based agent filters (Performance, Design, Security) with toggleable states.
+ * - Tech Stack: Built with React, Tailwind CSS, Framer Motion, and Lucide-React.
  */
 
 const tabs = ["All", "Scheduled", "Completed", "Archived"] as const;
