@@ -10,20 +10,20 @@ const Navigation = () => {
 
   useEffect(() => {
     const handleScroll = () => {
-      const scrollY = window.scrollY;
+      const scrollY = globalThis.window.scrollY;
       setIsVisible(scrollY > 100);
     };
 
     if (location.pathname === '/') {
       // On homepage, start invisible and show on scroll
       // But if we are already scrolled, show it.
-       if (window.scrollY > 100) {
+       if (globalThis.window.scrollY > 100) {
            setIsVisible(true);
        } else {
            setIsVisible(false);
        }
-      window.addEventListener('scroll', handleScroll);
-      return () => window.removeEventListener('scroll', handleScroll);
+      globalThis.window.addEventListener('scroll', handleScroll);
+      return () => globalThis.window.removeEventListener('scroll', handleScroll);
     } else {
       // On other pages, always visible
       setIsVisible(true);

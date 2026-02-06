@@ -14,17 +14,17 @@ const Settings = () => {
   const { theme, setTheme } = useTheme();
 
   useEffect(() => {
-    const savedName = localStorage.getItem("userName");
+    const savedName = globalThis.localStorage.getItem("userName");
     if (savedName) setName(savedName);
 
-    const savedNotifs = localStorage.getItem("notifications");
+    const savedNotifs = globalThis.localStorage.getItem("notifications");
     if (savedNotifs) setNotifications(JSON.parse(savedNotifs));
   }, []);
 
   const handleSave = (e: React.FormEvent) => {
     e.preventDefault();
-    localStorage.setItem("userName", name);
-    localStorage.setItem("notifications", JSON.stringify(notifications));
+    globalThis.localStorage.setItem("userName", name);
+    globalThis.localStorage.setItem("notifications", JSON.stringify(notifications));
     toast.success("Settings saved successfully");
   };
 
@@ -97,7 +97,7 @@ const Settings = () => {
                   onClick={() => {
                     setNotifications(!notifications);
                     // Auto-save logic for toggle
-                    localStorage.setItem("notifications", JSON.stringify(!notifications));
+                    globalThis.localStorage.setItem("notifications", JSON.stringify(!notifications));
                     toast.success(`Notifications ${!notifications ? 'enabled' : 'disabled'}`);
                   }}
                 >

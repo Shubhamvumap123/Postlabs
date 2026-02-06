@@ -46,7 +46,7 @@ export default function TaskDashboard() {
 
   // Load tasks from localStorage
   useEffect(() => {
-    const savedTasks = localStorage.getItem('tasks');
+    const savedTasks = globalThis.localStorage.getItem('tasks');
     if (savedTasks) {
       try {
         setTasks(JSON.parse(savedTasks));
@@ -58,7 +58,7 @@ export default function TaskDashboard() {
 
   // Save tasks to localStorage
   useEffect(() => {
-    localStorage.setItem('tasks', JSON.stringify(tasks));
+    globalThis.localStorage.setItem('tasks', JSON.stringify(tasks));
   }, [tasks]);
 
   const toggleFilter = (id: string) => {
