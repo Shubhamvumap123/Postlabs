@@ -7,7 +7,7 @@ type AnimWordsProps = {
   className?: string;
   ariaLabel?: string;
   speed?: number;
-} & React.ComponentPropsWithoutRef<any>;
+} & React.ComponentPropsWithoutRef<"div">;
 
 const AnimWords = React.forwardRef<
   HTMLElement,
@@ -29,7 +29,6 @@ const AnimWords = React.forwardRef<
     if (typeof ref === "function") {
       ref(node);
     } else if (ref) {
-      // @ts-ignore
       (ref as React.MutableRefObject<HTMLElement | null>).current = node;
     }
     localRef.current = node;
