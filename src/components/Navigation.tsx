@@ -5,12 +5,12 @@ const Navigation = () => {
 
   useEffect(() => {
     const handleScroll = () => {
-      const scrollY = window.scrollY;
+      const scrollY = globalThis.scrollY;
       setIsVisible(scrollY > 100);
     };
 
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    addEventListener('scroll', handleScroll);
+    return () => removeEventListener('scroll', handleScroll);
   }, []);
 
   return (

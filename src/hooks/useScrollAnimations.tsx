@@ -69,7 +69,8 @@ export const useScrollAnimations = () => {
 
 // Smooth scrolling utility
 export const initSmoothScrolling = () => {
-  let lenis: any = null;
+  // deno-lint-ignore no-explicit-any
+  let lenis: any = null; // eslint-disable-line @typescript-eslint/no-explicit-any
 
   const loadLenis = async () => {
     try {
@@ -86,7 +87,7 @@ export const initSmoothScrolling = () => {
       };
 
       requestAnimationFrame(raf);
-    } catch (error) {
+    } catch {
       console.warn('Lenis not available, using native smooth scroll');
       document.documentElement.style.scrollBehavior = 'smooth';
     }
