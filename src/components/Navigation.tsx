@@ -4,6 +4,13 @@ import { ThemeToggle } from './ThemeToggle';
 import { Home, LayoutDashboard, Settings, Mail } from 'lucide-react';
 import { cn } from '../lib/utils';
 
+const navItems = [
+  { name: 'Home', path: '/', icon: Home },
+  { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
+  { name: 'Contact', path: '/contact-us', icon: Mail },
+  { name: 'Settings', path: '/settings', icon: Settings },
+];
+
 const Navigation = () => {
   const [isVisible, setIsVisible] = useState(false);
   const location = useLocation();

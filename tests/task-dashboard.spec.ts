@@ -47,4 +47,38 @@ test('TaskDashboard component functionality', async ({ page }) => {
   await expect(performanceChip).toHaveAttribute('aria-pressed', 'true');
   await performanceChip.click();
   await expect(performanceChip).toHaveAttribute('aria-pressed', 'false');
+
+  // Verify filtering functionality
+  // 1. Create a task with category "Design"
+  await newButton.click();
+
+  const titleInput = page.getByLabel('Task Title');
+  await expect(titleInput).toBeVisible();
+  await titleInput.fill('Design Task');
+
+  // Select Design category in the dialog (scope to form to distinguish from filter chips)
+  await page.locator('form').getByRole('button', { name: 'Design' }).click();
+
+  await page.getByRole('button', { name: 'Create Task' }).click();
+
+  // Wait for dialog to close
+  await expect(page.locator('form')).not.toBeVisible();
+
+  // 2. Verify it is visible when no filters are active
+  await expect(page.getByText('Design Task')).toBeVisible();
+
+  // 3. Activate "Performance" filter and verify the task becomes hidden
+  await performanceChip.click();
+  await expect(performanceChip).toHaveAttribute('aria-pressed', 'true');
+  await expect(page.getByText('Design Task')).not.toBeVisible();
+
+  // 4. Deactivate "Performance" filter and verify the task reappears
+  await performanceChip.click();
+  await expect(performanceChip).toHaveAttribute('aria-pressed', 'false');
+  await expect(page.getByText('Design Task')).toBeVisible();
+
+  // 5. Activate "Design" filter and verify the task is visible
+  await designChip.click();
+  await expect(designChip).toHaveAttribute('aria-pressed', 'true');
+  await expect(page.getByText('Design Task')).toBeVisible();
 });

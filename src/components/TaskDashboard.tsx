@@ -113,6 +113,11 @@ export default function TaskDashboard() {
   };
 
   const filteredTasks = tasks.filter(task => {
+    // Filter by active filters (category)
+    if (activeFilters.length > 0 && !activeFilters.includes(task.category)) {
+      return false;
+    }
+
     if (activeTab === 'All') return true;
     if (activeTab === 'Scheduled' && (task.status === 'Scheduled')) return true;
     if (activeTab === 'Completed' && task.status === 'Completed') return true;
@@ -165,7 +170,7 @@ export default function TaskDashboard() {
             <div className="w-16 h-16 mb-4 rounded-full bg-zinc-800/50 flex items-center justify-center">
               <Clock className="w-8 h-8 text-zinc-600" aria-hidden="true" />
             </div>
-            <p className="text-zinc-500 font-medium">No tasks found</p>
+            <p className="text-zinc-500 font-medium">Scheduled tasks will show up here</p>
           </div>
         ) : (
           <div className="divide-y divide-zinc-800">
