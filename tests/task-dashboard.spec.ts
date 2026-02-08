@@ -20,19 +20,15 @@ test('TaskDashboard component functionality', async ({ page }) => {
   await expect(newButton).toHaveClass(/bg-purple-600/);
 
   // Verify card styling (rounded-xl)
-  // We need to find the main container. Since we don't have a specific ID, we can look for the text container's parent
-  // or just check if the new button is within a rounded-xl container.
-  // Alternatively, we can assume the first div in the dashboard page is the wrapper if it's the only component.
-  // But let's check the container that holds the tabs.
   const container = page.locator('.rounded-xl').first();
   await expect(container).toBeVisible();
   await expect(container).toHaveClass(/bg-zinc-900/);
   await expect(container).toHaveClass(/border-zinc-800/);
 
-  // Verify empty state
+  // Verify empty state text
   await expect(page.getByText('Scheduled tasks will show up here')).toBeVisible();
 
-  // Verify filter chips
+  // Verify filter chips existence
   const performanceChip = page.getByRole('button', { name: 'Performance' });
   const designChip = page.getByRole('button', { name: 'Design' });
   const securityChip = page.getByRole('button', { name: 'Security' });
@@ -41,10 +37,32 @@ test('TaskDashboard component functionality', async ({ page }) => {
   await expect(designChip).toBeVisible();
   await expect(securityChip).toBeVisible();
 
-  // Verify toggling filter
-  await expect(performanceChip).toHaveAttribute('aria-pressed', 'false');
+  // Create tasks for testing filters
+  // Task 1: Performance
+  await newButton.click();
+  await page.getByLabel('Task Title').fill('Performance Task');
+  // Default category is Performance
+  await page.getByRole('button', { name: 'Create Task' }).click();
+
+  // Task 2: Design
+  await newButton.click();
+  await page.getByLabel('Task Title').fill('Design Task');
+  await page.locator('form').getByRole('button', { name: 'Design' }).click(); // Select Design category
+  await page.locator('form').getByRole('button', { name: 'Create Task' }).click();
+
+  // Wait for dialog to close to avoid matching buttons inside it
+  await expect(page.locator('form')).toBeHidden();
+
+  // Verify both tasks are visible initially (no filters active)
+  await expect(page.getByText('Performance Task')).toBeVisible();
+  await expect(page.getByText('Design Task')).toBeVisible();
+
+  // Activate Performance filter
   await performanceChip.click();
   await expect(performanceChip).toHaveAttribute('aria-pressed', 'true');
-  await performanceChip.click();
-  await expect(performanceChip).toHaveAttribute('aria-pressed', 'false');
+
+  // Verify filtering behavior
+  await expect(page.getByText('Performance Task')).toBeVisible();
+  await expect(page.getByText('Design Task')).toBeHidden();
+
 });

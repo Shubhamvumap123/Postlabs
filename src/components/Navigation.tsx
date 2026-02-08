@@ -4,6 +4,13 @@ import { ThemeToggle } from './ThemeToggle';
 import { Home, LayoutDashboard, Settings, Mail } from 'lucide-react';
 import { cn } from '../lib/utils';
 
+const navItems = [
+  { name: 'Home', path: '/', icon: Home },
+  { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
+  { name: 'Contact', path: '/contact-us', icon: Mail },
+  { name: 'Settings', path: '/settings', icon: Settings },
+];
+
 const Navigation = () => {
   const [isVisible, setIsVisible] = useState(false);
   const location = useLocation();
@@ -44,8 +51,8 @@ const Navigation = () => {
                      className={cn(
                        "flex items-center gap-2 px-3 sm:px-4 py-2 rounded-full transition-all duration-300 text-sm font-medium",
                        isActive
-                         ? "bg-primary text-primary-foreground shadow-sm"
-                         : "text-muted-foreground hover:text-foreground hover:bg-muted"
+                         ? "bg-zinc-800 text-zinc-100 shadow-sm"
+                         : "text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800/50"
                      )}
                    >
                      <item.icon className="w-4 h-4" />
