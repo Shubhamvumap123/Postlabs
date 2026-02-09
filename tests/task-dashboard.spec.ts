@@ -1,8 +1,12 @@
 import { test, expect } from '@playwright/test';
 
-test('TaskDashboard component functionality', async ({ page }) => {
+test.beforeEach(async ({ page }) => {
   await page.goto('/dashboard');
+  await page.evaluate(() => window.localStorage.clear());
+  await page.reload();
+});
 
+test('TaskDashboard component functionality', async ({ page }) => {
   // Verify "Scheduled" tab is active by default
   const scheduledTab = page.getByRole('tab', { name: 'Scheduled' });
   await expect(scheduledTab).toBeVisible();
