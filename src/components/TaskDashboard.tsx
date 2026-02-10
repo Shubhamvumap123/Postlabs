@@ -184,6 +184,7 @@ export default function TaskDashboard() {
                   <button
                     onClick={() => toggleTaskStatus(task.id)}
                     className="flex-shrink-0 text-zinc-500 hover:text-purple-400 transition-colors"
+                    aria-label={task.status === 'Completed' ? "Mark as incomplete" : "Mark as complete"}
                   >
                     {task.status === 'Completed' ? (
                       <CheckCircle2 className="w-5 h-5 text-purple-500" />
@@ -210,6 +211,7 @@ export default function TaskDashboard() {
                         onClick={() => archiveTask(task.id)}
                         className="p-1.5 text-zinc-500 hover:text-zinc-300 rounded hover:bg-zinc-800"
                         title="Archive"
+                        aria-label="Archive"
                       >
                         <Archive className="w-4 h-4" />
                       </button>
@@ -218,6 +220,7 @@ export default function TaskDashboard() {
                       onClick={() => deleteTask(task.id)}
                       className="p-1.5 text-zinc-500 hover:text-red-400 rounded hover:bg-zinc-800"
                       title="Delete"
+                      aria-label="Delete"
                     >
                       <Trash2 className="w-4 h-4" />
                     </button>

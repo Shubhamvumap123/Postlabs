@@ -54,6 +54,7 @@ test('TaskDashboard component functionality', async ({ page }) => {
   await expect(page.locator('form')).toBeHidden();
 
   // Verify both tasks are visible initially (no filters active)
+  // Note: We switched to "All" tab earlier
   await expect(page.getByText('Performance Task')).toBeVisible();
   await expect(page.getByText('Design Task')).toBeVisible();
 
@@ -64,5 +65,54 @@ test('TaskDashboard component functionality', async ({ page }) => {
   // Verify filtering behavior
   await expect(page.getByText('Performance Task')).toBeVisible();
   await expect(page.getByText('Design Task')).toBeHidden();
+
+  // Deactivate filter
+  await performanceChip.click();
+
+  // Test Completing a task
+  // We are on "All" tab, create a new task for completion test
+  await newButton.click();
+  await page.getByLabel('Task Title').fill('Task to Complete');
+  await page.getByRole('button', { name: 'Create Task' }).click();
+  await expect(page.locator('form')).toBeHidden();
+
+  // Use .group class to target the task row container
+  const taskToCompleteRow = page.locator('.group', { hasText: 'Task to Complete' }).first();
+  // Click the check circle button
+  await taskToCompleteRow.getByRole('button', { name: 'Mark as complete' }).click();
+
+  // Go to "Completed" tab
+  const completedTab = page.getByRole('tab', { name: 'Completed' });
+  await completedTab.click();
+  await expect(page.getByText('Task to Complete')).toBeVisible();
+
+  // Verify it's not in "Scheduled" tab
+  await scheduledTab.click();
+  await expect(page.getByText('Task to Complete')).toBeHidden();
+
+  // Test Archiving a task
+  // Create a new task for archiving
+  await newButton.click();
+  await page.getByLabel('Task Title').fill('Task to Archive');
+  await page.getByRole('button', { name: 'Create Task' }).click();
+  await expect(page.locator('form')).toBeHidden();
+
+  // It should be visible in Scheduled tab
+  await expect(page.getByText('Task to Archive')).toBeVisible();
+
+  // Hover over the task row to show actions (Archive button appears on hover)
+  const taskToArchiveRow = page.locator('.group', { hasText: 'Task to Archive' }).first();
+  await taskToArchiveRow.hover();
+
+  // Click Archive button
+  await taskToArchiveRow.getByRole('button', { name: 'Archive' }).click();
+
+  // Verify it's gone from Scheduled tab
+  await expect(page.getByText('Task to Archive')).toBeHidden();
+
+  // Go to "Archived" tab
+  const archivedTab = page.getByRole('tab', { name: 'Archived' });
+  await archivedTab.click();
+  await expect(page.getByText('Task to Archive')).toBeVisible();
 
 });
