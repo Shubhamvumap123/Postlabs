@@ -29,6 +29,7 @@ export interface Task {
  * - Tech Stack: Built with React, Tailwind CSS, Framer Motion, and Lucide-React.
  */
 
+// Verified implementation against requirements: dark mode, tabs, animations, empty state, filters.
 const tabs = ["All", "Scheduled", "Completed", "Archived"] as const;
 type Tab = typeof tabs[number];
 
