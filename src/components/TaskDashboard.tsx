@@ -37,7 +37,9 @@ const filters = [
   { id: 'performance', label: 'Performance', icon: Zap },
   { id: 'design', label: 'Design', icon: Palette },
   { id: 'security', label: 'Security', icon: Shield },
-];
+] as const;
+
+type FilterId = typeof filters[number]['id'];
 
 export default function TaskDashboard() {
   const [activeTab, setActiveTab] = useState<Tab>("Scheduled");
@@ -45,7 +47,7 @@ export default function TaskDashboard() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [isNewTaskOpen, setIsNewTaskOpen] = useState(false);
   const [newTaskTitle, setNewTaskTitle] = useState("");
-  const [newTaskCategory, setNewTaskCategory] = useState("performance");
+  const [newTaskCategory, setNewTaskCategory] = useState<FilterId>("performance");
 
   // Load tasks from localStorage
   useEffect(() => {
