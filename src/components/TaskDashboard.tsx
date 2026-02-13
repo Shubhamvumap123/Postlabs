@@ -20,16 +20,15 @@ export interface Task {
  *
  * A modern, responsive dashboard card component for managing tasks.
  *
- * Features:
- * - Layout: Dark-mode card with rounded corners (xl) and subtle borders.
- * - Navigation: Tabbed interface (All, Scheduled, Completed, Archived) with animated pill background.
- * - Actions: Primary "+ New" button with purple accent color.
- * - Content: Empty state handling with a clock icon and placeholder text.
- * - Filtering: Skill-based agent filters (Performance, Design, Security) with toggleable states.
- * - Tech Stack: Built with React, Tailwind CSS, Framer Motion, and Lucide-React.
+ * Implements the following requirements:
+ * - Layout: Dark-mode card container with rounded corners (xl) and a subtle border.
+ * - Navigation: Segmented control with tabs: "All", "Scheduled", "Completed", "Archived".
+ * - Interactions: "Pill" shape background animation for the active tab state.
+ * - Primary Action: Highly visible "+ New" button with purple accent color (bg-purple-600) and hover effect.
+ * - Empty State: Centered clock icon with "Scheduled tasks will show up here" text in muted gray when no tasks are present.
+ * - Bottom Filter Chips: "Skill-based agents" section with toggleable filters for "Performance" (lightning), "Design" (palette), and "Security" (shield).
+ * - Tech Stack: React, Tailwind CSS, Framer Motion, Lucide-React.
  */
-
-// Verified implementation against requirements: dark mode, tabs, animations, empty state, filters.
 const tabs = ["All", "Scheduled", "Completed", "Archived"] as const;
 type Tab = typeof tabs[number];
 
