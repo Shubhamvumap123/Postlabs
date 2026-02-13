@@ -42,17 +42,24 @@ export const Dialog: React.FC<DialogProps> = ({
       {isOpen && (
         <>
           <motion.div
+            key="backdrop"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
             className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm"
           />
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 pointer-events-none">
+          <motion.div
+            key="dialog-wrapper"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 pointer-events-none"
+          >
             <motion.div
-              initial={{ opacity: 0, scale: 0.95, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              initial={{ scale: 0.95, y: 20 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.95, y: 20 }}
               transition={{ duration: 0.2 }}
               className={cn(
                 "w-full max-w-lg bg-zinc-950 border border-zinc-800 rounded-xl shadow-2xl pointer-events-auto overflow-hidden",
@@ -79,7 +86,7 @@ export const Dialog: React.FC<DialogProps> = ({
               </div>
               <div className="p-6">{children}</div>
             </motion.div>
-          </div>
+          </motion.div>
         </>
       )}
     </AnimatePresence>,
