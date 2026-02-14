@@ -43,22 +43,18 @@ type FilterId = typeof filters[number]['id'];
 export default function TaskDashboard() {
   const [activeTab, setActiveTab] = useState<Tab>("Scheduled");
   const [activeFilters, setActiveFilters] = useState<string[]>([]);
-  const [tasks, setTasks] = useState<Task[]>([]);
+  const [tasks, setTasks] = useState<Task[]>(() => {
+    try {
+      const savedTasks = globalThis.localStorage.getItem('tasks');
+      return savedTasks ? JSON.parse(savedTasks) : [];
+    } catch (e) {
+      console.error('Failed to parse tasks', e);
+      return [];
+    }
+  });
   const [isNewTaskOpen, setIsNewTaskOpen] = useState(false);
   const [newTaskTitle, setNewTaskTitle] = useState("");
   const [newTaskCategory, setNewTaskCategory] = useState<FilterId>("performance");
-
-  // Load tasks from localStorage
-  useEffect(() => {
-    const savedTasks = globalThis.localStorage.getItem('tasks');
-    if (savedTasks) {
-      try {
-        setTasks(JSON.parse(savedTasks));
-      } catch (e) {
-        console.error('Failed to parse tasks', e);
-      }
-    }
-  }, []);
 
   // Save tasks to localStorage
   useEffect(() => {
