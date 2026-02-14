@@ -120,3 +120,21 @@ test('TaskDashboard component functionality', async ({ page }) => {
   await expect(page.getByText('Task to Archive')).toBeVisible();
 
 });
+
+test('TaskDashboard persistence', async ({ page }) => {
+  // Create a task
+  const newButton = page.getByRole('button', { name: 'New' });
+  await newButton.click();
+  await page.getByLabel('Task Title').fill('Persistent Task');
+  await page.getByRole('button', { name: 'Create Task' }).click();
+  await expect(page.locator('form')).toBeHidden();
+
+  // Verify task is visible
+  await expect(page.getByText('Persistent Task')).toBeVisible();
+
+  // Reload page
+  await page.reload();
+
+  // Verify task is still visible
+  await expect(page.getByText('Persistent Task')).toBeVisible();
+});
