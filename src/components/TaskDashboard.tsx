@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Clock, Plus, Zap, Palette, Shield, Trash2, CheckCircle2, Circle, Archive } from 'lucide-react';
+import { Clock, Plus, Zap, Palette, Shield, Trash2, CheckCircle2, Circle, Archive, Search } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { toast } from 'sonner';
 import { Dialog } from './ui/dialog';
@@ -86,8 +86,18 @@ export default function TaskDashboard() {
   };
 
   const deleteTask = (id: string) => {
+    const taskToDelete = tasks.find(t => t.id === id);
     setTasks(prev => prev.filter(t => t.id !== id));
-    toast.info("Task deleted");
+    toast.info("Task deleted", {
+      action: {
+        label: "Undo",
+        onClick: () => {
+          if (taskToDelete) {
+            setTasks(prev => [taskToDelete, ...prev]);
+          }
+        }
+      }
+    });
   };
 
   const toggleTaskStatus = (id: string) => {
@@ -119,6 +129,27 @@ export default function TaskDashboard() {
     if (activeTab === 'Archived' && task.status === 'Archived') return true;
     return false;
   });
+
+  const getEmptyState = () => {
+    if (activeFilters.length > 0) {
+      return {
+        text: "No tasks match your filters",
+        icon: Search
+      };
+    }
+    switch (activeTab) {
+      case 'Scheduled':
+        return { text: "No scheduled tasks", icon: Clock };
+      case 'Completed':
+        return { text: "No completed tasks", icon: CheckCircle2 };
+      case 'Archived':
+        return { text: "No archived tasks", icon: Archive };
+      default:
+        return { text: "No tasks found", icon: Circle };
+    }
+  };
+
+  const emptyState = getEmptyState();
 
   return (
     <div className="w-full max-w-2xl mx-auto p-4 sm:p-6 bg-zinc-900 rounded-xl border border-zinc-800 text-zinc-100 shadow-xl">
@@ -163,9 +194,9 @@ export default function TaskDashboard() {
         {filteredTasks.length === 0 ? (
           <div className="flex flex-col items-center justify-center text-center p-8 h-[300px]">
             <div className="w-16 h-16 mb-4 rounded-full bg-zinc-800/50 flex items-center justify-center">
-              <Clock className="w-8 h-8 text-zinc-600" aria-hidden="true" />
+              <emptyState.icon className="w-8 h-8 text-zinc-600" aria-hidden="true" />
             </div>
-            <p className="text-zinc-500 font-medium">Scheduled tasks will show up here</p>
+            <p className="text-zinc-500 font-medium">{emptyState.text}</p>
           </div>
         ) : (
           <div className="divide-y divide-zinc-800">
@@ -306,7 +337,7 @@ export default function TaskDashboard() {
                 key={id}
                 onClick={() => toggleFilter(id)}
                 className={cn(
-                  "flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium border transition-all duration-200 cursor-pointer",
+                  "flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium border transition-all duration-200 cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-purple-500",
                   isActive
                     ? "bg-zinc-800 border-zinc-700 text-white shadow-sm"
                     : "bg-transparent border-zinc-800 text-zinc-500 hover:border-zinc-700 hover:text-zinc-400"
