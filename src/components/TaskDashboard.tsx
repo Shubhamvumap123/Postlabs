@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Clock, Plus, Zap, Palette, Shield, Trash2, CheckCircle2, Circle, Archive } from 'lucide-react';
 import { cn } from '../lib/utils';
@@ -110,7 +110,7 @@ export default function TaskDashboard() {
     toast.success("Task archived");
   };
 
-  const filteredTasks = tasks.filter(task => {
+  const filteredTasks = useMemo(() => tasks.filter(task => {
     if (activeFilters.length > 0 && !activeFilters.includes(task.category)) return false;
 
     if (activeTab === 'All') return true;
@@ -118,7 +118,7 @@ export default function TaskDashboard() {
     if (activeTab === 'Completed' && task.status === 'Completed') return true;
     if (activeTab === 'Archived' && task.status === 'Archived') return true;
     return false;
-  });
+  }), [tasks, activeFilters, activeTab]);
 
   return (
     <div className="w-full max-w-2xl mx-auto p-4 sm:p-6 bg-zinc-900 rounded-xl border border-zinc-800 text-zinc-100 shadow-xl">
