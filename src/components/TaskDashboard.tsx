@@ -8,6 +8,7 @@ import { Input } from './ui/input';
 import { Button } from './ui/button';
 
 export interface Task {
+  /** Unique identifier for the task */
   id: string;
   title: string;
   status: 'Scheduled' | 'Completed' | 'Archived';
