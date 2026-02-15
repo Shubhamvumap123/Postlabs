@@ -51,11 +51,11 @@ test('TaskDashboard component functionality', async ({ page }) => {
   // Task 2: Design
   await newButton.click();
   await page.getByLabel('Task Title').fill('Design Task');
-  await page.locator('form').getByRole('button', { name: 'Design' }).click(); // Select Design category
-  await page.locator('form').getByRole('button', { name: 'Create Task' }).click();
+  await page.getByRole('dialog').getByRole('button', { name: 'Design' }).click(); // Select Design category
+  await page.getByRole('dialog').getByRole('button', { name: 'Create Task' }).click();
 
   // Wait for dialog to close to avoid matching buttons inside it
-  await expect(page.locator('form')).toBeHidden();
+  await expect(page.getByRole('dialog')).toBeHidden();
 
   // Verify both tasks are visible initially (no filters active)
   // Note: We switched to "All" tab earlier
@@ -78,7 +78,7 @@ test('TaskDashboard component functionality', async ({ page }) => {
   await newButton.click();
   await page.getByLabel('Task Title').fill('Task to Complete');
   await page.getByRole('button', { name: 'Create Task' }).click();
-  await expect(page.locator('form')).toBeHidden();
+  await expect(page.getByRole('dialog')).toBeHidden();
 
   // Use .group class to target the task row container
   const taskToCompleteRow = page.locator('.group', { hasText: 'Task to Complete' }).first();
@@ -99,7 +99,7 @@ test('TaskDashboard component functionality', async ({ page }) => {
   await newButton.click();
   await page.getByLabel('Task Title').fill('Task to Archive');
   await page.getByRole('button', { name: 'Create Task' }).click();
-  await expect(page.locator('form')).toBeHidden();
+  await expect(page.getByRole('dialog')).toBeHidden();
 
   // It should be visible in Scheduled tab
   await expect(page.getByText('Task to Archive')).toBeVisible();
@@ -127,7 +127,7 @@ test('TaskDashboard persistence', async ({ page }) => {
   await newButton.click();
   await page.getByLabel('Task Title').fill('Persistent Task');
   await page.getByRole('button', { name: 'Create Task' }).click();
-  await expect(page.locator('form')).toBeHidden();
+  await expect(page.getByRole('dialog')).toBeHidden();
 
   // Verify task is visible
   await expect(page.getByText('Persistent Task')).toBeVisible();
