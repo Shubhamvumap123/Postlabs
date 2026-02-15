@@ -43,13 +43,29 @@ export default function Footer() {
   const email = formData.get("email") as string;
 
   try {
+    // 🛡️ SENTINEL SECURITY WARNING:
+    // This implementation exposes the Mailchimp API key to the client-side.
+    // In a production environment, this request MUST be proxied through a backend
+    // to keep the API key secret.
+    // Using VITE_ prefixed environment variables allows the build to pass but
+    // does NOT protect the key from being viewed in the source code.
+    const apiKey = import.meta.env.VITE_MAILCHIMP_API_KEY;
+    const server = import.meta.env.VITE_MAILCHIMP_SERVER_PREFIX; // e.g., 'us21'
+    const listId = import.meta.env.VITE_MAILCHIMP_LIST_ID;
+
+    if (!apiKey || !server || !listId) {
+      console.warn("Mailchimp configuration missing");
+      alert("Newsletter signup is not configured.");
+      return;
+    }
+
     const response = await fetch(
-      "https://YOUR_DC.api.mailchimp.com/3.0/lists/YOUR_LIST_ID/members", 
+      `https://${server}.api.mailchimp.com/3.0/lists/${listId}/members`,
       {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: "apikey YOUR_API_KEY"
+          Authorization: `apikey ${apiKey}`
         },
         body: JSON.stringify({
           email_address: email,
