@@ -38,37 +38,21 @@ export default function Footer() {
   }, []);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-  e.preventDefault();
-  const formData = new FormData(e.currentTarget);
-  const email = formData.get("email") as string;
+    e.preventDefault();
+    const form = e.currentTarget;
+    const formData = new FormData(form);
+    const email = formData.get("email") as string;
 
-  try {
-    const response = await fetch(
-      "https://YOUR_DC.api.mailchimp.com/3.0/lists/YOUR_LIST_ID/members", 
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: "apikey YOUR_API_KEY"
-        },
-        body: JSON.stringify({
-          email_address: email,
-          status: "subscribed"
-        }),
-      }
-    );
+    // 🛡️ SENTINEL: Removed insecure client-side API call.
+    // NEVER expose API keys (like Mailchimp's) in frontend code.
+    // Use a backend proxy or serverless function instead.
 
-    if (response.ok) {
-      alert(`Thanks for signing up, ${email}!`);
-      e.currentTarget.reset();
-    } else {
-      alert("Something went wrong. Please try again.");
-    }
-  } catch (error) {
-    console.error(error);
-    alert("Error signing up. Please try again later.");
-  }
-};
+    // Simulate API call for demo purposes
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
+    alert(`Thanks for signing up, ${email}! (Demo Mode)`);
+    form.reset();
+  };
 
 
   return (
