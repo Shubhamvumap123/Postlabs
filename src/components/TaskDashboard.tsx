@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Clock, Plus, Zap, Palette, Shield, Trash2, CheckCircle2, Circle, Archive } from 'lucide-react';
+import { Clock, Plus, Zap, Palette, Shield, Trash2, CheckCircle2, Circle, Archive, LayoutList } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { toast } from 'sonner';
 import { Dialog } from './ui/dialog';
@@ -86,8 +86,19 @@ export default function TaskDashboard() {
   };
 
   const deleteTask = (id: string) => {
+    const taskToDelete = tasks.find(t => t.id === id);
+    if (!taskToDelete) return;
+
     setTasks(prev => prev.filter(t => t.id !== id));
-    toast.info("Task deleted");
+    toast.success("Task deleted", {
+      action: {
+        label: "Undo",
+        onClick: () => setTasks(prev => {
+          if (prev.some(t => t.id === taskToDelete.id)) return prev;
+          return [taskToDelete, ...prev].sort((a, b) => b.createdAt - a.createdAt);
+        }),
+      },
+    });
   };
 
   const toggleTaskStatus = (id: string) => {
@@ -119,6 +130,15 @@ export default function TaskDashboard() {
     if (activeTab === 'Archived' && task.status === 'Archived') return true;
     return false;
   });
+
+  const emptyStates = {
+    All: { message: "No tasks found", icon: LayoutList },
+    Scheduled: { message: "No scheduled tasks", icon: Clock },
+    Completed: { message: "No completed tasks yet", icon: CheckCircle2 },
+    Archived: { message: "No archived tasks", icon: Archive },
+  };
+
+  const EmptyStateIcon = emptyStates[activeTab].icon;
 
   return (
     <div className="w-full max-w-2xl mx-auto p-4 sm:p-6 bg-zinc-900 rounded-xl border border-zinc-800 text-zinc-100 shadow-xl">
@@ -163,9 +183,9 @@ export default function TaskDashboard() {
         {filteredTasks.length === 0 ? (
           <div className="flex flex-col items-center justify-center text-center p-8 h-[300px]">
             <div className="w-16 h-16 mb-4 rounded-full bg-zinc-800/50 flex items-center justify-center">
-              <Clock className="w-8 h-8 text-zinc-600" aria-hidden="true" />
+              <EmptyStateIcon className="w-8 h-8 text-zinc-600" aria-hidden="true" />
             </div>
-            <p className="text-zinc-500 font-medium">Scheduled tasks will show up here</p>
+            <p className="text-zinc-500 font-medium">{emptyStates[activeTab].message}</p>
           </div>
         ) : (
           <div className="divide-y divide-zinc-800">
@@ -203,7 +223,7 @@ export default function TaskDashboard() {
                       <span>{new Date(task.createdAt).toLocaleDateString()}</span>
                     </div>
                   </div>
-                  <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 focus-within:opacity-100 transition-opacity">
                     {task.status !== 'Archived' && (
                       <button
                         onClick={() => archiveTask(task.id)}
