@@ -38,37 +38,60 @@ export default function Footer() {
   }, []);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-  e.preventDefault();
-  const formData = new FormData(e.currentTarget);
-  const email = formData.get("email") as string;
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    const email = formData.get("email") as string;
 
-  try {
-    const response = await fetch(
-      "https://YOUR_DC.api.mailchimp.com/3.0/lists/YOUR_LIST_ID/members", 
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: "apikey YOUR_API_KEY"
-        },
-        body: JSON.stringify({
-          email_address: email,
-          status: "subscribed"
-        }),
-      }
-    );
+    const apiKey = import.meta.env.VITE_MAILCHIMP_API_KEY;
+    const dc = import.meta.env.VITE_MAILCHIMP_DC;
+    const listId = import.meta.env.VITE_MAILCHIMP_LIST_ID;
 
-    if (response.ok) {
-      alert(`Thanks for signing up, ${email}!`);
-      e.currentTarget.reset();
-    } else {
-      alert("Something went wrong. Please try again.");
+    // 🛡️ Security Check: Prevent real API calls with placeholder or missing keys
+    // This also serves as a "Demo Mode" for the UI when no backend is configured.
+    const isConfigured = apiKey && !apiKey.includes('YOUR_API_KEY') &&
+                         dc && !dc.includes('YOUR_DC') &&
+                         listId && !listId.includes('YOUR_LIST_ID');
+
+    if (!isConfigured) {
+      console.warn('Mailchimp API keys are missing or using placeholders. Simulating subscription.');
+      // Simulate success for demo purposes
+      setTimeout(() => {
+        alert(`Thanks for signing up, ${email}! (Demo Mode)`);
+        // Reset form safely (TS knows e.currentTarget is the form)
+        (e.target as HTMLFormElement).reset();
+      }, 500);
+      return;
     }
-  } catch (error) {
-    console.error(error);
-    alert("Error signing up. Please try again later.");
-  }
-};
+
+    try {
+      // ⚠️ Note: Making this call from the client exposes the API key.
+      // In a real production app, this should be proxied through a backend.
+      const response = await fetch(
+        `https://${dc}.api.mailchimp.com/3.0/lists/${listId}/members`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `apikey ${apiKey}`
+          },
+          body: JSON.stringify({
+            email_address: email,
+            status: "subscribed"
+          }),
+        }
+      );
+
+      if (response.ok) {
+        alert(`Thanks for signing up, ${email}!`);
+        (e.target as HTMLFormElement).reset();
+      } else {
+        alert("Something went wrong. Please try again.");
+      }
+    } catch (error) {
+      console.error(error);
+      alert("Error signing up. Please try again later.");
+    }
+  };
 
 
   return (
@@ -173,7 +196,7 @@ export default function Footer() {
         <div>© 2025 Post Labs, Inc. All rights reserved.</div>
         <div>
           Designed by{' '}
-          <a href="https://gohrvst.com" target="_blank" className="underline">
+          <a href="https://gohrvst.com" target="_blank" rel="noopener noreferrer" className="underline">
             HRVST
           </a>
         </div>
