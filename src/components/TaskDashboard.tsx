@@ -168,10 +168,10 @@ export default function TaskDashboard() {
             <p className="text-zinc-500 font-medium">Scheduled tasks will show up here</p>
           </div>
         ) : (
-          <div className="divide-y divide-zinc-800">
+          <ul role="list" className="divide-y divide-zinc-800">
             <AnimatePresence mode='popLayout'>
               {filteredTasks.map((task) => (
-                <motion.div
+                <motion.li
                   key={task.id}
                   layout
                   initial={{ opacity: 0, y: 10 }}
@@ -182,7 +182,7 @@ export default function TaskDashboard() {
                   <button
                     onClick={() => toggleTaskStatus(task.id)}
                     className="flex-shrink-0 text-zinc-500 hover:text-purple-400 transition-colors"
-                    aria-label={task.status === 'Completed' ? "Mark as incomplete" : "Mark as complete"}
+                    aria-label={task.status === 'Completed' ? `Mark "${task.title}" as incomplete` : `Mark "${task.title}" as complete`}
                   >
                     {task.status === 'Completed' ? (
                       <CheckCircle2 className="w-5 h-5 text-purple-500" />
@@ -209,7 +209,7 @@ export default function TaskDashboard() {
                         onClick={() => archiveTask(task.id)}
                         className="p-1.5 text-zinc-500 hover:text-zinc-300 rounded hover:bg-zinc-800"
                         title="Archive"
-                        aria-label="Archive"
+                        aria-label={`Archive "${task.title}"`}
                       >
                         <Archive className="w-4 h-4" />
                       </button>
@@ -218,15 +218,15 @@ export default function TaskDashboard() {
                       onClick={() => deleteTask(task.id)}
                       className="p-1.5 text-zinc-500 hover:text-red-400 rounded hover:bg-zinc-800"
                       title="Delete"
-                      aria-label="Delete"
+                      aria-label={`Delete "${task.title}"`}
                     >
                       <Trash2 className="w-4 h-4" />
                     </button>
                   </div>
-                </motion.div>
+                </motion.li>
               ))}
             </AnimatePresence>
-          </div>
+          </ul>
         )}
       </div>
 
