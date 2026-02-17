@@ -33,9 +33,9 @@ test('TaskDashboard component functionality', async ({ page }) => {
   await expect(page.getByText('Scheduled tasks will show up here')).toBeVisible();
 
   // Verify filter chips existence
-  const performanceChip = page.getByRole('button', { name: 'Performance' });
-  const designChip = page.getByRole('button', { name: 'Design' });
-  const securityChip = page.getByRole('button', { name: 'Security' });
+  const performanceChip = page.getByRole('button', { name: 'Performance', exact: true });
+  const designChip = page.getByRole('button', { name: 'Design', exact: true });
+  const securityChip = page.getByRole('button', { name: 'Security', exact: true });
 
   await expect(performanceChip).toBeVisible();
   await expect(designChip).toBeVisible();
@@ -83,7 +83,7 @@ test('TaskDashboard component functionality', async ({ page }) => {
   // Use .group class to target the task row container
   const taskToCompleteRow = page.locator('.group', { hasText: 'Task to Complete' }).first();
   // Click the check circle button
-  await taskToCompleteRow.getByRole('button', { name: 'Mark as complete' }).click();
+  await taskToCompleteRow.getByRole('button', { name: 'Mark "Task to Complete" as complete' }).click();
 
   // Go to "Completed" tab
   const completedTab = page.getByRole('tab', { name: 'Completed' });
@@ -109,7 +109,7 @@ test('TaskDashboard component functionality', async ({ page }) => {
   await taskToArchiveRow.hover();
 
   // Click Archive button
-  await taskToArchiveRow.getByRole('button', { name: 'Archive' }).click();
+  await taskToArchiveRow.getByRole('button', { name: 'Archive "Task to Archive"' }).click();
 
   // Verify it's gone from Scheduled tab
   await expect(page.getByText('Task to Archive')).toBeHidden();
