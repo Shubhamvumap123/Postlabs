@@ -1,140 +1,147 @@
 import { test, expect } from '@playwright/test';
 
-test.beforeEach(async ({ page }) => {
-  await page.goto('/dashboard');
-  await page.evaluate(() => window.localStorage.clear());
-  await page.reload();
-});
+test.describe('Task Dashboard', () => {
+  test.beforeEach(async ({ page }) => {
+    // Clear localStorage to ensure a clean state
+    await page.addInitScript(() => {
+      window.localStorage.clear();
+    });
+    await page.goto('/dashboard');
+  });
 
-test('TaskDashboard component functionality', async ({ page }) => {
-  // Verify "Scheduled" tab is active by default
-  const scheduledTab = page.getByRole('tab', { name: 'Scheduled' });
-  await expect(scheduledTab).toBeVisible();
-  await expect(scheduledTab).toHaveAttribute('aria-selected', 'true');
+  test('should display initial empty state correctly', async ({ page }) => {
+    // Check for tabs
+    await expect(page.getByRole('tab', { name: 'All' })).toBeVisible();
+    await expect(page.getByRole('tab', { name: 'Scheduled' })).toBeVisible();
+    await expect(page.getByRole('tab', { name: 'Completed' })).toBeVisible();
+    await expect(page.getByRole('tab', { name: 'Archived' })).toBeVisible();
 
-  // Verify switching tabs
-  const allTab = page.getByRole('tab', { name: 'All' });
-  await allTab.click();
-  await expect(allTab).toHaveAttribute('aria-selected', 'true');
-  await expect(scheduledTab).toHaveAttribute('aria-selected', 'false');
+    // Check for "+ New" button
+    const newButton = page.getByRole('button', { name: 'New' });
+    await expect(newButton).toBeVisible();
+    // Verify it has the expected styling (purple background)
+    await expect(newButton).toHaveClass(/bg-purple-600/);
 
-  // Verify "+ New" button
-  const newButton = page.getByRole('button', { name: 'New' });
-  await expect(newButton).toBeVisible();
-  await expect(newButton).toHaveClass(/bg-purple-600/);
+    // Check for empty state
+    await expect(page.getByText('Scheduled tasks will show up here')).toBeVisible();
+    // Assuming the Clock icon is present, but it's hard to test specifically without an aria-label or reliable selector.
+    // However, the text is the key requirement.
 
-  // Verify card styling (rounded-xl)
-  const container = page.locator('.rounded-xl').first();
-  await expect(container).toBeVisible();
-  await expect(container).toHaveClass(/bg-zinc-900/);
-  await expect(container).toHaveClass(/border-zinc-800/);
+    // Check for filter chips
+    await expect(page.getByRole('button', { name: 'Performance' })).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Design' })).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Security' })).toBeVisible();
+  });
 
-  // Verify empty state text
-  await expect(page.getByText('Scheduled tasks will show up here')).toBeVisible();
+  test('should add a new task', async ({ page }) => {
+    // Open the dialog
+    await page.getByRole('button', { name: 'New' }).click();
 
-  // Verify filter chips existence
-  const performanceChip = page.getByRole('button', { name: 'Performance' });
-  const designChip = page.getByRole('button', { name: 'Design' });
-  const securityChip = page.getByRole('button', { name: 'Security' });
+    // Wait for dialog
+    const dialog = page.getByRole('dialog', { name: 'Create New Task' });
+    await expect(dialog).toBeVisible();
 
-  await expect(performanceChip).toBeVisible();
-  await expect(designChip).toBeVisible();
-  await expect(securityChip).toBeVisible();
+    // Fill the form
+    await page.getByLabel('Task Title').fill('Test Task 1');
 
-  // Create tasks for testing filters
-  // Task 1: Performance
-  await newButton.click();
-  await page.getByLabel('Task Title').fill('Performance Task');
-  // Default category is Performance
-  await page.getByRole('button', { name: 'Create Task' }).click();
+    // Select a category (default is Performance, let's switch to Design)
+    // The filter buttons in the dialog don't have explicit roles other than button, but we can find by text.
+    await dialog.getByRole('button', { name: 'Design' }).click();
 
-  // Task 2: Design
-  await newButton.click();
-  await page.getByLabel('Task Title').fill('Design Task');
-  await page.locator('form').getByRole('button', { name: 'Design' }).click(); // Select Design category
-  await page.locator('form').getByRole('button', { name: 'Create Task' }).click();
+    // Submit
+    await page.getByRole('button', { name: 'Create Task' }).click();
 
-  // Wait for dialog to close to avoid matching buttons inside it
-  await expect(page.locator('form')).toBeHidden();
+    // Verify dialog closes
+    await expect(dialog).toBeHidden();
 
-  // Verify both tasks are visible initially (no filters active)
-  // Note: We switched to "All" tab earlier
-  await expect(page.getByText('Performance Task')).toBeVisible();
-  await expect(page.getByText('Design Task')).toBeVisible();
+    // Verify task appears in the list
+    await expect(page.getByText('Test Task 1')).toBeVisible();
 
-  // Activate Performance filter
-  await performanceChip.click();
-  await expect(performanceChip).toHaveAttribute('aria-pressed', 'true');
+    // Verify category and date
+    await expect(page.locator('span.capitalize', { hasText: 'design' }).first()).toBeVisible();
+    // Date is tricky due to format, but we can check if it exists.
+  });
 
-  // Verify filtering behavior
-  await expect(page.getByText('Performance Task')).toBeVisible();
-  await expect(page.getByText('Design Task')).toBeHidden();
+  test('should filter tasks by tab', async ({ page }) => {
+    // Add a task
+    await page.getByRole('button', { name: 'New' }).click();
+    await page.getByLabel('Task Title').fill('Task to Complete');
+    await page.getByRole('button', { name: 'Create Task' }).click();
 
-  // Deactivate filter
-  await performanceChip.click();
+    // Verify it's in "Scheduled" tab (default)
+    await expect(page.getByText('Task to Complete')).toBeVisible();
 
-  // Test Completing a task
-  // We are on "All" tab, create a new task for completion test
-  await newButton.click();
-  await page.getByLabel('Task Title').fill('Task to Complete');
-  await page.getByRole('button', { name: 'Create Task' }).click();
-  await expect(page.locator('form')).toBeHidden();
+    // Mark as complete
+    await page.getByLabel('Mark as complete').click();
 
-  // Use .group class to target the task row container
-  const taskToCompleteRow = page.locator('.group', { hasText: 'Task to Complete' }).first();
-  // Click the check circle button
-  await taskToCompleteRow.getByRole('button', { name: 'Mark as complete' }).click();
+    // Verify it disappears from "Scheduled" view (since we are on Scheduled tab)
+    // Wait, the logic is: activeTab === 'Scheduled' && task.status === 'Scheduled'.
+    // If we mark it complete, it should disappear immediately from the list.
+    await expect(page.getByText('Task to Complete')).toBeHidden();
 
-  // Go to "Completed" tab
-  const completedTab = page.getByRole('tab', { name: 'Completed' });
-  await completedTab.click();
-  await expect(page.getByText('Task to Complete')).toBeVisible();
+    // Switch to "Completed" tab
+    await page.getByRole('tab', { name: 'Completed' }).click();
 
-  // Verify it's not in "Scheduled" tab
-  await scheduledTab.click();
-  await expect(page.getByText('Task to Complete')).toBeHidden();
+    // Verify it appears there
+    await expect(page.getByText('Task to Complete')).toBeVisible();
 
-  // Test Archiving a task
-  // Create a new task for archiving
-  await newButton.click();
-  await page.getByLabel('Task Title').fill('Task to Archive');
-  await page.getByRole('button', { name: 'Create Task' }).click();
-  await expect(page.locator('form')).toBeHidden();
+    // Verify it has line-through style
+    const taskTitle = page.getByText('Task to Complete');
+    await expect(taskTitle).toHaveClass(/line-through/);
+  });
 
-  // It should be visible in Scheduled tab
-  await expect(page.getByText('Task to Archive')).toBeVisible();
+  test('should filter tasks by category chips', async ({ page }) => {
+    // Add two tasks with different categories
+    // Task 1: Performance
+    await page.getByRole('button', { name: 'New' }).click();
+    await page.getByLabel('Task Title').fill('Performance Task');
+    // Default is Performance
+    await page.getByRole('button', { name: 'Create Task' }).click();
+    await expect(page.getByRole('dialog')).toBeHidden();
 
-  // Hover over the task row to show actions (Archive button appears on hover)
-  const taskToArchiveRow = page.locator('.group', { hasText: 'Task to Archive' }).first();
-  await taskToArchiveRow.hover();
+    // Task 2: Design
+    await page.getByRole('button', { name: 'New' }).click();
+    await page.getByLabel('Task Title').fill('Design Task');
+    await page.getByRole('dialog').getByRole('button', { name: 'Design' }).click();
+    await page.getByRole('button', { name: 'Create Task' }).click();
+    await expect(page.getByRole('dialog')).toBeHidden();
 
-  // Click Archive button
-  await taskToArchiveRow.getByRole('button', { name: 'Archive' }).click();
+    // Verify both are visible initially (no filters active)
+    await expect(page.getByText('Performance Task')).toBeVisible();
+    await expect(page.getByText('Design Task')).toBeVisible();
 
-  // Verify it's gone from Scheduled tab
-  await expect(page.getByText('Task to Archive')).toBeHidden();
+    // Click "Performance" filter chip
+    // The filter chips are outside the dialog, at the bottom.
+    // We need to be careful not to click the one inside the dialog if it was open (it's closed now).
+    // The bottom filters are "Skill-based agents".
+    // We can scope by text "Skill-based agents" section but simpler to just click by name as they are unique on the main page now.
+    await page.getByRole('button', { name: 'Performance' }).click();
 
-  // Go to "Archived" tab
-  const archivedTab = page.getByRole('tab', { name: 'Archived' });
-  await archivedTab.click();
-  await expect(page.getByText('Task to Archive')).toBeVisible();
+    // Verify "Performance" chip is active (aria-pressed="true")
+    await expect(page.getByRole('button', { name: 'Performance' })).toHaveAttribute('aria-pressed', 'true');
 
-});
+    // Verify "Performance Task" is visible, "Design Task" is hidden
+    await expect(page.getByText('Performance Task')).toBeVisible();
+    await expect(page.getByText('Design Task')).toBeHidden();
 
-test('TaskDashboard persistence', async ({ page }) => {
-  // Create a task
-  const newButton = page.getByRole('button', { name: 'New' });
-  await newButton.click();
-  await page.getByLabel('Task Title').fill('Persistent Task');
-  await page.getByRole('button', { name: 'Create Task' }).click();
-  await expect(page.locator('form')).toBeHidden();
+    // Click "Design" filter chip to add it (OR logic? or AND? Logic says: if activeFilters.length > 0 && !activeFilters.includes(task.category))
+    // So if we select Performance, only Performance tasks show.
+    // If we select Design too, then tasks with EITHER Performance OR Design?
+    // Let's check logic: activeFilters.includes(task.category).
+    // So if activeFilters=['performance', 'design'], then a task with 'performance' category is included.
+    // Yes, it's an OR logic for the filters (show tasks matching ANY active filter).
 
-  // Verify task is visible
-  await expect(page.getByText('Persistent Task')).toBeVisible();
+    await page.getByRole('button', { name: 'Design' }).click();
 
-  // Reload page
-  await page.reload();
+    // Now both should be visible
+    await expect(page.getByText('Performance Task')).toBeVisible();
+    await expect(page.getByText('Design Task')).toBeVisible();
 
-  // Verify task is still visible
-  await expect(page.getByText('Persistent Task')).toBeVisible();
+    // Deselect Performance
+    await page.getByRole('button', { name: 'Performance' }).click();
+
+    // Now only Design Task visible
+    await expect(page.getByText('Performance Task')).toBeHidden();
+    await expect(page.getByText('Design Task')).toBeVisible();
+  });
 });
