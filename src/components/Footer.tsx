@@ -38,37 +38,24 @@ export default function Footer() {
   }, []);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-  e.preventDefault();
-  const formData = new FormData(e.currentTarget);
-  const email = formData.get("email") as string;
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    const email = formData.get("email") as string;
+    const form = e.currentTarget;
 
-  try {
-    const response = await fetch(
-      "https://YOUR_DC.api.mailchimp.com/3.0/lists/YOUR_LIST_ID/members", 
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: "apikey YOUR_API_KEY"
-        },
-        body: JSON.stringify({
-          email_address: email,
-          status: "subscribed"
-        }),
-      }
-    );
+    // SECURITY: Client-side API keys are insecure and can be stolen.
+    // This is a demo implementation that simulates a successful subscription.
+    // In production, this should call your own backend API which then calls Mailchimp securely.
 
-    if (response.ok) {
-      alert(`Thanks for signing up, ${email}!`);
-      e.currentTarget.reset();
-    } else {
-      alert("Something went wrong. Please try again.");
-    }
-  } catch (error) {
-    console.error(error);
-    alert("Error signing up. Please try again later.");
-  }
-};
+    console.log(`[Demo Mode] Subscribing ${email} to newsletter...`);
+
+    // Simulate API delay
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
+    // Simulate success
+    alert(`Thanks for signing up, ${email}! (Demo Mode)`);
+    form.reset();
+  };
 
 
   return (
@@ -173,7 +160,7 @@ export default function Footer() {
         <div>© 2025 Post Labs, Inc. All rights reserved.</div>
         <div>
           Designed by{' '}
-          <a href="https://gohrvst.com" target="_blank" className="underline">
+          <a href="https://gohrvst.com" target="_blank" rel="noopener noreferrer" className="underline">
             HRVST
           </a>
         </div>
