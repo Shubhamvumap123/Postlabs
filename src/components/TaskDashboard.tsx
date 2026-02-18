@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Clock, Plus, Zap, Palette, Shield, Trash2, CheckCircle2, Circle, Archive } from 'lucide-react';
+import { Clock, Plus, Zap, Palette, Shield, Trash2, CheckCircle2, Circle, Archive, Calendar, Inbox, Filter } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { toast } from 'sonner';
 import { Dialog } from './ui/dialog';
@@ -120,6 +120,26 @@ export default function TaskDashboard() {
     return false;
   });
 
+  const getEmptyState = () => {
+    if (activeFilters.length > 0) {
+      return { icon: Filter, message: "No tasks match your selected filters" };
+    }
+    switch (activeTab) {
+      case "All":
+        return { icon: Inbox, message: "No tasks found. Create a new one to get started." };
+      case "Scheduled":
+        return { icon: Calendar, message: "No scheduled tasks. You're all caught up!" };
+      case "Completed":
+        return { icon: CheckCircle2, message: "No completed tasks yet. Time to get to work!" };
+      case "Archived":
+        return { icon: Archive, message: "No archived tasks." };
+      default:
+        return { icon: Clock, message: "No tasks found" };
+    }
+  };
+
+  const { icon: EmptyIcon, message: emptyMessage } = getEmptyState();
+
   return (
     <div className="w-full max-w-2xl mx-auto p-4 sm:p-6 bg-zinc-900 rounded-xl border border-zinc-800 text-zinc-100 shadow-xl">
       {/* Top Navigation */}
@@ -163,9 +183,9 @@ export default function TaskDashboard() {
         {filteredTasks.length === 0 ? (
           <div className="flex flex-col items-center justify-center text-center p-8 h-[300px]">
             <div className="w-16 h-16 mb-4 rounded-full bg-zinc-800/50 flex items-center justify-center">
-              <Clock className="w-8 h-8 text-zinc-600" aria-hidden="true" />
+              <EmptyIcon className="w-8 h-8 text-zinc-600" aria-hidden="true" />
             </div>
-            <p className="text-zinc-500 font-medium">Scheduled tasks will show up here</p>
+            <p className="text-zinc-500 font-medium">{emptyMessage}</p>
           </div>
         ) : (
           <div className="divide-y divide-zinc-800">
