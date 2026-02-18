@@ -7,6 +7,7 @@ test.describe('Footer Security', () => {
 
   test('External links should have rel="noopener noreferrer"', async ({ page }) => {
     // Wait for footer to be visible (it has a scroll listener, so we might need to scroll down)
+    // deno-lint-ignore no-window
     await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
 
     // The "Designed by HRVST" link
@@ -23,6 +24,7 @@ test.describe('Footer Security', () => {
   });
 
   test('Newsletter subscription should not expose real API keys', async ({ page }) => {
+    // deno-lint-ignore no-window
     await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
 
     const emailInput = page.locator('input[name="email"]');
