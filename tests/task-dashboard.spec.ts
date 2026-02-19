@@ -12,11 +12,17 @@ test('TaskDashboard component functionality', async ({ page }) => {
   await expect(scheduledTab).toBeVisible();
   await expect(scheduledTab).toHaveAttribute('aria-selected', 'true');
 
+  // Verify default empty state
+  await expect(page.getByText("No scheduled tasks. You're all caught up!")).toBeVisible();
+
   // Verify switching tabs
   const allTab = page.getByRole('tab', { name: 'All' });
   await allTab.click();
   await expect(allTab).toHaveAttribute('aria-selected', 'true');
   await expect(scheduledTab).toHaveAttribute('aria-selected', 'false');
+
+  // Verify empty state for "All" tab
+  await expect(page.getByText("No tasks found. Create one to get started!")).toBeVisible();
 
   // Verify "+ New" button
   const newButton = page.getByRole('button', { name: 'New' });
@@ -28,9 +34,6 @@ test('TaskDashboard component functionality', async ({ page }) => {
   await expect(container).toBeVisible();
   await expect(container).toHaveClass(/bg-zinc-900/);
   await expect(container).toHaveClass(/border-zinc-800/);
-
-  // Verify empty state text
-  await expect(page.getByText('Scheduled tasks will show up here')).toBeVisible();
 
   // Verify filter chips existence
   const performanceChip = page.getByRole('button', { name: 'Performance' });
