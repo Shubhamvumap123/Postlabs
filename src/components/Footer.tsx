@@ -42,32 +42,16 @@ export default function Footer() {
   const formData = new FormData(e.currentTarget);
   const email = formData.get("email") as string;
 
-  try {
-    const response = await fetch(
-      "https://YOUR_DC.api.mailchimp.com/3.0/lists/YOUR_LIST_ID/members", 
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: "apikey YOUR_API_KEY"
-        },
-        body: JSON.stringify({
-          email_address: email,
-          status: "subscribed"
-        }),
-      }
-    );
+  // SECURITY: Replaced client-side API call with a demo simulation.
+  // Client-side API keys are insecure as they are exposed to the user.
+  // In a real application, this should point to a backend proxy.
+  console.log(`[Demo Mode] Subscription simulated for: ${email}`);
 
-    if (response.ok) {
-      alert(`Thanks for signing up, ${email}!`);
-      e.currentTarget.reset();
-    } else {
-      alert("Something went wrong. Please try again.");
-    }
-  } catch (error) {
-    console.error(error);
-    alert("Error signing up. Please try again later.");
-  }
+  // Simulate network delay
+  await new Promise(resolve => setTimeout(resolve, 1000));
+
+  alert(`[Demo Mode] Thanks for signing up, ${email}!`);
+  e.currentTarget.reset();
 };
 
 
@@ -173,7 +157,7 @@ export default function Footer() {
         <div>© 2025 Post Labs, Inc. All rights reserved.</div>
         <div>
           Designed by{' '}
-          <a href="https://gohrvst.com" target="_blank" className="underline">
+          <a href="https://gohrvst.com" target="_blank" rel="noopener noreferrer" className="underline">
             HRVST
           </a>
         </div>
