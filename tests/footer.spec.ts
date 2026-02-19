@@ -6,6 +6,7 @@ test.beforeEach(async ({ page }) => {
 
 test('Footer security and functionality', async ({ page }) => {
   // Scroll to bottom to ensure footer is visible
+  // deno-lint-ignore no-window
   await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
 
   // 1. Verify External Link Security (Reverse Tabnabbing)
