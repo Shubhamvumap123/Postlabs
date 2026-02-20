@@ -3,7 +3,7 @@ import { test, expect } from '@playwright/test';
 test('footer has secure external links', async ({ page }) => {
   await page.goto('/');
   // Footer is hidden until scroll, so scroll to bottom
-  await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+  await page.evaluate(() => globalThis.scrollTo(0, document.body.scrollHeight));
 
   // Wait for footer to be visible (it has transition)
   const footer = page.locator('footer');
@@ -19,7 +19,7 @@ test('footer has secure external links', async ({ page }) => {
 
 test('footer subscription works securely', async ({ page }) => {
   await page.goto('/');
-  await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+  await page.evaluate(() => globalThis.scrollTo(0, document.body.scrollHeight));
 
   // Handle the alert dialog
   let dialogMessage = '';

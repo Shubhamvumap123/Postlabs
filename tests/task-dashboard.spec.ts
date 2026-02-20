@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 
 test.beforeEach(async ({ page }) => {
   await page.goto('/dashboard');
-  await page.evaluate(() => window.localStorage.clear());
+  await page.evaluate(() => globalThis.localStorage.clear());
   await page.reload();
 });
 
