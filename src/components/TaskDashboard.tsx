@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Clock, Plus, Zap, Palette, Shield, Trash2, CheckCircle2, Circle, Archive } from 'lucide-react';
+import { Clock, Plus, Zap, Palette, Shield, Trash2, CheckCircle2, Circle, Archive, Inbox, SearchX } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { toast } from 'sonner';
 import { Dialog } from './ui/dialog';
@@ -120,6 +120,51 @@ export default function TaskDashboard() {
     return false;
   });
 
+  const getEmptyState = () => {
+    if (activeFilters.length > 0) {
+      return {
+        icon: SearchX,
+        text: "No tasks found matching your filters",
+        subtext: "Try adjusting your selected filters"
+      };
+    }
+
+    switch (activeTab) {
+      case 'All':
+        return {
+          icon: Inbox,
+          text: "No tasks created yet",
+          subtext: "Create a new task to get started"
+        };
+      case 'Scheduled':
+        return {
+          icon: Clock,
+          text: "No scheduled tasks",
+          subtext: "You're all caught up!"
+        };
+      case 'Completed':
+        return {
+          icon: CheckCircle2,
+          text: "No completed tasks yet",
+          subtext: "Complete tasks to see them here"
+        };
+      case 'Archived':
+        return {
+          icon: Archive,
+          text: "No archived tasks",
+          subtext: "Archived tasks will be stored here"
+        };
+      default:
+        return {
+          icon: Circle,
+          text: "No tasks found",
+          subtext: ""
+        };
+    }
+  };
+
+  const emptyState = getEmptyState();
+
   return (
     <div className="w-full max-w-2xl mx-auto p-4 sm:p-6 bg-zinc-900 rounded-xl border border-zinc-800 text-zinc-100 shadow-xl">
       {/* Top Navigation */}
@@ -163,9 +208,10 @@ export default function TaskDashboard() {
         {filteredTasks.length === 0 ? (
           <div className="flex flex-col items-center justify-center text-center p-8 h-[300px]">
             <div className="w-16 h-16 mb-4 rounded-full bg-zinc-800/50 flex items-center justify-center">
-              <Clock className="w-8 h-8 text-zinc-600" aria-hidden="true" />
+              <emptyState.icon className="w-8 h-8 text-zinc-600" aria-hidden="true" />
             </div>
-            <p className="text-zinc-500 font-medium">Scheduled tasks will show up here</p>
+            <h3 className="text-zinc-300 font-medium mb-1">{emptyState.text}</h3>
+            <p className="text-zinc-500 text-sm">{emptyState.subtext}</p>
           </div>
         ) : (
           <div className="divide-y divide-zinc-800">
