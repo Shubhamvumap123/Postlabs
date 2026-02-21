@@ -12,11 +12,17 @@ test('TaskDashboard component functionality', async ({ page }) => {
   await expect(scheduledTab).toBeVisible();
   await expect(scheduledTab).toHaveAttribute('aria-selected', 'true');
 
+  // Verify empty state text (Scheduled tab default)
+  await expect(page.getByText('Scheduled tasks will show up here')).toBeVisible();
+
   // Verify switching tabs
   const allTab = page.getByRole('tab', { name: 'All' });
   await allTab.click();
   await expect(allTab).toHaveAttribute('aria-selected', 'true');
   await expect(scheduledTab).toHaveAttribute('aria-selected', 'false');
+
+  // Verify empty state text for "All" tab
+  await expect(page.getByText('No tasks created yet')).toBeVisible();
 
   // Verify "+ New" button
   const newButton = page.getByRole('button', { name: 'New' });
@@ -28,9 +34,6 @@ test('TaskDashboard component functionality', async ({ page }) => {
   await expect(container).toBeVisible();
   await expect(container).toHaveClass(/bg-zinc-900/);
   await expect(container).toHaveClass(/border-zinc-800/);
-
-  // Verify empty state text
-  await expect(page.getByText('Scheduled tasks will show up here')).toBeVisible();
 
   // Verify filter chips existence
   const performanceChip = page.getByRole('button', { name: 'Performance' });
@@ -137,4 +140,56 @@ test('TaskDashboard persistence', async ({ page }) => {
 
   // Verify task is still visible
   await expect(page.getByText('Persistent Task')).toBeVisible();
+});
+
+test('TaskDashboard empty states', async ({ page }) => {
+  // Default (Scheduled)
+  await expect(page.getByText('Scheduled tasks will show up here')).toBeVisible();
+
+  // All
+  await page.getByRole('tab', { name: 'All' }).click();
+  await expect(page.getByText('No tasks created yet')).toBeVisible();
+
+  // Completed
+  await page.getByRole('tab', { name: 'Completed' }).click();
+  await expect(page.getByText('No completed tasks yet')).toBeVisible();
+
+  // Archived
+  await page.getByRole('tab', { name: 'Archived' }).click();
+  await expect(page.getByText('No archived tasks')).toBeVisible();
+
+  // Filter
+  await page.getByRole('tab', { name: 'All' }).click();
+  const performanceChip = page.getByRole('button', { name: 'Performance' });
+  await performanceChip.click();
+  // Since we have no tasks, it should show filter empty state
+  await expect(page.getByText('No tasks found matching your filters')).toBeVisible();
+});
+
+test('TaskDashboard keyboard navigation', async ({ page }) => {
+  const scheduledTab = page.getByRole('tab', { name: 'Scheduled' });
+  const allTab = page.getByRole('tab', { name: 'All' });
+  const completedTab = page.getByRole('tab', { name: 'Completed' });
+
+  // Initial state: Scheduled selected
+  await expect(scheduledTab).toHaveAttribute('aria-selected', 'true');
+
+  // Focus the scheduled tab
+  await scheduledTab.focus();
+
+  // Press ArrowLeft -> All (Previous of Scheduled)
+  // tabs = ["All", "Scheduled", "Completed", "Archived"]
+  await page.keyboard.press('ArrowLeft');
+  await expect(allTab).toHaveAttribute('aria-selected', 'true');
+  await expect(allTab).toBeFocused();
+
+  // Press ArrowRight -> Scheduled
+  await page.keyboard.press('ArrowRight');
+  await expect(scheduledTab).toHaveAttribute('aria-selected', 'true');
+  await expect(scheduledTab).toBeFocused();
+
+  // Press ArrowRight -> Completed
+  await page.keyboard.press('ArrowRight');
+  await expect(completedTab).toHaveAttribute('aria-selected', 'true');
+  await expect(completedTab).toBeFocused();
 });

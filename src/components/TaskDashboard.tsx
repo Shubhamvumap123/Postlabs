@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Clock, Plus, Zap, Palette, Shield, Trash2, CheckCircle2, Circle, Archive } from 'lucide-react';
 import { cn } from '../lib/utils';
@@ -42,6 +42,7 @@ type FilterId = typeof filters[number]['id'];
 
 export default function TaskDashboard() {
   const [activeTab, setActiveTab] = useState<Tab>("Scheduled");
+  const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const [activeFilters, setActiveFilters] = useState<string[]>([]);
   const [tasks, setTasks] = useState<Task[]>(() => {
     try {
@@ -65,6 +66,20 @@ export default function TaskDashboard() {
     setActiveFilters(prev =>
       prev.includes(id) ? prev.filter(f => f !== id) : [...prev, id]
     );
+  };
+
+  const handleTabKeyDown = (e: React.KeyboardEvent, index: number) => {
+    if (e.key === 'ArrowRight') {
+      e.preventDefault();
+      const nextIndex = (index + 1) % tabs.length;
+      setActiveTab(tabs[nextIndex]);
+      tabRefs.current[nextIndex]?.focus();
+    } else if (e.key === 'ArrowLeft') {
+      e.preventDefault();
+      const prevIndex = (index - 1 + tabs.length) % tabs.length;
+      setActiveTab(tabs[prevIndex]);
+      tabRefs.current[prevIndex]?.focus();
+    }
   };
 
   const addTask = (e: React.FormEvent) => {
@@ -120,16 +135,40 @@ export default function TaskDashboard() {
     return false;
   });
 
+  const getEmptyState = () => {
+    if (activeFilters.length > 0) {
+      return { text: "No tasks found matching your filters", icon: Zap };
+    }
+    switch (activeTab) {
+      case 'All':
+        return { text: "No tasks created yet", icon: Plus };
+      case 'Scheduled':
+        return { text: "Scheduled tasks will show up here", icon: Clock };
+      case 'Completed':
+        return { text: "No completed tasks yet", icon: CheckCircle2 };
+      case 'Archived':
+        return { text: "No archived tasks", icon: Archive };
+      default:
+        return { text: "No tasks found", icon: Circle };
+    }
+  };
+
+  const emptyState = getEmptyState();
+  const EmptyIcon = emptyState.icon;
+
   return (
     <div className="w-full max-w-2xl mx-auto p-4 sm:p-6 bg-zinc-900 rounded-xl border border-zinc-800 text-zinc-100 shadow-xl">
       {/* Top Navigation */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
         <div role="tablist" aria-label="Task filters" className="flex p-1 bg-zinc-800/50 rounded-full overflow-x-auto no-scrollbar">
-          {tabs.map((tab) => (
+          {tabs.map((tab, index) => (
             <button
+              ref={el => { tabRefs.current[index] = el }}
               type="button"
               role="tab"
               aria-selected={activeTab === tab}
+              tabIndex={activeTab === tab ? 0 : -1}
+              onKeyDown={(e) => handleTabKeyDown(e, index)}
               key={tab}
               onClick={() => setActiveTab(tab)}
               className={cn(
@@ -161,12 +200,17 @@ export default function TaskDashboard() {
       {/* Content Area */}
       <div className="min-h-[300px] bg-zinc-900/50 rounded-xl border border-zinc-800/50 overflow-hidden">
         {filteredTasks.length === 0 ? (
-          <div className="flex flex-col items-center justify-center text-center p-8 h-[300px]">
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.3 }}
+            className="flex flex-col items-center justify-center text-center p-8 h-[300px]"
+          >
             <div className="w-16 h-16 mb-4 rounded-full bg-zinc-800/50 flex items-center justify-center">
-              <Clock className="w-8 h-8 text-zinc-600" aria-hidden="true" />
+              <EmptyIcon className="w-8 h-8 text-zinc-600" aria-hidden="true" />
             </div>
-            <p className="text-zinc-500 font-medium">Scheduled tasks will show up here</p>
-          </div>
+            <p className="text-zinc-400 font-medium">{emptyState.text}</p>
+          </motion.div>
         ) : (
           <div className="divide-y divide-zinc-800">
             <AnimatePresence mode='popLayout'>
