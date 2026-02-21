@@ -29,7 +29,16 @@ test('TaskDashboard component functionality', async ({ page }) => {
   await expect(container).toHaveClass(/bg-zinc-900/);
   await expect(container).toHaveClass(/border-zinc-800/);
 
-  // Verify empty state text
+  // Verify empty state text (Active tab is "All")
+  await expect(page.getByText('No tasks created yet')).toBeVisible();
+
+  // Verify empty state text for Completed tab (initially empty)
+  const completedTab = page.getByRole('tab', { name: 'Completed' });
+  await completedTab.click();
+  await expect(page.getByText('No completed tasks yet')).toBeVisible();
+
+  // Go back to Scheduled and verify its empty state
+  await scheduledTab.click();
   await expect(page.getByText('Scheduled tasks will show up here')).toBeVisible();
 
   // Verify filter chips existence
@@ -86,7 +95,7 @@ test('TaskDashboard component functionality', async ({ page }) => {
   await taskToCompleteRow.getByRole('button', { name: 'Mark as complete' }).click();
 
   // Go to "Completed" tab
-  const completedTab = page.getByRole('tab', { name: 'Completed' });
+  // const completedTab = page.getByRole('tab', { name: 'Completed' }); // Already defined above
   await completedTab.click();
   await expect(page.getByText('Task to Complete')).toBeVisible();
 
@@ -119,6 +128,35 @@ test('TaskDashboard component functionality', async ({ page }) => {
   await archivedTab.click();
   await expect(page.getByText('Task to Archive')).toBeVisible();
 
+  // Test Accessibility: Focus visibility
+  // Go back to All tab or create new task
+  await allTab.click();
+
+  await newButton.click();
+  await page.getByLabel('Task Title').fill('A11y Focus Task');
+  await page.getByRole('button', { name: 'Create Task' }).click();
+  await expect(page.locator('form')).toBeHidden();
+
+  // Find the row
+  const a11yRow = page.locator('.group', { hasText: 'A11y Focus Task' }).first();
+  const deleteButton = a11yRow.getByRole('button', { name: 'Delete' });
+  const actionsContainer = deleteButton.locator('..');
+
+  // Move mouse away to ensure no hover
+  await page.mouse.move(0, 0);
+  // Remove focus to ensure no focus-within
+  await page.evaluate(() => (document.activeElement as HTMLElement)?.blur());
+
+  // Initially hidden (opacity 0 from parent container)
+  // Check the container's opacity because the button itself doesn't have opacity style
+  await expect(actionsContainer).toHaveCSS('opacity', '0');
+
+  // Focus on the toggle button inside the row to trigger group-focus-within
+  const toggleBtn = a11yRow.getByRole('button', { name: /Mark as/ });
+  await toggleBtn.focus();
+
+  // Should become visible (container opacity 1)
+  await expect(actionsContainer).toHaveCSS('opacity', '1');
 });
 
 test('TaskDashboard persistence', async ({ page }) => {
