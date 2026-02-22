@@ -5,7 +5,7 @@ test('Footer security and functionality', async ({ page }) => {
   await page.goto('/');
 
   // Scroll to bottom to trigger footer visibility
-  await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+  await page.evaluate(() => globalThis.scrollTo(0, document.body.scrollHeight));
 
   // Wait for opacity transition (700ms in CSS)
   await page.waitForTimeout(1000);
