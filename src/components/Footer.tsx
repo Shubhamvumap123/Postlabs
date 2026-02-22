@@ -38,37 +38,58 @@ export default function Footer() {
   }, []);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-  e.preventDefault();
-  const formData = new FormData(e.currentTarget);
-  const email = formData.get("email") as string;
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    const email = formData.get("email") as string;
 
-  try {
-    const response = await fetch(
-      "https://YOUR_DC.api.mailchimp.com/3.0/lists/YOUR_LIST_ID/members", 
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: "apikey YOUR_API_KEY"
-        },
-        body: JSON.stringify({
-          email_address: email,
-          status: "subscribed"
-        }),
-      }
-    );
+    const apiKey = import.meta.env.VITE_MAILCHIMP_API_KEY;
+    const serverPrefix = import.meta.env.VITE_MAILCHIMP_SERVER_PREFIX;
+    const listId = import.meta.env.VITE_MAILCHIMP_LIST_ID;
 
-    if (response.ok) {
-      alert(`Thanks for signing up, ${email}!`);
+    // SECURITY NOTE:
+    // In a real production application, you should NEVER call the Mailchimp API directly from the frontend
+    // because it requires exposing your API key, which gives full access to your Mailchimp account.
+    // Instead, send the email to your own backend server, which then calls Mailchimp safely.
+    // For this demo/template, we simulate the success if keys are not configured to avoid exposing real credentials.
+
+    const isDemoMode = !apiKey || apiKey.includes('your_api_key') || apiKey === 'YOUR_API_KEY';
+
+    if (isDemoMode) {
+      console.warn("Demo Mode: Mailchimp subscription simulated. Configure VITE_MAILCHIMP_* in .env for real usage (via backend proxy recommended).");
+      // Simulate network delay
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      alert(`Thanks for signing up, ${email}! (Demo Mode)`);
       e.currentTarget.reset();
-    } else {
-      alert("Something went wrong. Please try again.");
+      return;
     }
-  } catch (error) {
-    console.error(error);
-    alert("Error signing up. Please try again later.");
-  }
-};
+
+    try {
+      const response = await fetch(
+        `https://${serverPrefix}.api.mailchimp.com/3.0/lists/${listId}/members`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `apikey ${apiKey}`
+          },
+          body: JSON.stringify({
+            email_address: email,
+            status: "subscribed"
+          }),
+        }
+      );
+
+      if (response.ok) {
+        alert(`Thanks for signing up, ${email}!`);
+        e.currentTarget.reset();
+      } else {
+        alert("Something went wrong. Please try again.");
+      }
+    } catch (error) {
+      console.error(error);
+      alert("Error signing up. Please try again later.");
+    }
+  };
 
 
   return (
@@ -173,7 +194,7 @@ export default function Footer() {
         <div>© 2025 Post Labs, Inc. All rights reserved.</div>
         <div>
           Designed by{' '}
-          <a href="https://gohrvst.com" target="_blank" className="underline">
+          <a href="https://gohrvst.com" target="_blank" rel="noopener noreferrer" className="underline">
             HRVST
           </a>
         </div>
