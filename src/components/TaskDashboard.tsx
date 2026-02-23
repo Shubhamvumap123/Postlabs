@@ -120,6 +120,42 @@ export default function TaskDashboard() {
     return false;
   });
 
+  const getEmptyState = () => {
+    if (activeFilters.length > 0) {
+      return {
+        icon: Zap,
+        text: "No tasks found matching your filters"
+      };
+    }
+
+    switch (activeTab) {
+      case 'Scheduled':
+        return {
+          icon: Clock,
+          text: "Scheduled tasks will show up here"
+        };
+      case 'Completed':
+        return {
+          icon: CheckCircle2,
+          text: "No completed tasks yet"
+        };
+      case 'Archived':
+        return {
+          icon: Archive,
+          text: "No archived tasks"
+        };
+      case 'All':
+      default:
+        return {
+          icon: Circle,
+          text: "No tasks created yet"
+        };
+    }
+  };
+
+  const emptyState = getEmptyState();
+  const EmptyIcon = emptyState.icon;
+
   return (
     <div className="w-full max-w-2xl mx-auto p-4 sm:p-6 bg-zinc-900 rounded-xl border border-zinc-800 text-zinc-100 shadow-xl">
       {/* Top Navigation */}
@@ -161,12 +197,16 @@ export default function TaskDashboard() {
       {/* Content Area */}
       <div className="min-h-[300px] bg-zinc-900/50 rounded-xl border border-zinc-800/50 overflow-hidden">
         {filteredTasks.length === 0 ? (
-          <div className="flex flex-col items-center justify-center text-center p-8 h-[300px]">
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="flex flex-col items-center justify-center text-center p-8 h-[300px]"
+          >
             <div className="w-16 h-16 mb-4 rounded-full bg-zinc-800/50 flex items-center justify-center">
-              <Clock className="w-8 h-8 text-zinc-600" aria-hidden="true" />
+              <EmptyIcon className="w-8 h-8 text-zinc-600" aria-hidden="true" />
             </div>
-            <p className="text-zinc-500 font-medium">Scheduled tasks will show up here</p>
-          </div>
+            <p className="text-zinc-500 font-medium">{emptyState.text}</p>
+          </motion.div>
         ) : (
           <div className="divide-y divide-zinc-800">
             <AnimatePresence mode='popLayout'>

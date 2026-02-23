@@ -30,7 +30,8 @@ test('TaskDashboard component functionality', async ({ page }) => {
   await expect(container).toHaveClass(/border-zinc-800/);
 
   // Verify empty state text
-  await expect(page.getByText('Scheduled tasks will show up here')).toBeVisible();
+  // Note: We are on "All" tab now (switched above), and no tasks exist yet.
+  await expect(page.getByText('No tasks created yet')).toBeVisible();
 
   // Verify filter chips existence
   const performanceChip = page.getByRole('button', { name: 'Performance' });
@@ -137,4 +138,42 @@ test('TaskDashboard persistence', async ({ page }) => {
 
   // Verify task is still visible
   await expect(page.getByText('Persistent Task')).toBeVisible();
+});
+
+test('TaskDashboard dynamic empty states', async ({ page }) => {
+  // Initially on Scheduled tab
+  await expect(page.getByText('Scheduled tasks will show up here')).toBeVisible();
+
+  // Switch to All tab
+  await page.getByRole('tab', { name: 'All' }).click();
+  await expect(page.getByText('No tasks created yet')).toBeVisible();
+
+  // Switch to Completed tab
+  await page.getByRole('tab', { name: 'Completed' }).click();
+  await expect(page.getByText('No completed tasks yet')).toBeVisible();
+
+  // Switch to Archived tab
+  await page.getByRole('tab', { name: 'Archived' }).click();
+  await expect(page.getByText('No archived tasks')).toBeVisible();
+
+  // Test filter empty state
+  // Go back to All tab
+  await page.getByRole('tab', { name: 'All' }).click();
+
+  // Create a task (Performance category by default)
+  const newButton = page.getByRole('button', { name: 'New' });
+  await newButton.click();
+  await page.getByLabel('Task Title').fill('Filter Test Task');
+  await page.getByRole('button', { name: 'Create Task' }).click();
+
+  // Verify task is visible
+  await expect(page.getByText('Filter Test Task')).toBeVisible();
+  await expect(page.locator('form')).toBeHidden();
+
+  // Apply a filter that DOES NOT match (Design)
+  const designChip = page.getByRole('button', { name: 'Design' });
+  await designChip.click();
+
+  // Should show "No tasks found matching your filters"
+  await expect(page.getByText('No tasks found matching your filters')).toBeVisible();
 });
