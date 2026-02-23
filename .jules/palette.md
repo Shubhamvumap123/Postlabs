@@ -1,0 +1,3 @@
+## 2024-05-24 - Keyboard Navigation for Tabs
+**Learning:** Tabs implemented as simple buttons break standard keyboard navigation (Arrow Keys). While `Tab` key works to focus them, users expect `ArrowLeft`/`ArrowRight` to navigate between tabs once focused.
+**Action:** Always implement `role="tablist"` and `role="tab"` with `onKeyDown` handlers for arrow keys. Use `useRef` to manage focus programmatically. For "dashboard" style views where content switches instantly, "automatic activation" (switching tab on focus) provides a smoother "delightful" experience than manual activation (focus then Enter).
