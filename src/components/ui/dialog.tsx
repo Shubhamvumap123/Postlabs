@@ -61,6 +61,8 @@ export const Dialog: React.FC<DialogProps> = ({
               animate={{ scale: 1, y: 0 }}
               exit={{ scale: 0.95, y: 20 }}
               transition={{ duration: 0.2 }}
+              role="dialog"
+              aria-modal="true"
               className={cn(
                 "w-full max-w-lg bg-zinc-950 border border-zinc-800 rounded-xl shadow-2xl pointer-events-auto overflow-hidden",
                 className
