@@ -4,7 +4,7 @@ test('Footer functionality and security', async ({ page }) => {
   await page.goto('/');
 
   // Scroll to bottom to reveal footer
-  await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+  await page.evaluate(() => globalThis.scrollTo(0, document.body.scrollHeight));
 
   // Wait for opacity transition
   const footer = page.locator('footer');
