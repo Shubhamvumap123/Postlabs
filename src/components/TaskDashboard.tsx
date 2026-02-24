@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Clock, Plus, Zap, Palette, Shield, Trash2, CheckCircle2, Circle, Archive } from 'lucide-react';
 import { cn } from '../lib/utils';
@@ -55,6 +55,22 @@ export default function TaskDashboard() {
   const [isNewTaskOpen, setIsNewTaskOpen] = useState(false);
   const [newTaskTitle, setNewTaskTitle] = useState("");
   const [newTaskCategory, setNewTaskCategory] = useState<FilterId>("performance");
+
+  const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
+
+  const handleKeyDown = (e: React.KeyboardEvent, index: number) => {
+    if (e.key === 'ArrowRight') {
+      e.preventDefault();
+      const nextIndex = (index + 1) % tabs.length;
+      setActiveTab(tabs[nextIndex]);
+      tabRefs.current[nextIndex]?.focus();
+    } else if (e.key === 'ArrowLeft') {
+      e.preventDefault();
+      const prevIndex = (index - 1 + tabs.length) % tabs.length;
+      setActiveTab(tabs[prevIndex]);
+      tabRefs.current[prevIndex]?.focus();
+    }
+  };
 
   // Save tasks to localStorage
   useEffect(() => {
@@ -125,11 +141,14 @@ export default function TaskDashboard() {
       {/* Top Navigation */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
         <div role="tablist" aria-label="Task filters" className="flex p-1 bg-zinc-800/50 rounded-full overflow-x-auto no-scrollbar">
-          {tabs.map((tab) => (
+          {tabs.map((tab, index) => (
             <button
+              ref={(el) => { tabRefs.current[index] = el }}
               type="button"
               role="tab"
               aria-selected={activeTab === tab}
+              tabIndex={activeTab === tab ? 0 : -1}
+              onKeyDown={(e) => handleKeyDown(e, index)}
               key={tab}
               onClick={() => setActiveTab(tab)}
               className={cn(
