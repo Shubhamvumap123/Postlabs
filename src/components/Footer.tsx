@@ -1,7 +1,8 @@
-import { useEffect,useState } from "react";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 export default function Footer() {
-    const [atBottom, setAtBottom] = useState(false);
+  const [atBottom, setAtBottom] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -15,7 +16,6 @@ export default function Footer() {
   }, []);
 
   useEffect(() => {
-   
     const style = document.createElement("style");
     style.innerHTML = `
       @keyframes marquee-horizontal {
@@ -37,44 +37,35 @@ export default function Footer() {
     };
   }, []);
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-  e.preventDefault();
-  const formData = new FormData(e.currentTarget);
-  const email = formData.get("email") as string;
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    const email = formData.get("email") as string;
+    const form = e.currentTarget;
 
-  try {
-    const response = await fetch(
-      "https://YOUR_DC.api.mailchimp.com/3.0/lists/YOUR_LIST_ID/members", 
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: "apikey YOUR_API_KEY"
-        },
-        body: JSON.stringify({
-          email_address: email,
-          status: "subscribed"
-        }),
-      }
-    );
+    // 🛡️ SECURITY NOTICE:
+    // Client-side API calls with private keys (like Mailchimp API keys) are strictly forbidden
+    // as they expose your credentials to anyone who views the site's source code.
+    //
+    // The previous implementation encouraged this insecure pattern.
+    // In a real production app, this function should:
+    // 1. Call your own backend endpoint (e.g., POST /api/newsletter)
+    // 2. Your backend should then authenticate with Mailchimp using the private key
+    //    stored securely in server-side environment variables.
 
-    if (response.ok) {
-      alert(`Thanks for signing up, ${email}!`);
-      e.currentTarget.reset();
-    } else {
-      alert("Something went wrong. Please try again.");
-    }
-  } catch (error) {
-    console.error(error);
-    alert("Error signing up. Please try again later.");
-  }
-};
-
+    // Simulating network request for Demo purposes
+    setTimeout(() => {
+      toast.success(`Thanks for signing up, ${email}! (Demo Mode)`);
+      form.reset();
+    }, 1000);
+  };
 
   return (
-    <footer    className={ `bg-black text-white transition-all duration-700 ease-in-out z-50 
+    <footer
+      className={`bg-black text-white transition-all duration-700 ease-in-out z-50
         ${atBottom ? "opacity-100 translate-y-0" : "opacity-0 translate-y-full"}
-      `}>
+      `}
+    >
       {/* Marquee */}
       <div className="relative flex w-full overflow-hidden justify-start items-center py-16 md:py-10">
         <div className="marquee-inner absolute flex items-center gap-5">
@@ -127,27 +118,42 @@ export default function Footer() {
           </div>
         </div>
       </div>
-<div className="flex items-start p-5 mb-5">
-          <a href="/">
-            <img
-              src="https://cdn.prod.website-files.com/681dfdff4444ca819f7050a2/682786273e6c31f3343c6700_postlabs-logo-white.svg"
-              alt="Post Labs logo"
-              className="max-w-[160px]"
-            />
-          </a>
-        </div>
+      <div className="flex items-start p-5 mb-5">
+        <a href="/">
+          <img
+            src="https://cdn.prod.website-files.com/681dfdff4444ca819f7050a2/682786273e6c31f3343c6700_postlabs-logo-white.svg"
+            alt="Post Labs logo"
+            className="max-w-[160px]"
+          />
+        </a>
+      </div>
       {/* Grid Layout */}
       <div className="grid grid-cols-[20%_1fr_1fr_20%] md:grid-cols-[40px_1fr_1fr_40px] sm:grid-cols-[20px_1fr_1fr_20px] gap-0">
         {/* Logo */}
-        
 
         {/* Links + Newsletter */}
         <div className="col-span-2 flex flex-col gap-4 px-5 py-5">
           <ul className="flex flex-col gap-2 text-base">
-            <li><a href="/#top" className="underline underline-offset-4">About</a></li>
-            <li><a href="/contact-us" className="underline underline-offset-4">Contact</a></li>
-            <li><a href="/privacy-policy" className="underline underline-offset-4">Privacy Policy</a></li>
-            <li><a href="#" className="underline underline-offset-4">Cookie Policy</a></li>
+            <li>
+              <a href="/#top" className="underline underline-offset-4">
+                About
+              </a>
+            </li>
+            <li>
+              <a href="/contact-us" className="underline underline-offset-4">
+                Contact
+              </a>
+            </li>
+            <li>
+              <a href="/privacy-policy" className="underline underline-offset-4">
+                Privacy Policy
+              </a>
+            </li>
+            <li>
+              <a href="#" className="underline underline-offset-4">
+                Cookie Policy
+              </a>
+            </li>
           </ul>
           <h2 className="text-xl font-semibold">Sign Up for Our Newsletter</h2>
           <form className="flex gap-2 max-w-md" onSubmit={handleSubmit}>
@@ -173,12 +179,16 @@ export default function Footer() {
         <div>© 2025 Post Labs, Inc. All rights reserved.</div>
         <div>
           Designed by{' '}
-          <a href="https://gohrvst.com" target="_blank" className="underline">
+          <a
+            href="https://gohrvst.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline"
+          >
             HRVST
           </a>
         </div>
       </div>
-      
     </footer>
   );
 }
