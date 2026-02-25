@@ -151,7 +151,7 @@ export default function TaskDashboard() {
 
         <Button
           onClick={() => setIsNewTaskOpen(true)}
-          className="flex items-center justify-center gap-2 px-4 py-2 bg-purple-600 hover:bg-purple-500 text-white text-sm font-medium rounded-lg transition-colors shadow-lg shadow-purple-900/20 cursor-pointer"
+          className="flex items-center justify-center gap-2 px-4 py-2 bg-purple-600 hover:bg-purple-500 text-white text-sm font-medium rounded-lg transition-colors shadow-lg shadow-purple-900/20"
         >
           <Plus className="w-4 h-4" />
           <span>New</span>
