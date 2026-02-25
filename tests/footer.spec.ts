@@ -7,7 +7,7 @@ test.describe('Footer Security and Functionality', () => {
 
   test('Footer external links should have rel="noopener noreferrer"', async ({ page }) => {
     // Scroll to bottom to ensure footer is rendered/visible (though DOM might be there)
-    await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+    await page.evaluate(() => globalThis.scrollTo(0, document.body.scrollHeight));
 
     // Wait for opacity transition
     await expect(page.locator('footer')).toHaveCSS('opacity', '1');
@@ -28,7 +28,7 @@ test.describe('Footer Security and Functionality', () => {
   });
 
   test('Newsletter form should be in Demo Mode and not expose secrets', async ({ page }) => {
-    await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+    await page.evaluate(() => globalThis.scrollTo(0, document.body.scrollHeight));
     await expect(page.locator('footer')).toHaveCSS('opacity', '1');
 
     const emailInput = page.locator('footer input[name="email"]');
