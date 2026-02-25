@@ -138,7 +138,7 @@ export default function FeatureCards() {
             <a
               href="https://paint-racer-443.notion.site/Open-Positions-1d64c709c91980cd910eeef05978c45e"
               target="_blank"
-              rel="noreferrer"
+              rel="noopener noreferrer"
               className="inline-link underline underline-offset-4"
             >
               jobs page
