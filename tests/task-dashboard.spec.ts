@@ -12,11 +12,17 @@ test('TaskDashboard component functionality', async ({ page }) => {
   await expect(scheduledTab).toBeVisible();
   await expect(scheduledTab).toHaveAttribute('aria-selected', 'true');
 
+  // Verify default empty state
+  await expect(page.getByText('No scheduled tasks')).toBeVisible();
+
   // Verify switching tabs
   const allTab = page.getByRole('tab', { name: 'All' });
   await allTab.click();
   await expect(allTab).toHaveAttribute('aria-selected', 'true');
   await expect(scheduledTab).toHaveAttribute('aria-selected', 'false');
+
+  // Verify empty state for "All" tab
+  await expect(page.getByText('No tasks found')).toBeVisible();
 
   // Verify "+ New" button
   const newButton = page.getByRole('button', { name: 'New' });
@@ -28,9 +34,6 @@ test('TaskDashboard component functionality', async ({ page }) => {
   await expect(container).toBeVisible();
   await expect(container).toHaveClass(/bg-zinc-900/);
   await expect(container).toHaveClass(/border-zinc-800/);
-
-  // Verify empty state text
-  await expect(page.getByText('Scheduled tasks will show up here')).toBeVisible();
 
   // Verify filter chips existence
   const performanceChip = page.getByRole('button', { name: 'Performance' });
@@ -94,6 +97,16 @@ test('TaskDashboard component functionality', async ({ page }) => {
   await scheduledTab.click();
   await expect(page.getByText('Task to Complete')).toBeHidden();
 
+  // Verify empty state for Completed tab
+  // Delete the task so we can see the empty state
+  await completedTab.click();
+  const taskToCompleteRow2 = page.locator('.group', { hasText: 'Task to Complete' }).first();
+  await taskToCompleteRow2.getByRole('button', { name: 'Delete' }).click();
+  await expect(page.getByText('No completed tasks yet')).toBeVisible();
+
+  // Switch back to Scheduled tab
+  await scheduledTab.click();
+
   // Test Archiving a task
   // Create a new task for archiving
   await newButton.click();
@@ -118,6 +131,12 @@ test('TaskDashboard component functionality', async ({ page }) => {
   const archivedTab = page.getByRole('tab', { name: 'Archived' });
   await archivedTab.click();
   await expect(page.getByText('Task to Archive')).toBeVisible();
+
+  // Verify empty state for Archived tab
+  // Delete the task so we can see the empty state
+  const taskToArchiveRow2 = page.locator('.group', { hasText: 'Task to Archive' }).first();
+  await taskToArchiveRow2.getByRole('button', { name: 'Delete' }).click();
+  await expect(page.getByText('No archived tasks')).toBeVisible();
 
 });
 
