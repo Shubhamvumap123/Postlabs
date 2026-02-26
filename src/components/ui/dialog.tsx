@@ -22,18 +22,29 @@ export const Dialog: React.FC<DialogProps> = ({
   className,
 }) => {
   const [mounted, setMounted] = useState(false);
+  const titleId = React.useId();
+  const descriptionId = React.useId();
 
   useEffect(() => {
     setMounted(true);
     if (isOpen) {
       document.body.style.overflow = "hidden";
+
+      const handleKeyDown = (e: KeyboardEvent) => {
+        if (e.key === "Escape") {
+          onClose();
+        }
+      };
+
+      window.addEventListener("keydown", handleKeyDown);
+      return () => {
+        document.body.style.overflow = "unset";
+        window.removeEventListener("keydown", handleKeyDown);
+      };
     } else {
       document.body.style.overflow = "unset";
     }
-    return () => {
-      document.body.style.overflow = "unset";
-    };
-  }, [isOpen]);
+  }, [isOpen, onClose]);
 
   if (!mounted) return null;
 
@@ -48,6 +59,7 @@ export const Dialog: React.FC<DialogProps> = ({
             exit={{ opacity: 0 }}
             onClick={onClose}
             className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm"
+            aria-hidden="true"
           />
           <motion.div
             key="dialog-wrapper"
@@ -55,6 +67,7 @@ export const Dialog: React.FC<DialogProps> = ({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             className="fixed inset-0 z-50 flex items-center justify-center p-4 pointer-events-none"
+            role="presentation"
           >
             <motion.div
               initial={{ scale: 0.95, y: 20 }}
@@ -65,21 +78,26 @@ export const Dialog: React.FC<DialogProps> = ({
                 "w-full max-w-lg bg-zinc-950 border border-zinc-800 rounded-xl shadow-2xl pointer-events-auto overflow-hidden",
                 className
               )}
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby={title ? titleId : undefined}
+              aria-describedby={description ? descriptionId : undefined}
             >
               <div className="flex items-center justify-between p-6 border-b border-zinc-800">
                 <div>
                   {title && (
-                    <h2 className="text-lg font-semibold text-zinc-100">
+                    <h2 id={titleId} className="text-lg font-semibold text-zinc-100">
                       {title}
                     </h2>
                   )}
                   {description && (
-                    <p className="text-sm text-zinc-400 mt-1">{description}</p>
+                    <p id={descriptionId} className="text-sm text-zinc-400 mt-1">{description}</p>
                   )}
                 </div>
                 <button
                   onClick={onClose}
                   className="p-2 text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800 rounded-full transition-colors"
+                  aria-label="Close"
                 >
                   <X className="w-5 h-5" />
                 </button>

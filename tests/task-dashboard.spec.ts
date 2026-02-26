@@ -138,3 +138,42 @@ test('TaskDashboard persistence', async ({ page }) => {
   // Verify task is still visible
   await expect(page.getByText('Persistent Task')).toBeVisible();
 });
+
+test('TaskDashboard accessibility', async ({ page }) => {
+  // Test Dialog Escape Key
+  const newButton = page.getByRole('button', { name: 'New' });
+  await newButton.click();
+  await expect(page.getByRole('dialog')).toBeVisible();
+
+  await page.keyboard.press('Escape');
+  await expect(page.getByRole('dialog')).toBeHidden();
+
+  // Test Tab Keyboard Navigation
+  const scheduledTab = page.getByRole('tab', { name: 'Scheduled' });
+  await scheduledTab.click(); // Ensure focus/selection
+  await expect(scheduledTab).toHaveAttribute('aria-selected', 'true');
+
+  // Press ArrowRight -> should go to Completed
+  await page.keyboard.press('ArrowRight');
+  const completedTab = page.getByRole('tab', { name: 'Completed' });
+  await expect(completedTab).toHaveAttribute('aria-selected', 'true');
+  await expect(scheduledTab).toHaveAttribute('aria-selected', 'false');
+  await expect(completedTab).toBeFocused();
+
+  // Press ArrowRight -> should go to Archived
+  await page.keyboard.press('ArrowRight');
+  const archivedTab = page.getByRole('tab', { name: 'Archived' });
+  await expect(archivedTab).toHaveAttribute('aria-selected', 'true');
+  await expect(archivedTab).toBeFocused();
+
+  // Press ArrowRight -> should loop to All
+  await page.keyboard.press('ArrowRight');
+  const allTab = page.getByRole('tab', { name: 'All' });
+  await expect(allTab).toHaveAttribute('aria-selected', 'true');
+  await expect(allTab).toBeFocused();
+
+  // Press ArrowLeft -> should go back to Archived
+  await page.keyboard.press('ArrowLeft');
+  await expect(archivedTab).toHaveAttribute('aria-selected', 'true');
+  await expect(archivedTab).toBeFocused();
+});
