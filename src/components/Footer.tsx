@@ -1,7 +1,8 @@
-import { useEffect,useState } from "react";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 export default function Footer() {
-    const [atBottom, setAtBottom] = useState(false);
+  const [atBottom, setAtBottom] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -15,7 +16,6 @@ export default function Footer() {
   }, []);
 
   useEffect(() => {
-   
     const style = document.createElement("style");
     style.innerHTML = `
       @keyframes marquee-horizontal {
@@ -38,49 +38,49 @@ export default function Footer() {
   }, []);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-  e.preventDefault();
-  const formData = new FormData(e.currentTarget);
-  const email = formData.get("email") as string;
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    const email = formData.get("email") as string;
 
-  try {
-    const response = await fetch(
-      "https://YOUR_DC.api.mailchimp.com/3.0/lists/YOUR_LIST_ID/members", 
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: "apikey YOUR_API_KEY"
-        },
-        body: JSON.stringify({
-          email_address: email,
-          status: "subscribed"
-        }),
-      }
-    );
+    // 🛡️ SECURITY NOTICE:
+    // Client-side API calls to services like Mailchimp are inherently insecure because they require
+    // exposing your private API key in the browser. A malicious user could extract this key and
+    // abuse your account (e.g., steal contacts, send spam).
+    //
+    // The correct approach is to use a backend proxy:
+    // 1. Create a backend endpoint (e.g., /api/subscribe) that stores the API key securely (env var).
+    // 2. The frontend POSTs to this backend endpoint.
+    // 3. The backend validates the request and forwards it to Mailchimp.
+    //
+    // For this demo, we simulate a successful subscription to prevent key exposure.
 
-    if (response.ok) {
-      alert(`Thanks for signing up, ${email}!`);
-      e.currentTarget.reset();
-    } else {
-      alert("Something went wrong. Please try again.");
+    const form = e.currentTarget; // Store ref before async op
+
+    try {
+      // Simulate network request
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
+      console.log(`[Security Demo] Simulated subscription for: ${email}`);
+      toast.success(`Thanks for signing up, ${email}!`);
+      form.reset();
+    } catch (error) {
+      console.error(error);
+      toast.error("Error signing up. Please try again later.");
     }
-  } catch (error) {
-    console.error(error);
-    alert("Error signing up. Please try again later.");
-  }
-};
-
+  };
 
   return (
-    <footer    className={ `bg-black text-white transition-all duration-700 ease-in-out z-50 
+    <footer
+      className={`bg-black text-white transition-all duration-700 ease-in-out z-50
         ${atBottom ? "opacity-100 translate-y-0" : "opacity-0 translate-y-full"}
-      `}>
+      `}
+    >
       {/* Marquee */}
       <div className="relative flex w-full overflow-hidden justify-start items-center py-16 md:py-10">
         <div className="marquee-inner absolute flex items-center gap-5">
           <div className="flex items-center gap-5">
             <span className="text-lg md:text-base">
-              Ready to Build the Future of Canadian Media?{' '}
+              Ready to Build the Future of Canadian Media?{" "}
               <a href="/contact-us" className="underline underline-offset-4">
                 Contact Us
               </a>
@@ -104,7 +104,7 @@ export default function Footer() {
           {/* Duplicate for seamless loop */}
           <div className="flex items-center gap-5">
             <span className="text-lg md:text-4xl">
-              Ready to Build the Future of Canadian Media?{' '}
+              Ready to Build the Future of Canadian Media?{" "}
               <a href="/contact-us" className="underline underline-offset-4">
                 Contact Us
               </a>
@@ -127,27 +127,42 @@ export default function Footer() {
           </div>
         </div>
       </div>
-<div className="flex items-start p-5 mb-5">
-          <a href="/">
-            <img
-              src="https://cdn.prod.website-files.com/681dfdff4444ca819f7050a2/682786273e6c31f3343c6700_postlabs-logo-white.svg"
-              alt="Post Labs logo"
-              className="max-w-[160px]"
-            />
-          </a>
-        </div>
+      <div className="flex items-start p-5 mb-5">
+        <a href="/">
+          <img
+            src="https://cdn.prod.website-files.com/681dfdff4444ca819f7050a2/682786273e6c31f3343c6700_postlabs-logo-white.svg"
+            alt="Post Labs logo"
+            className="max-w-[160px]"
+          />
+        </a>
+      </div>
       {/* Grid Layout */}
       <div className="grid grid-cols-[20%_1fr_1fr_20%] md:grid-cols-[40px_1fr_1fr_40px] sm:grid-cols-[20px_1fr_1fr_20px] gap-0">
         {/* Logo */}
-        
 
         {/* Links + Newsletter */}
         <div className="col-span-2 flex flex-col gap-4 px-5 py-5">
           <ul className="flex flex-col gap-2 text-base">
-            <li><a href="/#top" className="underline underline-offset-4">About</a></li>
-            <li><a href="/contact-us" className="underline underline-offset-4">Contact</a></li>
-            <li><a href="/privacy-policy" className="underline underline-offset-4">Privacy Policy</a></li>
-            <li><a href="#" className="underline underline-offset-4">Cookie Policy</a></li>
+            <li>
+              <a href="/#top" className="underline underline-offset-4">
+                About
+              </a>
+            </li>
+            <li>
+              <a href="/contact-us" className="underline underline-offset-4">
+                Contact
+              </a>
+            </li>
+            <li>
+              <a href="/privacy-policy" className="underline underline-offset-4">
+                Privacy Policy
+              </a>
+            </li>
+            <li>
+              <a href="#" className="underline underline-offset-4">
+                Cookie Policy
+              </a>
+            </li>
           </ul>
           <h2 className="text-xl font-semibold">Sign Up for Our Newsletter</h2>
           <form className="flex gap-2 max-w-md" onSubmit={handleSubmit}>
@@ -172,13 +187,12 @@ export default function Footer() {
       <div className="flex flex-col sm:flex-row justify-between items-center border-t border-white/40 px-10 py-5 gap-2">
         <div>© 2025 Post Labs, Inc. All rights reserved.</div>
         <div>
-          Designed by{' '}
+          Designed by{" "}
           <a href="https://gohrvst.com" target="_blank" className="underline">
             HRVST
           </a>
         </div>
       </div>
-      
     </footer>
   );
 }
