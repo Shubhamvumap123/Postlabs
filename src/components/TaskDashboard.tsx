@@ -120,6 +120,15 @@ export default function TaskDashboard() {
     return false;
   });
 
+  const getEmptyStateMessage = () => {
+    switch (activeTab) {
+      case 'Scheduled': return "Scheduled tasks will show up here";
+      case 'Completed': return "No completed tasks yet";
+      case 'Archived': return "No archived tasks";
+      default: return "No tasks found";
+    }
+  };
+
   return (
     <div className="w-full max-w-2xl mx-auto p-4 sm:p-6 bg-zinc-900 rounded-xl border border-zinc-800 text-zinc-100 shadow-xl">
       {/* Top Navigation */}
@@ -165,7 +174,7 @@ export default function TaskDashboard() {
             <div className="w-16 h-16 mb-4 rounded-full bg-zinc-800/50 flex items-center justify-center">
               <Clock className="w-8 h-8 text-zinc-600" aria-hidden="true" />
             </div>
-            <p className="text-zinc-500 font-medium">Scheduled tasks will show up here</p>
+            <p className="text-zinc-500 font-medium">{getEmptyStateMessage()}</p>
           </div>
         ) : (
           <div className="divide-y divide-zinc-800">
@@ -203,7 +212,7 @@ export default function TaskDashboard() {
                       <span>{new Date(task.createdAt).toLocaleDateString()}</span>
                     </div>
                   </div>
-                  <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity">
                     {task.status !== 'Archived' && (
                       <button
                         onClick={() => archiveTask(task.id)}

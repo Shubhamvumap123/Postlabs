@@ -30,7 +30,7 @@ test('TaskDashboard component functionality', async ({ page }) => {
   await expect(container).toHaveClass(/border-zinc-800/);
 
   // Verify empty state text
-  await expect(page.getByText('Scheduled tasks will show up here')).toBeVisible();
+  await expect(page.getByText('No tasks found')).toBeVisible();
 
   // Verify filter chips existence
   const performanceChip = page.getByRole('button', { name: 'Performance' });
