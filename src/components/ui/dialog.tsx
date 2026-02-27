@@ -22,18 +22,30 @@ export const Dialog: React.FC<DialogProps> = ({
   className,
 }) => {
   const [mounted, setMounted] = useState(false);
+  const titleId = React.useId();
+  const descriptionId = React.useId();
 
   useEffect(() => {
     setMounted(true);
     if (isOpen) {
       document.body.style.overflow = "hidden";
+      const handleEscape = (e: KeyboardEvent) => {
+        if (e.key === "Escape") {
+          onClose();
+        }
+      };
+      window.addEventListener("keydown", handleEscape);
+      return () => {
+        document.body.style.overflow = "unset";
+        window.removeEventListener("keydown", handleEscape);
+      };
     } else {
       document.body.style.overflow = "unset";
     }
     return () => {
       document.body.style.overflow = "unset";
     };
-  }, [isOpen]);
+  }, [isOpen, onClose]);
 
   if (!mounted) return null;
 
@@ -57,6 +69,10 @@ export const Dialog: React.FC<DialogProps> = ({
             className="fixed inset-0 z-50 flex items-center justify-center p-4 pointer-events-none"
           >
             <motion.div
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby={title ? titleId : undefined}
+              aria-describedby={description ? descriptionId : undefined}
               initial={{ scale: 0.95, y: 20 }}
               animate={{ scale: 1, y: 0 }}
               exit={{ scale: 0.95, y: 20 }}
@@ -69,16 +85,17 @@ export const Dialog: React.FC<DialogProps> = ({
               <div className="flex items-center justify-between p-6 border-b border-zinc-800">
                 <div>
                   {title && (
-                    <h2 className="text-lg font-semibold text-zinc-100">
+                    <h2 id={titleId} className="text-lg font-semibold text-zinc-100">
                       {title}
                     </h2>
                   )}
                   {description && (
-                    <p className="text-sm text-zinc-400 mt-1">{description}</p>
+                    <p id={descriptionId} className="text-sm text-zinc-400 mt-1">{description}</p>
                   )}
                 </div>
                 <button
                   onClick={onClose}
+                  aria-label="Close"
                   className="p-2 text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800 rounded-full transition-colors"
                 >
                   <X className="w-5 h-5" />

@@ -57,6 +57,19 @@ test('TaskDashboard component functionality', async ({ page }) => {
   // Wait for dialog to close to avoid matching buttons inside it
   await expect(page.locator('form')).toBeHidden();
 
+  // Verify dialog accessibility
+  // Re-open dialog
+  await newButton.click();
+  const dialog = page.getByRole('dialog');
+  await expect(dialog).toBeVisible();
+  await expect(dialog).toHaveAttribute('aria-modal', 'true');
+  const closeButton = dialog.getByRole('button', { name: 'Close' });
+  await expect(closeButton).toBeVisible();
+
+  // Test Escape key closes dialog
+  await page.keyboard.press('Escape');
+  await expect(dialog).toBeHidden();
+
   // Verify both tasks are visible initially (no filters active)
   // Note: We switched to "All" tab earlier
   await expect(page.getByText('Performance Task')).toBeVisible();
