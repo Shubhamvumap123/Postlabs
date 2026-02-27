@@ -29,6 +29,16 @@ export const Dialog: React.FC<DialogProps> = ({
     setMounted(true);
     if (isOpen) {
       document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, [isOpen]);
+
+  useEffect(() => {
+    if (isOpen) {
       const handleEscape = (e: KeyboardEvent) => {
         if (e.key === "Escape") {
           onClose();
@@ -36,15 +46,9 @@ export const Dialog: React.FC<DialogProps> = ({
       };
       window.addEventListener("keydown", handleEscape);
       return () => {
-        document.body.style.overflow = "unset";
         window.removeEventListener("keydown", handleEscape);
       };
-    } else {
-      document.body.style.overflow = "unset";
     }
-    return () => {
-      document.body.style.overflow = "unset";
-    };
   }, [isOpen, onClose]);
 
   if (!mounted) return null;
