@@ -156,7 +156,7 @@ export default function TaskDashboard() {
         <div role="tablist" aria-label="Task filters" className="flex p-1 bg-zinc-800/50 rounded-full overflow-x-auto no-scrollbar">
           {tabs.map((tab, index) => (
             <button
-              ref={el => tabRefs.current[index] = el}
+              ref={(el) => { tabRefs.current[index] = el }}
               type="button"
               role="tab"
               aria-selected={activeTab === tab}
