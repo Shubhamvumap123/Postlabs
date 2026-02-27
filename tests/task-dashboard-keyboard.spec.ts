@@ -51,7 +51,6 @@ test('TaskDashboard keyboard navigation for tabs', async ({ page }) => {
 });
 
 test('TaskDashboard context-aware empty state messages', async ({ page }) => {
-  const scheduledTab = page.getByRole('tab', { name: 'Scheduled' });
   const completedTab = page.getByRole('tab', { name: 'Completed' });
   const archivedTab = page.getByRole('tab', { name: 'Archived' });
   const allTab = page.getByRole('tab', { name: 'All' });
