@@ -6,7 +6,8 @@ test('Footer newsletter subscription (demo mode)', async ({ page }) => {
 
   // 2. Scroll to the bottom to reveal the footer
   // The footer in this app is revealed only when the user scrolls near the bottom
-  await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+  // Using globalThis instead of window to satisfy Deno linter in CI, although in browser context they are the same here.
+  await page.evaluate(() => globalThis.scrollTo(0, document.body.scrollHeight));
 
   // 3. Wait for the footer to become visible (it has a transition)
   const footer = page.locator('footer');
