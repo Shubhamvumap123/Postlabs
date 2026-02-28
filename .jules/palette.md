@@ -1,0 +1,3 @@
+## 2024-05-20 - [A11y Issue Pattern: Interactive elements missing focus-visible styling]
+**Learning:** Found multiple button components in `src/components/TaskDashboard.tsx` using `opacity-0 group-hover:opacity-100` which creates an accessibility gap. Screen reader or keyboard-only users tab to these buttons but can't see where their focus is because the element remains hidden (opacity 0) unless it also has `focus:opacity-100` or similar handling.
+**Action:** Ensure that UI elements which appear on hover also appear on focus (e.g., `group-focus-within:opacity-100` or `focus:opacity-100 focus:ring-2`).
