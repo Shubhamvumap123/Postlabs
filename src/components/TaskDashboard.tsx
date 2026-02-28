@@ -125,13 +125,31 @@ export default function TaskDashboard() {
       {/* Top Navigation */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
         <div role="tablist" aria-label="Task filters" className="flex p-1 bg-zinc-800/50 rounded-full overflow-x-auto no-scrollbar">
-          {tabs.map((tab) => (
+          {tabs.map((tab, index) => (
             <button
               type="button"
               role="tab"
               aria-selected={activeTab === tab}
+              aria-controls={`tabpanel-${tab.toLowerCase()}`}
+              id={`tab-${tab.toLowerCase()}`}
+              tabIndex={activeTab === tab ? 0 : -1}
               key={tab}
               onClick={() => setActiveTab(tab)}
+              onKeyDown={(e) => {
+                let newIndex = index;
+                if (e.key === 'ArrowRight') {
+                  newIndex = (index + 1) % tabs.length;
+                } else if (e.key === 'ArrowLeft') {
+                  newIndex = (index - 1 + tabs.length) % tabs.length;
+                }
+
+                if (newIndex !== index) {
+                  e.preventDefault();
+                  setActiveTab(tabs[newIndex]);
+                  const nextTab = document.getElementById(`tab-${tabs[newIndex].toLowerCase()}`);
+                  nextTab?.focus();
+                }
+              }}
               className={cn(
                 "relative px-4 py-1.5 text-sm font-medium rounded-full transition-colors whitespace-nowrap outline-none focus-visible:ring-2 focus-visible:ring-purple-500",
                 activeTab === tab ? "text-white" : "text-zinc-400 hover:text-zinc-200"
@@ -159,7 +177,12 @@ export default function TaskDashboard() {
       </div>
 
       {/* Content Area */}
-      <div className="min-h-[300px] bg-zinc-900/50 rounded-xl border border-zinc-800/50 overflow-hidden">
+      <div
+        role="tabpanel"
+        id={`tabpanel-${activeTab.toLowerCase()}`}
+        aria-labelledby={`tab-${activeTab.toLowerCase()}`}
+        className="min-h-[300px] bg-zinc-900/50 rounded-xl border border-zinc-800/50 overflow-hidden"
+      >
         {filteredTasks.length === 0 ? (
           <div className="flex flex-col items-center justify-center text-center p-8 h-[300px]">
             <div className="w-16 h-16 mb-4 rounded-full bg-zinc-800/50 flex items-center justify-center">

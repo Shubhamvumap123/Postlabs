@@ -22,6 +22,9 @@ export const Dialog: React.FC<DialogProps> = ({
   className,
 }) => {
   const [mounted, setMounted] = useState(false);
+  const dialogId = React.useId();
+  const labelId = `${dialogId}-label`;
+  const descId = `${dialogId}-desc`;
 
   useEffect(() => {
     setMounted(true);
@@ -34,6 +37,16 @@ export const Dialog: React.FC<DialogProps> = ({
       document.body.style.overflow = "unset";
     };
   }, [isOpen]);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && isOpen) {
+        onClose();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, onClose]);
 
   if (!mounted) return null;
 
@@ -57,6 +70,10 @@ export const Dialog: React.FC<DialogProps> = ({
             className="fixed inset-0 z-50 flex items-center justify-center p-4 pointer-events-none"
           >
             <motion.div
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby={title ? labelId : undefined}
+              aria-describedby={description ? descId : undefined}
               initial={{ scale: 0.95, y: 20 }}
               animate={{ scale: 1, y: 0 }}
               exit={{ scale: 0.95, y: 20 }}
@@ -69,19 +86,21 @@ export const Dialog: React.FC<DialogProps> = ({
               <div className="flex items-center justify-between p-6 border-b border-zinc-800">
                 <div>
                   {title && (
-                    <h2 className="text-lg font-semibold text-zinc-100">
+                    <h2 id={labelId} className="text-lg font-semibold text-zinc-100">
                       {title}
                     </h2>
                   )}
                   {description && (
-                    <p className="text-sm text-zinc-400 mt-1">{description}</p>
+                    <p id={descId} className="text-sm text-zinc-400 mt-1">{description}</p>
                   )}
                 </div>
                 <button
                   onClick={onClose}
+                  aria-label="Close"
                   className="p-2 text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800 rounded-full transition-colors"
                 >
-                  <X className="w-5 h-5" />
+                  <X className="w-5 h-5" aria-hidden="true" />
+                  <span className="sr-only">Close</span>
                 </button>
               </div>
               <div className="p-6">{children}</div>
