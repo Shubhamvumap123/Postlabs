@@ -22,7 +22,7 @@ test.describe('Footer Security Verification', () => {
     await page.goto('/');
 
     // Scroll to the bottom to trigger footer visibility if needed
-    await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+    await page.evaluate(() => globalThis.scrollTo(0, document.body.scrollHeight));
 
     // Wait for the footer to be visible
     const footer = page.locator('footer');
