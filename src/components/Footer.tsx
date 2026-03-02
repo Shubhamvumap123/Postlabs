@@ -39,31 +39,18 @@ export default function Footer() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
   e.preventDefault();
-  const formData = new FormData(e.currentTarget);
+  const form = e.currentTarget;
+  const formData = new FormData(form);
   const email = formData.get("email") as string;
 
   try {
-    const response = await fetch(
-      "https://YOUR_DC.api.mailchimp.com/3.0/lists/YOUR_LIST_ID/members", 
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: "apikey YOUR_API_KEY"
-        },
-        body: JSON.stringify({
-          email_address: email,
-          status: "subscribed"
-        }),
-      }
-    );
+    // 🛡️ SECURITY: Client-side API calls to services requiring private keys are strictly forbidden.
+    // They must be proxied via a backend to avoid exposing API keys in the frontend bundle.
+    // Simulating Demo Mode here.
+    await new Promise((resolve) => setTimeout(resolve, 800));
 
-    if (response.ok) {
-      alert(`Thanks for signing up, ${email}!`);
-      e.currentTarget.reset();
-    } else {
-      alert("Something went wrong. Please try again.");
-    }
+    alert(`Thanks for signing up, ${email}!`);
+    form.reset();
   } catch (error) {
     console.error(error);
     alert("Error signing up. Please try again later.");
