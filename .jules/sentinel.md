@@ -1,0 +1,4 @@
+## 2024-05-15 - [DOM-based XSS in scroll animations]
+**Vulnerability:** Found a classic DOM-based XSS vulnerability in `useScrollAnimations.tsx` where `element.innerText` was being directly interpolated into `element.innerHTML`.
+**Learning:** Even internal utilities intended for visual effects (like text reveal animations) can introduce XSS if they take arbitrary DOM content and re-inject it without sanitization. The vulnerability occurs because `innerText` may contain special characters like `<` and `>` that get incorrectly parsed as HTML tags when inserted into `innerHTML`.
+**Prevention:** Always sanitize text from the DOM before re-injecting it as HTML, or use safe DOM manipulation methods (e.g., `document.createElement('span')` and `span.textContent = word`) rather than `innerHTML` interpolation.
