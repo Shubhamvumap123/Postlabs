@@ -38,37 +38,23 @@ export default function Footer() {
   }, []);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-  e.preventDefault();
-  const formData = new FormData(e.currentTarget);
-  const email = formData.get("email") as string;
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    const email = formData.get("email") as string;
 
-  try {
-    const response = await fetch(
-      "https://YOUR_DC.api.mailchimp.com/3.0/lists/YOUR_LIST_ID/members", 
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: "apikey YOUR_API_KEY"
-        },
-        body: JSON.stringify({
-          email_address: email,
-          status: "subscribed"
-        }),
-      }
-    );
-
-    if (response.ok) {
-      alert(`Thanks for signing up, ${email}!`);
+    // SECURITY: Client-side API calls with private keys are strictly forbidden.
+    // They must be proxied via a backend.
+    // We implement a simulated "Demo Mode" for the newsletter subscription to avoid exposing API keys.
+    try {
+      // Simulate network delay
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      alert(`Demo Mode: Thanks for signing up, ${email}!`);
       e.currentTarget.reset();
-    } else {
-      alert("Something went wrong. Please try again.");
+    } catch (error) {
+      console.error(error);
+      alert("Error signing up. Please try again later.");
     }
-  } catch (error) {
-    console.error(error);
-    alert("Error signing up. Please try again later.");
-  }
-};
+  };
 
 
   return (
