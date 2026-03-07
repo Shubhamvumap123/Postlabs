@@ -1,0 +1,3 @@
+## 2024-05-18 - Accessible Custom Modal Dialogs
+**Learning:** Custom framer-motion modal dialogs completely fail accessibility tests when missing foundational ARIA roles. Focus trapping, global ESC listeners (using document instead of window due to strict linting), mapping aria-labelledby/-describedby via useId(), and proper role="dialog" and aria-modal="true" are essential but often omitted in bespoke animation-heavy implementations.
+**Action:** Always implement Radix UI primitives for dialogs when possible. When maintaining a custom Modal/Dialog, systematically include: role="dialog", aria-modal="true", dynamic title/description ID mappings using React's useId(), an aria-label on the close button, and a document-level 'keydown' listener to handle 'Escape' to close.
