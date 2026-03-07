@@ -1,5 +1,15 @@
 import { useEffect } from 'react';
 
+// Utility to prevent DOM-based XSS when injecting HTML
+const escapeHtml = (unsafe: string) => {
+  return unsafe
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+};
+
 // Custom hook for scroll-based animations without external dependencies
 export const useScrollAnimations = () => {
   useEffect(() => {
@@ -14,7 +24,7 @@ export const useScrollAnimations = () => {
           // Split text into words and animate them
           const words = element.innerText.split(' ');
           element.innerHTML = words.map((word, index) => 
-            `<span class="inline-block opacity-15 transition-opacity duration-300 ease-out" style="transition-delay: ${index * 50}ms">${word}</span>`
+            `<span class="inline-block opacity-15 transition-opacity duration-300 ease-out" style="transition-delay: ${index * 50}ms">${escapeHtml(word)}</span>`
           ).join(' ');
           
           // Trigger animation
