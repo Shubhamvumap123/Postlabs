@@ -203,11 +203,11 @@ export default function TaskDashboard() {
                       <span>{new Date(task.createdAt).toLocaleDateString()}</span>
                     </div>
                   </div>
-                  <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 focus-within:opacity-100 transition-opacity">
                     {task.status !== 'Archived' && (
                       <button
                         onClick={() => archiveTask(task.id)}
-                        className="p-1.5 text-zinc-500 hover:text-zinc-300 rounded hover:bg-zinc-800"
+                        className="p-1.5 text-zinc-500 hover:text-zinc-300 rounded hover:bg-zinc-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-500"
                         title="Archive"
                         aria-label="Archive"
                       >
@@ -216,8 +216,8 @@ export default function TaskDashboard() {
                     )}
                     <button
                       onClick={() => deleteTask(task.id)}
-                      className="p-1.5 text-zinc-500 hover:text-red-400 rounded hover:bg-zinc-800"
-                      title="Delete"
+                      className="p-1.5 text-zinc-500 hover:text-red-400 rounded hover:bg-zinc-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500"
+                        title="Delete"
                       aria-label="Delete"
                     >
                       <Trash2 className="w-4 h-4" />
