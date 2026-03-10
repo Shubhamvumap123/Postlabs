@@ -1,0 +1,3 @@
+## 2024-05-24 - Accessible Modals
+**Learning:** Custom modal dialogs (like `Dialog.tsx`) must set basic accessibility roles (`role="dialog"`, `aria-modal="true"`), define titles (`aria-labelledby`), and map descriptions (`aria-describedby`), or screen reader users will have poor navigation. They also must have standard interactions like closing with the `Escape` key, and have clear visual focus outlines on icon buttons. Using a separate useEffect for the keyboard listener prevents scrollbar flickering vs combining with the body scroll lock.
+**Action:** When building custom modals, ensure `role="dialog"`, `aria-modal="true"`, mapping IDs via `useId()`, and an `Escape` key document listener are included.
