@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useId } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { X } from "lucide-react";
@@ -22,6 +22,8 @@ export const Dialog: React.FC<DialogProps> = ({
   className,
 }) => {
   const [mounted, setMounted] = useState(false);
+  const titleId = useId();
+  const descriptionId = useId();
 
   useEffect(() => {
     setMounted(true);
@@ -34,6 +36,19 @@ export const Dialog: React.FC<DialogProps> = ({
       document.body.style.overflow = "unset";
     };
   }, [isOpen]);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && isOpen) {
+        onClose();
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isOpen, onClose]);
 
   if (!mounted) return null;
 
@@ -57,6 +72,10 @@ export const Dialog: React.FC<DialogProps> = ({
             className="fixed inset-0 z-50 flex items-center justify-center p-4 pointer-events-none"
           >
             <motion.div
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby={title ? titleId : undefined}
+              aria-describedby={description ? descriptionId : undefined}
               initial={{ scale: 0.95, y: 20 }}
               animate={{ scale: 1, y: 0 }}
               exit={{ scale: 0.95, y: 20 }}
@@ -69,17 +88,18 @@ export const Dialog: React.FC<DialogProps> = ({
               <div className="flex items-center justify-between p-6 border-b border-zinc-800">
                 <div>
                   {title && (
-                    <h2 className="text-lg font-semibold text-zinc-100">
+                    <h2 id={titleId} className="text-lg font-semibold text-zinc-100">
                       {title}
                     </h2>
                   )}
                   {description && (
-                    <p className="text-sm text-zinc-400 mt-1">{description}</p>
+                    <p id={descriptionId} className="text-sm text-zinc-400 mt-1">{description}</p>
                   )}
                 </div>
                 <button
                   onClick={onClose}
-                  className="p-2 text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800 rounded-full transition-colors"
+                  aria-label="Close dialog"
+                  className="p-2 text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800 rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400"
                 >
                   <X className="w-5 h-5" />
                 </button>
