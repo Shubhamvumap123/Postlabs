@@ -13,9 +13,21 @@ export const useScrollAnimations = () => {
           
           // Split text into words and animate them
           const words = element.innerText.split(' ');
-          element.innerHTML = words.map((word, index) => 
-            `<span class="inline-block opacity-15 transition-opacity duration-300 ease-out" style="transition-delay: ${index * 50}ms">${word}</span>`
-          ).join(' ');
+          // Clear the element safely
+          element.textContent = '';
+
+          words.forEach((word, index) => {
+            const span = document.createElement('span');
+            span.className = 'inline-block opacity-15 transition-opacity duration-300 ease-out';
+            span.style.transitionDelay = `${index * 50}ms`;
+            span.textContent = word;
+            element.appendChild(span);
+
+            // Add a space after each word except the last one
+            if (index < words.length - 1) {
+              element.appendChild(document.createTextNode(' '));
+            }
+          });
           
           // Trigger animation
           setTimeout(() => {
