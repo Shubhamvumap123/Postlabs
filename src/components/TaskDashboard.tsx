@@ -163,9 +163,9 @@ export default function TaskDashboard() {
         {filteredTasks.length === 0 ? (
           <div className="flex flex-col items-center justify-center text-center p-8 h-[300px]">
             <div className="w-16 h-16 mb-4 rounded-full bg-zinc-800/50 flex items-center justify-center">
-              <Clock className="w-8 h-8 text-zinc-600" aria-hidden="true" />
+              <Clock className="w-8 h-8 text-zinc-400" aria-hidden="true" />
             </div>
-            <p className="text-zinc-500 font-medium">Scheduled tasks will show up here</p>
+            <p className="text-zinc-400 font-medium">Scheduled tasks will show up here</p>
           </div>
         ) : (
           <div className="divide-y divide-zinc-800">
