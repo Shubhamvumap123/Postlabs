@@ -165,7 +165,7 @@ export default function TaskDashboard() {
             <div className="w-16 h-16 mb-4 rounded-full bg-zinc-800/50 flex items-center justify-center">
               <Clock className="w-8 h-8 text-zinc-600" aria-hidden="true" />
             </div>
-            <p className="text-zinc-500 font-medium">Scheduled tasks will show up here</p>
+            <p className="text-zinc-400 font-medium">Scheduled tasks will show up here</p>
           </div>
         ) : (
           <div className="divide-y divide-zinc-800">
@@ -181,7 +181,7 @@ export default function TaskDashboard() {
                 >
                   <button
                     onClick={() => toggleTaskStatus(task.id)}
-                    className="flex-shrink-0 text-zinc-500 hover:text-purple-400 transition-colors"
+                    className="flex-shrink-0 text-zinc-400 hover:text-purple-400 transition-colors"
                     aria-label={task.status === 'Completed' ? "Mark as incomplete" : "Mark as complete"}
                   >
                     {task.status === 'Completed' ? (
@@ -193,11 +193,11 @@ export default function TaskDashboard() {
                   <div className="flex-1 min-w-0">
                     <p className={cn(
                       "text-sm font-medium text-zinc-200 truncate",
-                      task.status === 'Completed' && "text-zinc-500 line-through"
+                      task.status === 'Completed' && "text-zinc-400 line-through"
                     )}>
                       {task.title}
                     </p>
-                    <div className="flex items-center gap-2 text-xs text-zinc-500 mt-0.5">
+                    <div className="flex items-center gap-2 text-xs text-zinc-400 mt-0.5">
                       <span className="capitalize">{task.category}</span>
                       <span>•</span>
                       <span>{new Date(task.createdAt).toLocaleDateString()}</span>
@@ -207,7 +207,7 @@ export default function TaskDashboard() {
                     {task.status !== 'Archived' && (
                       <button
                         onClick={() => archiveTask(task.id)}
-                        className="p-1.5 text-zinc-500 hover:text-zinc-300 rounded hover:bg-zinc-800"
+                        className="p-1.5 text-zinc-400 hover:text-zinc-300 rounded hover:bg-zinc-800"
                         title="Archive"
                         aria-label="Archive"
                       >
@@ -216,7 +216,7 @@ export default function TaskDashboard() {
                     )}
                     <button
                       onClick={() => deleteTask(task.id)}
-                      className="p-1.5 text-zinc-500 hover:text-red-400 rounded hover:bg-zinc-800"
+                      className="p-1.5 text-zinc-400 hover:text-red-400 rounded hover:bg-zinc-800"
                       title="Delete"
                       aria-label="Delete"
                     >
@@ -309,7 +309,7 @@ export default function TaskDashboard() {
                   "flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium border transition-all duration-200 cursor-pointer",
                   isActive
                     ? "bg-zinc-800 border-zinc-700 text-white shadow-sm"
-                    : "bg-transparent border-zinc-800 text-zinc-500 hover:border-zinc-700 hover:text-zinc-400"
+                    : "bg-transparent border-zinc-800 text-zinc-400 hover:border-zinc-700 hover:text-zinc-300"
                 )}
               >
                 <Icon className={cn("w-4 h-4", isActive ? "text-purple-400" : "text-current")} />
