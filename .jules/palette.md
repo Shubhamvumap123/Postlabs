@@ -1,0 +1,3 @@
+## 2024-03-14 - Keyboard Inaccessible Hover Actions
+**Learning:** Found that secondary task actions (archive, delete) in the TaskDashboard were wrapped in a container that only became visible via `group-hover:opacity-100`. This completely hides functionality from keyboard users navigating via Tab, as standard focus does not trigger hover states.
+**Action:** When using `group-hover` or `hover` utility classes to show hidden elements, always pair them with their corresponding `focus-within` or `focus` utilities (e.g., `focus-within:opacity-100`). Furthermore, ensure the individual interactive elements have clear visual focus rings using `focus-visible:ring-2` to comply with WCAG standards for keyboard accessibility.
