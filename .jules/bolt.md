@@ -1,0 +1,3 @@
+## 2024-03-15 - React Array Re-calculation
+**Learning:** In highly interactive React components (like the TaskDashboard), placing complex `.filter` operations directly in the render function body creates a significant performance bottleneck. Even if the underlying state array hasn't changed, any other state change (like opening a modal, causing a re-render) forces the array to be recalculated, which then forces `framer-motion` to do layout diffing on identical items.
+**Action:** Always wrap derived list states in `useMemo`, strictly tying the recalculation to the actual source data and active filter states.
