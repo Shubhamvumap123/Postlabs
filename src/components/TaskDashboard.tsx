@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useRef, useCallback, KeyboardEvent } from 'react';
+import { useState, useEffect, useMemo, useRef, KeyboardEvent } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Clock, Plus, Zap, Palette, Shield, Trash2, CheckCircle2, Circle, Archive } from 'lucide-react';
 import { cn } from '../lib/utils';
