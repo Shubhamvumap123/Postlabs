@@ -7,7 +7,7 @@ import { Dialog } from './ui/dialog';
 import { Input } from './ui/input';
 import { Button } from './ui/button';
 
-export interface Task {
+interface Task {
   id: string;
   title: string;
   status: 'Scheduled' | 'Completed' | 'Archived';
