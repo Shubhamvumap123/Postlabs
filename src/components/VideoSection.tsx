@@ -1,6 +1,23 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
+import { useInView } from 'framer-motion';
 
 const VideoSection = () => {
+  const containerRef = useRef(null);
+  const video1Ref = useRef<HTMLVideoElement>(null);
+  const video2Ref = useRef<HTMLVideoElement>(null);
+
+  // Use Framer Motion's useInView to detect when the section is visible
+  const isInView = useInView(containerRef, { margin: "0px 0px 0px 0px", amount: 0.1 });
+
+  useEffect(() => {
+    if (isInView) {
+      video1Ref.current?.play().catch(() => {});
+      video2Ref.current?.play().catch(() => {});
+    } else {
+      video1Ref.current?.pause();
+      video2Ref.current?.pause();
+    }
+  }, [isInView]);
 
   useEffect(() => {
     const observerCallback = (entries: IntersectionObserverEntry[]) => {
@@ -23,7 +40,7 @@ const VideoSection = () => {
   }, []);
 
   return (
-     <section className="relative bg-[#f8f8f2]">
+     <section ref={containerRef} className="relative bg-[#f8f8f2]">
       {/* Sticky container */}
       <div className="sticky top-0 z-10 h-screen">
         <div className="relative flex h-screen items-end justify-start">
@@ -31,8 +48,9 @@ const VideoSection = () => {
           <div className="absolute inset-0 overflow-hidden">
             {/* First Video */}
             <video
+              ref={video1Ref}
               className="absolute inset-0 h-full w-full object-cover"
-              autoPlay
+              preload="none"
               loop
               muted
               playsInline
@@ -44,8 +62,9 @@ const VideoSection = () => {
 
             {/* Example of second video (hidden by default, you can toggle with state) */}
             <video
+              ref={video2Ref}
               className="absolute inset-0 h-full w-full object-cover opacity-0"
-              autoPlay
+              preload="none"
               loop
               muted
               playsInline
