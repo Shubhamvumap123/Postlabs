@@ -1,4 +1,5 @@
 import { useEffect,useState } from "react";
+import { toast } from "sonner";
 
 export default function Footer() {
     const [atBottom, setAtBottom] = useState(false);
@@ -38,37 +39,29 @@ export default function Footer() {
   }, []);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-  e.preventDefault();
-  const formData = new FormData(e.currentTarget);
-  const email = formData.get("email") as string;
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    const email = formData.get("email") as string;
 
-  try {
-    const response = await fetch(
-      "https://YOUR_DC.api.mailchimp.com/3.0/lists/YOUR_LIST_ID/members", 
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: "apikey YOUR_API_KEY"
-        },
-        body: JSON.stringify({
-          email_address: email,
-          status: "subscribed"
-        }),
-      }
-    );
+    // Capture the form element before the await
+    const form = e.currentTarget;
 
-    if (response.ok) {
-      alert(`Thanks for signing up, ${email}!`);
-      e.currentTarget.reset();
-    } else {
-      alert("Something went wrong. Please try again.");
+    try {
+      // SECURITY: In a real production app, never call the Mailchimp API directly from the client.
+      // It exposes your API key. Always proxy these requests through your own backend.
+      // This is a simulated "Demo Mode" for the UI.
+
+      // Simulate network delay
+      await new Promise(resolve => setTimeout(resolve, 800));
+
+      toast.success(`Thanks for signing up, ${email}!`);
+      form.reset();
+
+    } catch (error) {
+      console.error(error);
+      toast.error("Error signing up. Please try again later.");
     }
-  } catch (error) {
-    console.error(error);
-    alert("Error signing up. Please try again later.");
-  }
-};
+  };
 
 
   return (
