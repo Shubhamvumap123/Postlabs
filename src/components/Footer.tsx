@@ -173,7 +173,7 @@ export default function Footer() {
         <div>© 2025 Post Labs, Inc. All rights reserved.</div>
         <div>
           Designed by{' '}
-          <a href="https://gohrvst.com" target="_blank" className="underline">
+          <a href="https://gohrvst.com" target="_blank" rel="noopener noreferrer" className="underline">
             HRVST
           </a>
         </div>
