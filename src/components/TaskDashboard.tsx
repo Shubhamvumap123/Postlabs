@@ -129,13 +129,30 @@ export default function TaskDashboard() {
       {/* Top Navigation */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
         <div role="tablist" aria-label="Task filters" className="flex p-1 bg-zinc-800/50 rounded-full overflow-x-auto no-scrollbar">
-          {tabs.map((tab) => (
+          {tabs.map((tab, index) => (
             <button
               type="button"
               role="tab"
               aria-selected={activeTab === tab}
+              aria-controls={`tabpanel-${tab}`}
+              id={`tab-${tab}`}
+              tabIndex={activeTab === tab ? 0 : -1}
               key={tab}
               onClick={() => setActiveTab(tab)}
+              onKeyDown={(e) => {
+                let newIndex = index;
+                if (e.key === 'ArrowRight') {
+                  newIndex = index === tabs.length - 1 ? 0 : index + 1;
+                } else if (e.key === 'ArrowLeft') {
+                  newIndex = index === 0 ? tabs.length - 1 : index - 1;
+                }
+                if (newIndex !== index) {
+                  e.preventDefault();
+                  setActiveTab(tabs[newIndex]);
+                  const nextTab = document.getElementById(`tab-${tabs[newIndex]}`);
+                  nextTab?.focus();
+                }
+              }}
               className={cn(
                 "relative px-4 py-1.5 text-sm font-medium rounded-full transition-colors whitespace-nowrap outline-none focus-visible:ring-2 focus-visible:ring-purple-500",
                 activeTab === tab ? "text-white" : "text-zinc-400 hover:text-zinc-200"
@@ -163,13 +180,19 @@ export default function TaskDashboard() {
       </div>
 
       {/* Content Area */}
-      <div className="min-h-[300px] bg-zinc-900/50 rounded-xl border border-zinc-800/50 overflow-hidden">
+      <div
+        id={`tabpanel-${activeTab}`}
+        role="tabpanel"
+        aria-labelledby={`tab-${activeTab}`}
+        tabIndex={0}
+        className="min-h-[300px] bg-zinc-900/50 rounded-xl border border-zinc-800/50 overflow-hidden outline-none focus-visible:ring-2 focus-visible:ring-purple-500"
+      >
         {filteredTasks.length === 0 ? (
           <div className="flex flex-col items-center justify-center text-center p-8 h-[300px]">
             <div className="w-16 h-16 mb-4 rounded-full bg-zinc-800/50 flex items-center justify-center">
-              <Clock className="w-8 h-8 text-zinc-600" aria-hidden="true" />
+              <Clock className="w-8 h-8 text-zinc-400" aria-hidden="true" />
             </div>
-            <p className="text-zinc-500 font-medium">Scheduled tasks will show up here</p>
+            <p className="text-zinc-400 font-medium">Scheduled tasks will show up here</p>
           </div>
         ) : (
           <div className="divide-y divide-zinc-800">
@@ -185,7 +208,7 @@ export default function TaskDashboard() {
                 >
                   <button
                     onClick={() => toggleTaskStatus(task.id)}
-                    className="flex-shrink-0 text-zinc-500 hover:text-purple-400 transition-colors"
+                    className="flex-shrink-0 text-zinc-400 hover:text-purple-400 transition-colors rounded-full outline-none focus-visible:ring-2 focus-visible:ring-purple-500"
                     aria-label={task.status === 'Completed' ? "Mark as incomplete" : "Mark as complete"}
                   >
                     {task.status === 'Completed' ? (
@@ -197,21 +220,21 @@ export default function TaskDashboard() {
                   <div className="flex-1 min-w-0">
                     <p className={cn(
                       "text-sm font-medium text-zinc-200 truncate",
-                      task.status === 'Completed' && "text-zinc-500 line-through"
+                      task.status === 'Completed' && "text-zinc-400 line-through"
                     )}>
                       {task.title}
                     </p>
-                    <div className="flex items-center gap-2 text-xs text-zinc-500 mt-0.5">
+                    <div className="flex items-center gap-2 text-xs text-zinc-400 mt-0.5">
                       <span className="capitalize">{task.category}</span>
                       <span>•</span>
                       <span>{new Date(task.createdAt).toLocaleDateString()}</span>
                     </div>
                   </div>
-                  <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 focus-within:opacity-100 transition-opacity">
                     {task.status !== 'Archived' && (
                       <button
                         onClick={() => archiveTask(task.id)}
-                        className="p-1.5 text-zinc-500 hover:text-zinc-300 rounded hover:bg-zinc-800"
+                        className="p-1.5 text-zinc-400 hover:text-zinc-300 rounded hover:bg-zinc-800 outline-none focus-visible:ring-2 focus-visible:ring-purple-500"
                         title="Archive"
                         aria-label="Archive"
                       >
@@ -220,7 +243,7 @@ export default function TaskDashboard() {
                     )}
                     <button
                       onClick={() => deleteTask(task.id)}
-                      className="p-1.5 text-zinc-500 hover:text-red-400 rounded hover:bg-zinc-800"
+                      className="p-1.5 text-zinc-400 hover:text-red-400 rounded hover:bg-zinc-800 outline-none focus-visible:ring-2 focus-visible:ring-purple-500"
                       title="Delete"
                       aria-label="Delete"
                     >
@@ -310,10 +333,10 @@ export default function TaskDashboard() {
                 key={id}
                 onClick={() => toggleFilter(id)}
                 className={cn(
-                  "flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium border transition-all duration-200 cursor-pointer",
+                  "flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium border transition-all duration-200 cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-purple-500",
                   isActive
                     ? "bg-zinc-800 border-zinc-700 text-white shadow-sm"
-                    : "bg-transparent border-zinc-800 text-zinc-500 hover:border-zinc-700 hover:text-zinc-400"
+                    : "bg-transparent border-zinc-800 text-zinc-400 hover:border-zinc-700 hover:text-zinc-300"
                 )}
               >
                 <Icon className={cn("w-4 h-4", isActive ? "text-purple-400" : "text-current")} />
