@@ -12,10 +12,22 @@ export const useScrollAnimations = () => {
           const element = entry.target as HTMLElement;
           
           // Split text into words and animate them
+          // SECURITY: Replacing innerHTML assignment with textContent for XSS prevention
           const words = element.innerText.split(' ');
-          element.innerHTML = words.map((word, index) => 
-            `<span class="inline-block opacity-15 transition-opacity duration-300 ease-out" style="transition-delay: ${index * 50}ms">${word}</span>`
-          ).join(' ');
+          element.textContent = ''; // Clear existing content
+
+          words.forEach((word, index) => {
+            const span = document.createElement('span');
+            span.className = 'inline-block opacity-15 transition-opacity duration-300 ease-out';
+            span.style.transitionDelay = `${index * 50}ms`;
+            span.textContent = word;
+            element.appendChild(span);
+
+            // Add space between words, but avoid trailing spaces
+            if (index < words.length - 1) {
+                element.appendChild(document.createTextNode(' '));
+            }
+          });
           
           // Trigger animation
           setTimeout(() => {
