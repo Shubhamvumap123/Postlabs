@@ -11,8 +11,11 @@ export default function Footer() {
       setAtBottom(bottom);
     };
 
-    addEventListener("scroll", handleScroll);
-    return () => removeEventListener("scroll", handleScroll);
+    // Call once to set initial state in case the page is already at the bottom
+    handleScroll();
+
+    globalThis.addEventListener("scroll", handleScroll);
+    return () => globalThis.removeEventListener("scroll", handleScroll);
   }, []);
 
   useEffect(() => {
