@@ -1,26 +1,4 @@
-import { useEffect } from 'react';
-
 const BuildingSection = () => {
-  useEffect(() => {
-    const observerCallback = (entries: IntersectionObserverEntry[]) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('in-view');
-        }
-      });
-    };
-
-    const observer = new IntersectionObserver(observerCallback, {
-      threshold: 0.1,
-      rootMargin: '0px 0px -10% 0px'
-    });
-
-    const elements = document.querySelectorAll('.animate-fade-up');
-    elements.forEach((el) => observer.observe(el));
-
-    return () => observer.disconnect();
-  }, []);
-
   return (
     <section className="relative z-10 bg-[#fdfcf7]"> 
       {/* Container */}
