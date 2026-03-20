@@ -147,16 +147,21 @@ export default function Footer() {
           </ul>
           <h2 className="text-xl font-semibold">Sign Up for Our Newsletter</h2>
           <form className="flex gap-2 max-w-md" onSubmit={handleSubmit}>
+            <label htmlFor="newsletter-email" className="sr-only">
+              Email Address
+            </label>
             <input
+              id="newsletter-email"
               type="email"
               name="email"
               required
               placeholder="Email Address"
-              className="flex-1 px-3 py-2 text-black rounded-md outline-none"
+              className="flex-1 px-3 py-2 text-black rounded-md outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2"
             />
             <button
               type="submit"
-              className="px-5 bg-white text-black rounded-md font-medium"
+              aria-label="Subscribe to newsletter"
+              className="px-5 bg-white text-black rounded-md font-medium outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2"
             >
               →
             </button>
