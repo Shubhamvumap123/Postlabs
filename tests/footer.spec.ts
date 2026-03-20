@@ -7,11 +7,20 @@ test('Footer newsletter subscription (demo mode)', async ({ page }) => {
   // 2. Scroll to the bottom to reveal the footer
   // The footer in this app is revealed only when the user scrolls near the bottom
   // Using globalThis instead of window to satisfy Deno linter in CI, although in browser context they are the same here.
-  await page.evaluate(() => globalThis.scrollTo(0, document.body.scrollHeight));
+  // Wait for the page to load
+  await page.waitForLoadState('networkidle');
+
+  await page.evaluate(() => {
+    globalThis.scrollTo(0, document.body.scrollHeight);
+    // Dispatch scroll event manually just in case
+    globalThis.dispatchEvent(new Event('scroll'));
+  });
 
   // 3. Wait for the footer to become visible (it has a transition)
   const footer = page.locator('footer');
   await expect(footer).toBeVisible({ timeout: 10000 });
+
+  // Wait for the opacity transition to complete
   await expect(footer).toHaveClass(/opacity-100/);
 
   // 4. Fill in the email

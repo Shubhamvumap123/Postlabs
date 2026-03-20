@@ -21,8 +21,8 @@ const Navigation = () => {
       setIsVisible(scrollY > 100);
     };
 
-    addEventListener('scroll', handleScroll);
-    return () => removeEventListener('scroll', handleScroll);
+    globalThis.addEventListener('scroll', handleScroll);
+    return () => globalThis.removeEventListener('scroll', handleScroll);
   }, []);
 
   return (
