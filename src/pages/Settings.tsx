@@ -84,16 +84,20 @@ const Settings = () => {
               </div>
 
               <div className="flex items-center justify-between p-4 border border-border rounded-lg bg-background/50">
-                <div className="space-y-0.5">
-                  <label className="text-sm font-medium text-foreground">
+                <div className="space-y-0.5" id="push-notifications-label">
+                  <div className="text-sm font-medium text-foreground">
                     Push Notifications
-                  </label>
+                  </div>
                   <p className="text-xs text-muted-foreground">
                     Receive notifications about your tasks
                   </p>
                 </div>
-                <div
-                  className={`w-11 h-6 flex items-center rounded-full p-1 cursor-pointer transition-colors ${notifications ? 'bg-primary' : 'bg-input'}`}
+                <button
+                  type="button"
+                  role="switch"
+                  aria-checked={notifications}
+                  aria-labelledby="push-notifications-label"
+                  className={`w-11 h-6 flex items-center rounded-full p-1 cursor-pointer transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background ${notifications ? 'bg-primary' : 'bg-input'}`}
                   onClick={() => {
                     setNotifications(!notifications);
                     // Auto-save logic for toggle
@@ -106,7 +110,7 @@ const Settings = () => {
                     animate={{ x: notifications ? 20 : 0 }}
                     transition={{ type: "spring", stiffness: 500, damping: 30 }}
                   />
-                </div>
+                </button>
               </div>
             </section>
 
