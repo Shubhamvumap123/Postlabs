@@ -16,12 +16,20 @@ const Navigation = () => {
   const location = useLocation();
 
   useEffect(() => {
+    let ticking = false;
+
     const handleScroll = () => {
-      const scrollY = globalThis.scrollY;
-      setIsVisible(scrollY > 100);
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          const scrollY = globalThis.scrollY;
+          setIsVisible(scrollY > 100);
+          ticking = false;
+        });
+        ticking = true;
+      }
     };
 
-    globalThis.addEventListener('scroll', handleScroll);
+    globalThis.addEventListener('scroll', handleScroll, { passive: true });
     return () => globalThis.removeEventListener('scroll', handleScroll);
   }, []);
 

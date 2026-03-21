@@ -9,3 +9,7 @@
 ## 2024-05-18 - Redundant IntersectionObserver Instances Bottleneck
 **Learning:** Multiple components (`Hero`, `BuildingSection`, `VideoSection`) were instantiating their own `IntersectionObserver` instances to track the exact same `.animate-fade-up` elements, causing redundant DOM queries and overlap with the global observer defined in `useScrollAnimations.tsx`. This leads to unnecessary memory usage and overlapping callbacks triggering on the same elements.
 **Action:** Centralize generic global class-based observers (like `.animate-fade-up`) in a single hook (`useScrollAnimations`) and remove redundant local component instantiations.
+
+## 2024-05-18 - Unthrottled Scroll Event Listeners Bottleneck
+**Learning:** Attaching unthrottled `scroll` event listeners that query layout properties (like `document.body.offsetHeight`) or trigger React state updates causes continuous synchronous reflows and excessive re-renders, stalling the main thread and severely reducing scrolling performance.
+**Action:** Always wrap high-frequency scroll event handlers with `requestAnimationFrame` and add the `{ passive: true }` option to `addEventListener` to avoid blocking the browser's compositing thread and optimize rendering.
