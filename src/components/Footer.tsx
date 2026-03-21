@@ -5,17 +5,29 @@ export default function Footer() {
     const [atBottom, setAtBottom] = useState(false);
 
   useEffect(() => {
+    let ticking = false;
+    let frameId: number = 0;
+
     const handleScroll = () => {
-      const bottom =
-        globalThis.innerHeight + globalThis.scrollY >= document.body.offsetHeight - 50;
-      setAtBottom(bottom);
+      if (!ticking) {
+        frameId = globalThis.requestAnimationFrame(() => {
+          const bottom =
+            globalThis.innerHeight + globalThis.scrollY >= document.body.offsetHeight - 50;
+          setAtBottom(bottom);
+          ticking = false;
+        });
+        ticking = true;
+      }
     };
 
     // Call once to set initial state in case the page is already at the bottom
     handleScroll();
 
-    globalThis.addEventListener("scroll", handleScroll);
-    return () => globalThis.removeEventListener("scroll", handleScroll);
+    globalThis.addEventListener("scroll", handleScroll, { passive: true });
+    return () => {
+      globalThis.removeEventListener("scroll", handleScroll);
+      globalThis.cancelAnimationFrame(frameId);
+    };
   }, []);
 
   useEffect(() => {
