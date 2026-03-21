@@ -135,10 +135,11 @@ export default function FeatureCards() {
             transition={{ duration: 0.35, ease: 'easeOut' }}
             className="max-w-[560px] mb-5"
           >
+            {/* SECURITY: Added noopener to rel attribute to prevent tabnabbing attacks on target="_blank" links */}
             <a
               href="https://paint-racer-443.notion.site/Open-Positions-1d64c709c91980cd910eeef05978c45e"
               target="_blank"
-              rel="noreferrer"
+              rel="noopener noreferrer"
               className="inline-link underline underline-offset-4"
             >
               jobs page
