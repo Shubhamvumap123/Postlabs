@@ -6,10 +6,11 @@ export default function Footer() {
 
   useEffect(() => {
     let ticking = false;
+    let frameId: number = 0;
 
     const handleScroll = () => {
       if (!ticking) {
-        window.requestAnimationFrame(() => {
+        frameId = globalThis.requestAnimationFrame(() => {
           const bottom =
             globalThis.innerHeight + globalThis.scrollY >= document.body.offsetHeight - 50;
           setAtBottom(bottom);
@@ -23,7 +24,10 @@ export default function Footer() {
     handleScroll();
 
     globalThis.addEventListener("scroll", handleScroll, { passive: true });
-    return () => globalThis.removeEventListener("scroll", handleScroll);
+    return () => {
+      globalThis.removeEventListener("scroll", handleScroll);
+      globalThis.cancelAnimationFrame(frameId);
+    };
   }, []);
 
   useEffect(() => {

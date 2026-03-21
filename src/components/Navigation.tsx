@@ -17,10 +17,11 @@ const Navigation = () => {
 
   useEffect(() => {
     let ticking = false;
+    let frameId: number = 0;
 
     const handleScroll = () => {
       if (!ticking) {
-        window.requestAnimationFrame(() => {
+        frameId = globalThis.requestAnimationFrame(() => {
           const scrollY = globalThis.scrollY;
           setIsVisible(scrollY > 100);
           ticking = false;
@@ -30,7 +31,10 @@ const Navigation = () => {
     };
 
     globalThis.addEventListener('scroll', handleScroll, { passive: true });
-    return () => globalThis.removeEventListener('scroll', handleScroll);
+    return () => {
+      globalThis.removeEventListener('scroll', handleScroll);
+      globalThis.cancelAnimationFrame(frameId);
+    };
   }, []);
 
   return (
