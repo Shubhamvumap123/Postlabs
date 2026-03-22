@@ -287,9 +287,10 @@ export default function TaskDashboard() {
                 <button
                   key={filter.id}
                   type="button"
+                  aria-pressed={newTaskCategory === filter.id}
                   onClick={() => setNewTaskCategory(filter.id)}
                   className={cn(
-                    "flex-1 flex flex-col items-center justify-center p-3 rounded-lg border text-xs gap-1 transition-all",
+                    "flex-1 flex flex-col items-center justify-center p-3 rounded-lg border text-xs gap-1 transition-all outline-none focus-visible:ring-2 focus-visible:ring-purple-500",
                     newTaskCategory === filter.id
                       ? "bg-purple-900/20 border-purple-500 text-purple-200"
                       : "bg-zinc-900 border-zinc-800 text-zinc-400 hover:border-zinc-700"
