@@ -140,6 +140,7 @@ export default function Footer() {
             <img
               src="https://cdn.prod.website-files.com/681dfdff4444ca819f7050a2/682786273e6c31f3343c6700_postlabs-logo-white.svg"
               alt="Post Labs logo"
+              loading="lazy"
               className="max-w-[160px]"
             />
           </a>
