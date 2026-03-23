@@ -69,11 +69,18 @@ export default function TaskDashboard() {
 
   const addTask = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newTaskTitle.trim()) return;
+    const title = newTaskTitle.trim();
+    if (!title) return;
+
+    // SECURITY: Limit input length to prevent localStorage exhaustion and potential DoS
+    if (title.length > 200) {
+      toast.error("Task title must be 200 characters or less");
+      return;
+    }
 
     const newTask: Task = {
       id: crypto.randomUUID(),
-      title: newTaskTitle,
+      title: title,
       status: 'Scheduled',
       category: newTaskCategory,
       createdAt: Date.now(),
@@ -275,6 +282,7 @@ export default function TaskDashboard() {
               onChange={(e) => setNewTaskTitle(e.target.value)}
               placeholder="e.g. Review system performance"
               className="bg-zinc-900 border-zinc-700 text-zinc-100 focus:ring-purple-500"
+              maxLength={200}
               autoFocus
             />
           </div>
