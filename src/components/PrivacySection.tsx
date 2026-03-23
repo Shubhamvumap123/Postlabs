@@ -17,6 +17,7 @@ const PrivacySection: React.FC = () => {
         src="https://cdn.prod.website-files.com/681dfdff4444ca819f7050a2/68266ea52e91d548861b8d20_icon-1-transparent.svg"
         alt=""
         className="w-40 h-40 absolute"
+        loading="lazy"
       />
     </div>
   </div>
@@ -41,6 +42,7 @@ const PrivacySection: React.FC = () => {
         src="https://cdn.prod.website-files.com/681dfdff4444ca819f7050a2/68267094af8c90b6a17e323a_icon-2-transparent.svg"
         alt=""
         className="w-40 h-40 absolute"
+        loading="lazy"
       />
     </div>
   </motion.div>
@@ -64,6 +66,7 @@ const PrivacySection: React.FC = () => {
         src="https://cdn.prod.website-files.com/681dfdff4444ca819f7050a2/68267087adfa3ad7422b8753_icon-3-transparent.svg"
         alt=""
         className="w-40 h-40 absolute"
+        loading="lazy"
       />
     </div>
   </motion.div>
