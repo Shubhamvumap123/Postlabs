@@ -13,9 +13,11 @@ const PrivacySection: React.FC = () => {
         Post Labs is building a homegrown platform designed for Canadians
         and the future of Canadian media.
       </p>
+      {/* ⚡ Bolt: Add lazy loading to below-the-fold image to reduce initial payload and improve LCP */}
       <img
         src="https://cdn.prod.website-files.com/681dfdff4444ca819f7050a2/68266ea52e91d548861b8d20_icon-1-transparent.svg"
         alt=""
+        loading="lazy"
         className="w-40 h-40 absolute"
       />
     </div>
@@ -37,9 +39,11 @@ const PrivacySection: React.FC = () => {
         connects local voices, communities, and trusted journalism in one
         seamless digital experience.
       </p>
+      {/* ⚡ Bolt: Add lazy loading to below-the-fold image to reduce initial payload and improve LCP */}
       <img
         src="https://cdn.prod.website-files.com/681dfdff4444ca819f7050a2/68267094af8c90b6a17e323a_icon-2-transparent.svg"
         alt=""
+        loading="lazy"
         className="w-40 h-40 absolute"
       />
     </div>
@@ -60,9 +64,11 @@ const PrivacySection: React.FC = () => {
         Built by Canadians, for Canadians, PostOS is more than just
         technology — it’s a way to bring our stories home.
       </p>
+      {/* ⚡ Bolt: Add lazy loading to below-the-fold image to reduce initial payload and improve LCP */}
       <img
         src="https://cdn.prod.website-files.com/681dfdff4444ca819f7050a2/68267087adfa3ad7422b8753_icon-3-transparent.svg"
         alt=""
+        loading="lazy"
         className="w-40 h-40 absolute"
       />
     </div>
