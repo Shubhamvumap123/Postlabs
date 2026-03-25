@@ -71,6 +71,11 @@ export default function TaskDashboard() {
     e.preventDefault();
     if (!newTaskTitle.trim()) return;
 
+    if (tasks.length >= 100) {
+      toast.error("Maximum limit of 100 tasks reached. Please delete some tasks before adding new ones.");
+      return;
+    }
+
     const newTask: Task = {
       id: crypto.randomUUID(),
       title: newTaskTitle,
@@ -154,7 +159,7 @@ export default function TaskDashboard() {
                 }
               }}
               className={cn(
-                "relative px-4 py-1.5 text-sm font-medium rounded-full transition-colors whitespace-nowrap outline-none focus-visible:ring-2 focus-visible:ring-purple-500",
+                "relative px-4 py-1.5 text-sm font-medium rounded-full transition-colors whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background",
                 activeTab === tab ? "text-white" : "text-zinc-400 hover:text-zinc-200"
               )}
             >
@@ -185,7 +190,7 @@ export default function TaskDashboard() {
         role="tabpanel"
         aria-labelledby={`tab-${activeTab}`}
         tabIndex={0}
-        className="min-h-[300px] bg-zinc-900/50 rounded-xl border border-zinc-800/50 overflow-hidden outline-none focus-visible:ring-2 focus-visible:ring-purple-500"
+        className="min-h-[300px] bg-zinc-900/50 rounded-xl border border-zinc-800/50 overflow-hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
       >
         {filteredTasks.length === 0 ? (
           <div className="flex flex-col items-center justify-center text-center p-8 h-[300px]">
@@ -208,7 +213,7 @@ export default function TaskDashboard() {
                 >
                   <button
                     onClick={() => toggleTaskStatus(task.id)}
-                    className="flex-shrink-0 text-zinc-400 hover:text-purple-400 transition-colors rounded-full outline-none focus-visible:ring-2 focus-visible:ring-purple-500"
+                    className="flex-shrink-0 text-zinc-400 hover:text-purple-400 transition-colors rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                     aria-label={task.status === 'Completed' ? "Mark as incomplete" : "Mark as complete"}
                   >
                     {task.status === 'Completed' ? (
@@ -234,7 +239,7 @@ export default function TaskDashboard() {
                     {task.status !== 'Archived' && (
                       <button
                         onClick={() => archiveTask(task.id)}
-                        className="p-1.5 text-zinc-400 hover:text-zinc-300 rounded hover:bg-zinc-800 outline-none focus-visible:ring-2 focus-visible:ring-purple-500"
+                        className="p-1.5 text-zinc-400 hover:text-zinc-300 rounded hover:bg-zinc-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                         title="Archive"
                         aria-label="Archive"
                       >
@@ -243,7 +248,7 @@ export default function TaskDashboard() {
                     )}
                     <button
                       onClick={() => deleteTask(task.id)}
-                      className="p-1.5 text-zinc-400 hover:text-red-400 rounded hover:bg-zinc-800 outline-none focus-visible:ring-2 focus-visible:ring-purple-500"
+                      className="p-1.5 text-zinc-400 hover:text-red-400 rounded hover:bg-zinc-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                       title="Delete"
                       aria-label="Delete"
                     >
@@ -276,6 +281,7 @@ export default function TaskDashboard() {
               placeholder="e.g. Review system performance"
               className="bg-zinc-900 border-zinc-700 text-zinc-100 focus:ring-purple-500"
               autoFocus
+              maxLength={100}
             />
           </div>
           <div className="space-y-2">
@@ -290,7 +296,7 @@ export default function TaskDashboard() {
                   aria-pressed={newTaskCategory === filter.id}
                   onClick={() => setNewTaskCategory(filter.id)}
                   className={cn(
-                    "flex-1 flex flex-col items-center justify-center p-3 rounded-lg border text-xs gap-1 transition-all outline-none focus-visible:ring-2 focus-visible:ring-purple-500",
+                    "flex-1 flex flex-col items-center justify-center p-3 rounded-lg border text-xs gap-1 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background",
                     newTaskCategory === filter.id
                       ? "bg-purple-900/20 border-purple-500 text-purple-200"
                       : "bg-zinc-900 border-zinc-800 text-zinc-400 hover:border-zinc-700"
@@ -334,7 +340,7 @@ export default function TaskDashboard() {
                 key={id}
                 onClick={() => toggleFilter(id)}
                 className={cn(
-                  "flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium border transition-all duration-200 cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-purple-500",
+                  "flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium border transition-all duration-200 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background",
                   isActive
                     ? "bg-zinc-800 border-zinc-700 text-white shadow-sm"
                     : "bg-transparent border-zinc-800 text-zinc-400 hover:border-zinc-700 hover:text-zinc-300"
