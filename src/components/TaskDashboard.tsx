@@ -71,14 +71,21 @@ export default function TaskDashboard() {
     e.preventDefault();
     if (!newTaskTitle.trim()) return;
 
+    if (tasks.length >= 100) {
+      toast.error("Maximum task limit (100) reached. Please delete some tasks first.");
+      return;
+    }
+
     const newTask: Task = {
       id: crypto.randomUUID(),
-      title: newTaskTitle,
+      // SECURITY: Limit input length to prevent LocalStorage exhaustion DoS
+      title: newTaskTitle.slice(0, 100),
       status: 'Scheduled',
       category: newTaskCategory,
       createdAt: Date.now(),
     };
-    setTasks(prev => [newTask, ...prev]);
+    // SECURITY: Limit task array size to 100 items to prevent LocalStorage exhaustion DoS
+    setTasks(prev => [newTask, ...prev].slice(0, 100));
     toast.success("Task created successfully");
     setIsNewTaskOpen(false);
     setNewTaskTitle("");
@@ -276,6 +283,7 @@ export default function TaskDashboard() {
               placeholder="e.g. Review system performance"
               className="bg-zinc-900 border-zinc-700 text-zinc-100 focus:ring-purple-500"
               autoFocus
+              maxLength={100}
             />
           </div>
           <div className="space-y-2">
