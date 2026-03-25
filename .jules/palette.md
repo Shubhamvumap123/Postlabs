@@ -7,3 +7,6 @@
 ## 2025-05-18 - Custom Toggle Switch Accessibility
 **Learning:** Building custom toggle switches using `<div>` elements with `onClick` handlers removes keyboard accessibility and screen reader support. Users navigating via keyboard cannot focus or activate the toggle, and screen readers do not recognize its state or purpose.
 **Action:** When creating custom interactive elements like toggles, always use a native interactive element (e.g., `<button type="button">`) with the appropriate ARIA roles (e.g., `role="switch"`), state attributes (e.g., `aria-checked`), and associated labels (`aria-labelledby` or `aria-label`). Ensure the element has clear `:focus-visible` styles for keyboard navigation.
+## 2025-03-25 - Mobile Navigation Accessibility
+**Learning:** Hiding text on mobile breakpoints using `display: none` (e.g., Tailwind's `hidden` class) completely removes the element from the accessibility tree. This leaves screen readers with icon-only links that lack an `aria-label` or any descriptive text, severely degrading mobile accessibility.
+**Action:** When aiming to visually hide text on smaller screens while preserving it for assistive technologies, use CSS clipping methods instead of `display: none`. In Tailwind CSS, this is achieved by combining `sr-only` for mobile and `not-sr-only` for larger breakpoints (e.g., `sr-only sm:not-sr-only sm:inline`).
