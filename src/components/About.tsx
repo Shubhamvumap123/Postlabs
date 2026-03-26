@@ -1,5 +1,5 @@
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 
 const About = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -12,7 +12,9 @@ const About = () => {
     return () => clearTimeout(timer);
   }, []);
 
-  const splitText = (text: string) => {
+  // PERFORMANCE: Memoize the split text generation to prevent recreating hundreds of
+  // inline-block <span> elements on every render.
+  const animatedTextSpans = useMemo(() => {
     return text.split('').map((char, index) => (
       <span
         key={index}
@@ -28,7 +30,7 @@ const About = () => {
         {char}
       </span>
     ));
-  };
+  }, [isVisible, text]);
 
   return (
     <section className="relative z-10 bg-cream-50 min-h-screen">
@@ -49,7 +51,7 @@ const About = () => {
           >
             <span className="sr-only">{text}</span>
             <span aria-hidden="true">
-              {splitText(text)}
+              {animatedTextSpans}
             </span>
           </p>
         </div>
