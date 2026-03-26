@@ -17,3 +17,7 @@
 ## 2024-05-18 - Inverted Image Loading Strategies Anti-Pattern
 **Learning:** Found a systemic anti-pattern where critical above-the-fold images (Header logo, Hero down arrow) were intentionally deferred using `loading="lazy"`, actively delaying the Largest Contentful Paint (LCP) and worsening initial render times. Conversely, deeply nested below-the-fold images (e.g., in the Footer) were missing lazy loading entirely, bloating the initial payload.
 **Action:** Always eagerly load above-the-fold critical images (use `fetchPriority="high"` where appropriate) and explicitly apply `loading="lazy"` to all below-the-fold images. Never apply `loading="lazy"` to LCP elements.
+
+## 2024-05-18 - Unmemoized High-Volume DOM Generation Anti-Pattern
+**Learning:** Generating a large number of DOM elements dynamically via unmemoized array iterations (e.g., splitting a long text string into individual animated `<span>` elements per character in `About.tsx`) inside the render function causes severe main thread jank and unnecessary O(N) recalculations on every single React re-render.
+**Action:** Always wrap computationally expensive or high-volume DOM generation logic inside `useMemo` to ensure the elements are only recreated when their specific dependencies change, rather than on every render cycle.
