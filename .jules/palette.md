@@ -7,3 +7,6 @@
 ## 2025-05-18 - Custom Toggle Switch Accessibility
 **Learning:** Building custom toggle switches using `<div>` elements with `onClick` handlers removes keyboard accessibility and screen reader support. Users navigating via keyboard cannot focus or activate the toggle, and screen readers do not recognize its state or purpose.
 **Action:** When creating custom interactive elements like toggles, always use a native interactive element (e.g., `<button type="button">`) with the appropriate ARIA roles (e.g., `role="switch"`), state attributes (e.g., `aria-checked`), and associated labels (`aria-labelledby` or `aria-label`). Ensure the element has clear `:focus-visible` styles for keyboard navigation.
+## 2025-05-18 - Mobile Navigation Safe Area Padding
+**Learning:** Adding padding to fixed UI elements (like `pb-`) to support iOS home indicators (`env(safe-area-inset-bottom)`) expands the element's invisible bounding box, inadvertently blocking users from clicking content underneath.
+**Action:** When adding safe area insets to bottom-fixed elements, apply the value directly to the `bottom` positioning property (e.g., `bottom-[max(1.5rem,env(safe-area-inset-bottom))]`) instead of using padding, ensuring the element bounds match its visual footprint.
