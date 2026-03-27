@@ -49,7 +49,7 @@ const Navigation = () => {
       {/* Main Navigation */}
       <nav 
         className={cn(
-            "fixed bottom-6 left-1/2 -translate-x-1/2 z-40 transition-all duration-500 ease-out max-w-[90vw]",
+            "fixed bottom-[max(1.5rem,env(safe-area-inset-bottom))] left-1/2 -translate-x-1/2 z-40 transition-all duration-500 ease-out max-w-[90vw]",
              isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-5 pointer-events-none'
         )}
       >
@@ -68,7 +68,7 @@ const Navigation = () => {
                      )}
                    >
                      <item.icon className="w-4 h-4" />
-                     <span className="hidden sm:inline">{item.name}</span>
+                     <span className="sr-only sm:not-sr-only sm:inline">{item.name}</span>
                    </Link>
                )
            })}
