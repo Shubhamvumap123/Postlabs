@@ -71,6 +71,12 @@ export default function TaskDashboard() {
     e.preventDefault();
     if (!newTaskTitle.trim()) return;
 
+    // SECURITY: Prevent localStorage exhaustion (DoS risk) by limiting collection size.
+    if (tasks.length >= 100) {
+      toast.error("Maximum task limit reached (100). Please delete some tasks first.");
+      return;
+    }
+
     const newTask: Task = {
       id: crypto.randomUUID(),
       title: newTaskTitle,
@@ -275,6 +281,7 @@ export default function TaskDashboard() {
               onChange={(e) => setNewTaskTitle(e.target.value)}
               placeholder="e.g. Review system performance"
               className="bg-zinc-900 border-zinc-700 text-zinc-100 focus:ring-purple-500"
+              maxLength={200}
               autoFocus
             />
           </div>
