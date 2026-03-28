@@ -71,6 +71,16 @@ export default function TaskDashboard() {
     e.preventDefault();
     if (!newTaskTitle.trim()) return;
 
+    // SECURITY: Enforce bounds to prevent local storage DoS/exhaustion
+    if (newTaskTitle.length > 100) {
+      toast.error("Task title must be 100 characters or less");
+      return;
+    }
+    if (tasks.length >= 100) {
+      toast.error("Maximum limit of 100 tasks reached");
+      return;
+    }
+
     const newTask: Task = {
       id: crypto.randomUUID(),
       title: newTaskTitle,
@@ -276,6 +286,7 @@ export default function TaskDashboard() {
               placeholder="e.g. Review system performance"
               className="bg-zinc-900 border-zinc-700 text-zinc-100 focus:ring-purple-500"
               autoFocus
+              maxLength={100}
             />
           </div>
           <div className="space-y-2">
