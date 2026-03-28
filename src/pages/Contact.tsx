@@ -5,7 +5,7 @@ import Navigation from "../components/Navigation";
 import Footer from "../components/Footer";
 import { Input } from "../components/ui/input";
 import { Button } from "../components/ui/button";
-import { Send, Mail, MapPin, Phone } from "lucide-react";
+import { Send, Mail, MapPin, Phone, Loader2 } from "lucide-react";
 
 const Contact = () => {
   const [loading, setLoading] = useState(false);
@@ -132,7 +132,12 @@ const Contact = () => {
               </div>
 
               <Button type="submit" className="w-full" disabled={loading}>
-                {loading ? "Sending..." : (
+                {loading ? (
+                  <>
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    Sending...
+                  </>
+                ) : (
                   <>
                     Send Message <Send className="w-4 h-4 ml-2" />
                   </>
