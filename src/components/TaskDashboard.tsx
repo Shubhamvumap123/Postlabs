@@ -138,6 +138,7 @@ export default function TaskDashboard() {
               id={`tab-${tab}`}
               tabIndex={activeTab === tab ? 0 : -1}
               key={tab}
+              type="button"
               onClick={() => setActiveTab(tab)}
               onKeyDown={(e) => {
                 let newIndex = index;
@@ -332,6 +333,7 @@ export default function TaskDashboard() {
                 type="button"
                 aria-pressed={isActive}
                 key={id}
+                type="button"
                 onClick={() => toggleFilter(id)}
                 className={cn(
                   "flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium border transition-all duration-200 cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-purple-500",
