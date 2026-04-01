@@ -36,28 +36,34 @@ const AnimWords = React.forwardRef<
   const inView = useInView(localRef, { once: true, amount: 0.2 });
   const words = React.useMemo(() => text.split(/\s+/), [text]);
 
+  // PERFORMANCE: Memoize the generation of word elements to prevent main thread blocking
+  // and animation jank. Decouple the dynamic inView state by relying on parent CSS attribute selectors.
+  const wordElements = React.useMemo(() => {
+    return words.map((w: string, i: number) => (
+      <React.Fragment key={`${w}-${i}`}>
+        <span
+          aria-hidden="true"
+          style={{ transitionDelay: `${i * 0.03}s`, transitionDuration: '0.35s' }}
+          className="inline-block relative opacity-0 translate-y-2 transition-all ease-out group-data-[visible=true]:opacity-100 group-data-[visible=true]:translate-y-0"
+        >
+          {w}
+        </span>
+        {i < words.length - 1 ? " " : ""}
+      </React.Fragment>
+    ));
+  }, [words]);
+
   return (
     <Tag
       ref={combinedRef}
-      className={className}
+      className={`group ${className}`}
       aria-label={ariaLabel || text}
       data-animation="text"
       data-speed={speed}
+      data-visible={inView}
       {...rest}
     >
-      {words.map((w: string, i: number) => (
-        <motion.span
-          key={`${w}-${i}`}
-          aria-hidden="true"
-          initial={{ opacity: 0, y: 8 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ delay: i * 0.03, duration: 0.35, ease: "easeOut" }}
-          className="inline-block relative"
-        >
-          {w}
-          {i < words.length - 1 ? " " : ""}
-        </motion.span>
-      ))}
+      {wordElements}
     </Tag>
   );
 });
