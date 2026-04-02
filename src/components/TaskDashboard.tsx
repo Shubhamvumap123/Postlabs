@@ -71,6 +71,18 @@ export default function TaskDashboard() {
     e.preventDefault();
     if (!newTaskTitle.trim()) return;
 
+    // SECURITY: Prevent LocalStorage exhaustion and DoS by enforcing a collection-size limit
+    if (tasks.length >= 100) {
+      toast.error("Maximum task limit (100) reached. Please delete or archive old tasks.");
+      return;
+    }
+
+    // SECURITY: Prevent LocalStorage exhaustion by enforcing input length limit
+    if (newTaskTitle.length > 200) {
+      toast.error("Task title exceeds maximum length of 200 characters.");
+      return;
+    }
+
     const newTask: Task = {
       id: crypto.randomUUID(),
       title: newTaskTitle,
@@ -275,6 +287,7 @@ export default function TaskDashboard() {
               onChange={(e) => setNewTaskTitle(e.target.value)}
               placeholder="e.g. Review system performance"
               className="bg-zinc-900 border-zinc-700 text-zinc-100 focus:ring-purple-500"
+              maxLength={200}
               autoFocus
             />
           </div>
