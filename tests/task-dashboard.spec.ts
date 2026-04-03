@@ -33,9 +33,15 @@ test('TaskDashboard component functionality', async ({ page }) => {
   await expect(page.getByText('Scheduled tasks will show up here')).toBeVisible();
 
   // Verify filter chips existence
-  const performanceChip = page.getByRole('button', { name: 'Performance' });
-  const designChip = page.getByRole('button', { name: 'Design' });
-  const securityChip = page.getByRole('button', { name: 'Security' });
+  const performanceChip = page.locator('#root').getByRole('button', { name: 'Performance' });
+  const designChip = page.locator('#root').getByRole('button', { name: 'Design' });
+  const securityChip = page.locator('#root').getByRole('button', { name: 'Security' });
+
+  // Verify input limits (Security test)
+  await newButton.click();
+  const titleInput = page.getByLabel('Task Title');
+  await expect(titleInput).toHaveAttribute('maxLength', '100');
+  await page.getByRole('button', { name: 'Cancel' }).click();
 
   await expect(performanceChip).toBeVisible();
   await expect(designChip).toBeVisible();

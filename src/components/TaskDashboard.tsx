@@ -69,7 +69,17 @@ export default function TaskDashboard() {
 
   const addTask = (e: React.FormEvent) => {
     e.preventDefault();
+
+    // SECURITY: Prevent DoS via LocalStorage exhaustion by enforcing length and collection limits
     if (!newTaskTitle.trim()) return;
+    if (newTaskTitle.length > 100) {
+      toast.error("Task title must be 100 characters or less");
+      return;
+    }
+    if (tasks.length >= 100) {
+      toast.error("Maximum of 100 tasks allowed. Please delete or archive old tasks.");
+      return;
+    }
 
     const newTask: Task = {
       id: crypto.randomUUID(),
@@ -276,6 +286,7 @@ export default function TaskDashboard() {
               placeholder="e.g. Review system performance"
               className="bg-zinc-900 border-zinc-700 text-zinc-100 focus:ring-purple-500"
               autoFocus
+              maxLength={100}
             />
           </div>
           <div className="space-y-2">
