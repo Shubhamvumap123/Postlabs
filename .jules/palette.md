@@ -7,3 +7,6 @@
 ## 2025-05-18 - Custom Toggle Switch Accessibility
 **Learning:** Building custom toggle switches using `<div>` elements with `onClick` handlers removes keyboard accessibility and screen reader support. Users navigating via keyboard cannot focus or activate the toggle, and screen readers do not recognize its state or purpose.
 **Action:** When creating custom interactive elements like toggles, always use a native interactive element (e.g., `<button type="button">`) with the appropriate ARIA roles (e.g., `role="switch"`), state attributes (e.g., `aria-checked`), and associated labels (`aria-labelledby` or `aria-label`). Ensure the element has clear `:focus-visible` styles for keyboard navigation.
+## 2024-05-18 - Mobile Navigation Safe Area & Accessibility
+**Learning:** Fixed bottom navigation bars must account for iOS safe areas to avoid conflicting with the home indicator. Also, visually hiding text on small screens using `hidden` removes it for screen readers; `sr-only` is required.
+**Action:** Use `bottom-[max(1.5rem,env(safe-area-inset-bottom))]` for fixed bottom elements and `sr-only sm:not-sr-only sm:inline` for responsive text visibility.
