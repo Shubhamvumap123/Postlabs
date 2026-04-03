@@ -17,3 +17,7 @@
 ## 2024-05-18 - Inverted Image Loading Strategies Anti-Pattern
 **Learning:** Found a systemic anti-pattern where critical above-the-fold images (Header logo, Hero down arrow) were intentionally deferred using `loading="lazy"`, actively delaying the Largest Contentful Paint (LCP) and worsening initial render times. Conversely, deeply nested below-the-fold images (e.g., in the Footer) were missing lazy loading entirely, bloating the initial payload.
 **Action:** Always eagerly load above-the-fold critical images (use `fetchPriority="high"` where appropriate) and explicitly apply `loading="lazy"` to all below-the-fold images. Never apply `loading="lazy"` to LCP elements.
+
+## 2025-04-03 - Decoupling DOM generation and state animation with useMemo
+**Learning:** Functions that map large text strings to distinct span elements to enable sequential animations will recalculate constantly during state changes if the dynamic state (like `isVisible`) is mixed inside the generator map. This will severely increase script evaluation time and cause heavy jank, as we rebuild identical DOM nodes every re-render.
+**Action:** Decouple DOM generation from dynamic animation state. Wrap the static text-splitting array mapping inside `useMemo` so nodes are generated only once, and apply animation triggers using parent CSS attribute selectors (e.g., `<p data-visible={isVisible}><span className="group-data-[visible=true]:translate-y-0..."></span></p>`) to handle visibility through CSS instead of React rendering overhead.
