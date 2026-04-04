@@ -2,3 +2,8 @@
 **Vulnerability:** A DOM-based Cross-Site Scripting (XSS) vulnerability was found in `useScrollAnimations.tsx` where text was dynamically split and directly assigned using `element.innerHTML`.
 **Learning:** `element.innerHTML` assignment bypasses React's default XSS escaping mechanism. While it was extracting text from `innerText`, any previously injected scripts or user-controlled content in the DOM could be parsed and executed when re-assigned using `innerHTML`. This issue bypasses the React DOM and opens up XSS vectors through animation effects.
 **Prevention:** Avoid `element.innerHTML` assignment for manipulating DOM nodes inside custom React hooks. Use native DOM API `document.createElement`, set properties safely with `.textContent`, and `element.appendChild()`, or structure the markup safely using React state and JSX.
+
+## 2025-04-04 - Client-side DoS via LocalStorage Exhaustion
+**Vulnerability:** A local storage exhaustion vulnerability was found in the `TaskDashboard.tsx` component, where a user could add an unlimited number of tasks with unlimited title lengths, leading to a potential client-side Denial of Service (DoS) by filling up the user's `localStorage` quota.
+**Learning:** Persisting fast-updating, user-controlled unbounded arrays and strings directly into `localStorage` can lead to storage exhaustion, which breaks functionality for the app and potentially other apps on the same origin. Limits must be enforced both on input lengths and collection sizes.
+**Prevention:** Always implement `maxLength` attributes on text inputs and enforce maximum collection size limits before persisting data to `localStorage` or remote databases. Block new additions and show an error when the limit is reached instead of silent failure or truncation.
