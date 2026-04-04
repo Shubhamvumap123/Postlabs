@@ -68,7 +68,7 @@ const Navigation = () => {
                      )}
                    >
                      <item.icon className="w-4 h-4" />
-                     <span className="hidden sm:inline">{item.name}</span>
+                     <span className="sr-only sm:not-sr-only sm:inline">{item.name}</span>
                    </Link>
                )
            })}
