@@ -49,7 +49,7 @@ const Navigation = () => {
       {/* Main Navigation */}
       <nav 
         className={cn(
-            "fixed bottom-6 left-1/2 -translate-x-1/2 z-40 transition-all duration-500 ease-out max-w-[90vw]",
+            "fixed bottom-[max(1.5rem,env(safe-area-inset-bottom))] left-1/2 -translate-x-1/2 z-40 transition-all duration-500 ease-out max-w-[90vw]",
              isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-5 pointer-events-none'
         )}
       >
@@ -61,14 +61,14 @@ const Navigation = () => {
                      key={item.path}
                      to={item.path}
                      className={cn(
-                       "flex items-center gap-2 px-3 sm:px-4 py-2 rounded-full transition-all duration-300 text-sm font-medium",
+                       "flex items-center gap-2 px-3 sm:px-4 py-2 rounded-full transition-all duration-300 text-sm font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background",
                        isActive
                          ? "bg-zinc-800 text-zinc-100 shadow-sm"
                          : "text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800/50"
                      )}
                    >
-                     <item.icon className="w-4 h-4" />
-                     <span className="hidden sm:inline">{item.name}</span>
+                     <item.icon className="w-4 h-4" aria-hidden="true" />
+                     <span className="sr-only sm:not-sr-only sm:inline">{item.name}</span>
                    </Link>
                )
            })}
