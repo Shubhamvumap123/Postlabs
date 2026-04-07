@@ -71,9 +71,15 @@ export default function TaskDashboard() {
     e.preventDefault();
     if (!newTaskTitle.trim()) return;
 
+    if (tasks.length >= 100) {
+      toast.error("Maximum limit of 100 tasks reached. Please delete old tasks to add more.");
+      return;
+    }
+
     const newTask: Task = {
       id: crypto.randomUUID(),
-      title: newTaskTitle,
+      // Enforce server-side limit check (fallback for maxLength)
+      title: newTaskTitle.slice(0, 100),
       status: 'Scheduled',
       category: newTaskCategory,
       createdAt: Date.now(),
@@ -272,6 +278,7 @@ export default function TaskDashboard() {
             <Input
               id="title"
               value={newTaskTitle}
+              maxLength={100}
               onChange={(e) => setNewTaskTitle(e.target.value)}
               placeholder="e.g. Review system performance"
               className="bg-zinc-900 border-zinc-700 text-zinc-100 focus:ring-purple-500"
