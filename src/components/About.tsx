@@ -1,10 +1,10 @@
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
+
+const text = "Post Labs is rethinking how digital media works for Canadians. Our mission is simple: make journalism profitable, sustainable, and trusted – built for Canadians, by Canadians.";
 
 const About = () => {
   const [isVisible, setIsVisible] = useState(false);
-  
-  const text = "Post Labs is rethinking how digital media works for Canadians. Our mission is simple: make journalism profitable, sustainable, and trusted – built for Canadians, by Canadians.";
   
   useEffect(() => {
     // Trigger the animation after component mounts
@@ -12,13 +12,14 @@ const About = () => {
     return () => clearTimeout(timer);
   }, []);
 
-  const splitText = (text: string) => {
+  // PERFORMANCE: Memoize animated span generation to prevent re-computing 170+ DOM
+  // elements on visibility state change. Animation state is decoupled from render loop
+  // by leveraging parent CSS attribute selectors (group-data-[visible=true]).
+  const animatedText = useMemo(() => {
     return text.split('').map((char, index) => (
       <span
         key={index}
-        className={`inline-block transition-all duration-700 ease-out ${
-          isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
-        }`}
+        className="inline-block transition-all duration-700 ease-out opacity-0 translate-y-4 group-data-[visible=true]:opacity-100 group-data-[visible=true]:translate-y-0"
         style={{
           transitionDelay: `${index * 50}ms`,
           whiteSpace: char === ' ' ? 'pre' : 'normal'
@@ -28,7 +29,7 @@ const About = () => {
         {char}
       </span>
     ));
-  };
+  }, []);
 
   return (
     <section className="relative z-10 bg-cream-50 min-h-screen">
@@ -44,12 +45,13 @@ const About = () => {
       <div className="container mx-auto px-10 py-96 lg:py-80 md:py-60 sm:py-40">
         <div className="flex justify-center items-center min-h-full">
           <p
-            className="text-center max-w-[594px] mx-auto mb-0 text-5xl lg:text-4xl md:text-3xl sm:text-2xl leading-[115%] font-medium text-gray-800 tracking-tight"
+            className="group text-center max-w-[594px] mx-auto mb-0 text-5xl lg:text-4xl md:text-3xl sm:text-2xl leading-[115%] font-medium text-gray-800 tracking-tight"
             aria-label={text}
+            data-visible={isVisible}
           >
             <span className="sr-only">{text}</span>
             <span aria-hidden="true">
-              {splitText(text)}
+              {animatedText}
             </span>
           </p>
         </div>
