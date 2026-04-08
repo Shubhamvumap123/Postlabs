@@ -69,11 +69,22 @@ export default function TaskDashboard() {
 
   const addTask = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newTaskTitle.trim()) return;
+    const trimmedTitle = newTaskTitle.trim();
+    if (!trimmedTitle) return;
+
+    if (trimmedTitle.length > 200) {
+      toast.error("Task title cannot exceed 200 characters");
+      return;
+    }
+
+    if (tasks.length >= 100) {
+      toast.error("Maximum task limit (100) reached. Please delete some tasks first.");
+      return;
+    }
 
     const newTask: Task = {
       id: crypto.randomUUID(),
-      title: newTaskTitle,
+      title: trimmedTitle,
       status: 'Scheduled',
       category: newTaskCategory,
       createdAt: Date.now(),
@@ -275,6 +286,7 @@ export default function TaskDashboard() {
               onChange={(e) => setNewTaskTitle(e.target.value)}
               placeholder="e.g. Review system performance"
               className="bg-zinc-900 border-zinc-700 text-zinc-100 focus:ring-purple-500"
+              maxLength={200}
               autoFocus
             />
           </div>
