@@ -7,3 +7,7 @@
 ## 2025-05-18 - Custom Toggle Switch Accessibility
 **Learning:** Building custom toggle switches using `<div>` elements with `onClick` handlers removes keyboard accessibility and screen reader support. Users navigating via keyboard cannot focus or activate the toggle, and screen readers do not recognize its state or purpose.
 **Action:** When creating custom interactive elements like toggles, always use a native interactive element (e.g., `<button type="button">`) with the appropriate ARIA roles (e.g., `role="switch"`), state attributes (e.g., `aria-checked`), and associated labels (`aria-labelledby` or `aria-label`). Ensure the element has clear `:focus-visible` styles for keyboard navigation.
+
+## 2024-04-08 - Added ARIA pressed and focus states to custom toggle groups
+**Learning:** Custom single-select toggle groups mapped via `.map()` (like the theme selection buttons) often lack screen reader context for their active state and lack visual focus indicators for keyboard users.
+**Action:** Always include an `aria-pressed` attribute reflecting the active state and explicit `focus-visible` utility classes (`focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background`) to ensure full keyboard and screen reader accessibility on interactive custom elements.
