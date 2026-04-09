@@ -130,9 +130,11 @@ const Settings = () => {
                 {['light', 'dark', 'system'].map((t) => (
                   <button
                     key={t}
+                    type="button"
+                    aria-pressed={theme === t}
                     onClick={() => setTheme(t)}
                     className={`
-                      flex flex-col items-center gap-2 p-4 rounded-lg border transition-all
+                      flex flex-col items-center gap-2 p-4 rounded-lg border transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background
                       ${theme === t
                         ? 'border-primary bg-primary/5 ring-1 ring-primary'
                         : 'border-border hover:border-primary/50 hover:bg-accent/50'}
