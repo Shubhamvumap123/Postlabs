@@ -17,3 +17,6 @@
 ## 2024-05-18 - Inverted Image Loading Strategies Anti-Pattern
 **Learning:** Found a systemic anti-pattern where critical above-the-fold images (Header logo, Hero down arrow) were intentionally deferred using `loading="lazy"`, actively delaying the Largest Contentful Paint (LCP) and worsening initial render times. Conversely, deeply nested below-the-fold images (e.g., in the Footer) were missing lazy loading entirely, bloating the initial payload.
 **Action:** Always eagerly load above-the-fold critical images (use `fetchPriority="high"` where appropriate) and explicitly apply `loading="lazy"` to all below-the-fold images. Never apply `loading="lazy"` to LCP elements.
+## 2026-04-10 - Optimize text split animation
+**Learning:** Generating numerous DOM elements (like splitting long text into animated spans) and managing their CSS visibility within the React render cycle causes unnecessary re-allocation and potential animation jank. Relying on React state to trigger the visual toggle means standard components re-render when they don't need to.
+**Action:** Memoize large generated DOM arrays with `useMemo` to prevent re-generation. Decouple animation triggers from the React render loop by using parent data attributes (e.g., `group-data-[visible=true]`) in Tailwind CSS, letting native CSS handle the style transitions efficiently.
