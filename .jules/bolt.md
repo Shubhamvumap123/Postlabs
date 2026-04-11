@@ -17,3 +17,7 @@
 ## 2024-05-18 - Inverted Image Loading Strategies Anti-Pattern
 **Learning:** Found a systemic anti-pattern where critical above-the-fold images (Header logo, Hero down arrow) were intentionally deferred using `loading="lazy"`, actively delaying the Largest Contentful Paint (LCP) and worsening initial render times. Conversely, deeply nested below-the-fold images (e.g., in the Footer) were missing lazy loading entirely, bloating the initial payload.
 **Action:** Always eagerly load above-the-fold critical images (use `fetchPriority="high"` where appropriate) and explicitly apply `loading="lazy"` to all below-the-fold images. Never apply `loading="lazy"` to LCP elements.
+
+## 2026-04-11 - Decoupling Dynamic State from Memoized DOM Generation
+**Learning:** In React, dynamically generating large amounts of DOM elements (like splitting text into spans for animation) causes significant main thread blocking and jank if re-computed on every render. Tying visibility toggles directly into the map loop forces re-evaluation when state changes.
+**Action:** Explicitly memoize large DOM element generations using `useMemo` and decouple dynamic state (e.g., visibility) by passing state via data attributes to a parent container (e.g., `group data-visible={isVisible}`) and controlling child animations entirely via CSS (e.g., `group-data-[visible=true]:...`), leveraging Tailwind v4's arbitrary data attribute support.
