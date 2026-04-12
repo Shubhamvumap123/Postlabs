@@ -7,3 +7,6 @@
 ## 2025-05-18 - Custom Toggle Switch Accessibility
 **Learning:** Building custom toggle switches using `<div>` elements with `onClick` handlers removes keyboard accessibility and screen reader support. Users navigating via keyboard cannot focus or activate the toggle, and screen readers do not recognize its state or purpose.
 **Action:** When creating custom interactive elements like toggles, always use a native interactive element (e.g., `<button type="button">`) with the appropriate ARIA roles (e.g., `role="switch"`), state attributes (e.g., `aria-checked`), and associated labels (`aria-labelledby` or `aria-label`). Ensure the element has clear `:focus-visible` styles for keyboard navigation.
+## 2025-05-18 - Footer Newsletter Loading State
+**Learning:** Forms that simulate or perform asynchronous actions without visual feedback or disabled states can cause users to repeatedly click the submit button, triggering multiple requests and confusion. Adding a clear loading spinner and disabling interactive elements provides immediate context.
+**Action:** When creating forms handling async submissions, always implement an `isSubmitting` state to disable the `<input>` and `<button>` elements, and replace the button content with a visual indicator (like `Loader2` from `lucide-react`) to provide immediate UX feedback and prevent duplicate submissions.
