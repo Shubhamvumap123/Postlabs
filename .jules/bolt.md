@@ -17,3 +17,6 @@
 ## 2024-05-18 - Inverted Image Loading Strategies Anti-Pattern
 **Learning:** Found a systemic anti-pattern where critical above-the-fold images (Header logo, Hero down arrow) were intentionally deferred using `loading="lazy"`, actively delaying the Largest Contentful Paint (LCP) and worsening initial render times. Conversely, deeply nested below-the-fold images (e.g., in the Footer) were missing lazy loading entirely, bloating the initial payload.
 **Action:** Always eagerly load above-the-fold critical images (use `fetchPriority="high"` where appropriate) and explicitly apply `loading="lazy"` to all below-the-fold images. Never apply `loading="lazy"` to LCP elements.
+## 2024-05-18 - Memoizing Element Generation with CSS Driven State
+**Learning:** To prevent main thread blocking and animation jank, explicitly memoize functions that generate large amounts of DOM elements using `useMemo`. Crucially, decouple dynamic state (like visibility toggles) from the memoized generation loop by relying on static data dependencies and controlling animations via parent CSS attribute selectors (e.g., `group-data-[visible=true]`) to prevent re-computation on state change.
+**Action:** Use useMemo for generating large amounts of DOM elements and rely on parent CSS data-attributes for dynamic styling to prevent component re-renders and re-computations.
