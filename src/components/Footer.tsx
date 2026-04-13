@@ -159,6 +159,7 @@ export default function Footer() {
             <li><a href="#" className="underline underline-offset-4">Cookie Policy</a></li>
           </ul>
           <h2 className="text-xl font-semibold">Sign Up for Our Newsletter</h2>
+          {/* SECURITY: Added maxLength to prevent client-side DoS from enormous input */}
           <form className="flex gap-2 max-w-md" onSubmit={handleSubmit}>
             <label htmlFor="newsletter-email" className="sr-only">
               Email Address
@@ -168,6 +169,7 @@ export default function Footer() {
               type="email"
               name="email"
               required
+              maxLength={254}
               placeholder="Email Address"
               className="flex-1 px-3 py-2 text-black rounded-md outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2"
             />

@@ -56,12 +56,14 @@ const Settings = () => {
               </div>
 
               <form onSubmit={handleSave} className="space-y-4">
+                {/* SECURITY: Added maxLength limit to prevent unbounded memory growth in localStorage */}
                 <div className="space-y-2">
                   <label htmlFor="name" className="text-sm font-medium text-foreground">
                     Display Name
                   </label>
                   <Input
                     id="name"
+                    maxLength={50}
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     placeholder="Enter your name"
