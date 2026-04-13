@@ -265,12 +265,14 @@ export default function TaskDashboard() {
         description="Add a new task to your dashboard."
       >
         <form onSubmit={addTask} className="space-y-4">
+          {/* SECURITY: Added maxLength limit to prevent unbounded memory growth in localStorage */}
           <div className="space-y-2">
             <label htmlFor="title" className="text-sm font-medium text-zinc-300">
               Task Title
             </label>
             <Input
               id="title"
+              maxLength={100}
               value={newTaskTitle}
               onChange={(e) => setNewTaskTitle(e.target.value)}
               placeholder="e.g. Review system performance"
