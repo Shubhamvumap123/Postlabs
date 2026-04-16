@@ -7,3 +7,7 @@
 ## 2025-05-18 - Custom Toggle Switch Accessibility
 **Learning:** Building custom toggle switches using `<div>` elements with `onClick` handlers removes keyboard accessibility and screen reader support. Users navigating via keyboard cannot focus or activate the toggle, and screen readers do not recognize its state or purpose.
 **Action:** When creating custom interactive elements like toggles, always use a native interactive element (e.g., `<button type="button">`) with the appropriate ARIA roles (e.g., `role="switch"`), state attributes (e.g., `aria-checked`), and associated labels (`aria-labelledby` or `aria-label`). Ensure the element has clear `:focus-visible` styles for keyboard navigation.
+
+## 2024-04-16 - Prevent Double Submission & Add Visual Feedback
+**Learning:** During async form submissions, users may click submit multiple times or edit fields if inputs remain active, leading to confusion or duplicate requests. Visual loading states alone are insufficient; disabling the entire form is necessary for robust UX.
+**Action:** Always combine a visual loading spinner on submit buttons with `disabled={loading}` attributes across all related form inputs (textareas, inputs, selects) to ensure a complete and accessible "locked" state during async operations.
