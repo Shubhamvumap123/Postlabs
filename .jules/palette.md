@@ -7,3 +7,7 @@
 ## 2025-05-18 - Custom Toggle Switch Accessibility
 **Learning:** Building custom toggle switches using `<div>` elements with `onClick` handlers removes keyboard accessibility and screen reader support. Users navigating via keyboard cannot focus or activate the toggle, and screen readers do not recognize its state or purpose.
 **Action:** When creating custom interactive elements like toggles, always use a native interactive element (e.g., `<button type="button">`) with the appropriate ARIA roles (e.g., `role="switch"`), state attributes (e.g., `aria-checked`), and associated labels (`aria-labelledby` or `aria-label`). Ensure the element has clear `:focus-visible` styles for keyboard navigation.
+
+## 2026-04-18 - Prevent Layout Shift on Form Submit Buttons
+**Learning:** Swapping text or simple icons (like '→') for a `Loader2` spinner on async form submission causes jarring layout shifts if the button width is not fixed.
+**Action:** Apply a explicit `min-w-[Xrem]` class alongside `justify-center` to submit buttons that toggle content during loading states to maintain consistent dimensions and avoid layout shift.
