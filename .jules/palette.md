@@ -7,3 +7,7 @@
 ## 2025-05-18 - Custom Toggle Switch Accessibility
 **Learning:** Building custom toggle switches using `<div>` elements with `onClick` handlers removes keyboard accessibility and screen reader support. Users navigating via keyboard cannot focus or activate the toggle, and screen readers do not recognize its state or purpose.
 **Action:** When creating custom interactive elements like toggles, always use a native interactive element (e.g., `<button type="button">`) with the appropriate ARIA roles (e.g., `role="switch"`), state attributes (e.g., `aria-checked`), and associated labels (`aria-labelledby` or `aria-label`). Ensure the element has clear `:focus-visible` styles for keyboard navigation.
+
+## 2026-04-20 - Async Form Loading States
+**Learning:** When adding loading text and spinners to submit buttons, the button's dimensions can change if the new content has a different width, causing the layout to jump abruptly. Also, failing to disable form inputs during async submission can lead to users modifying data mid-flight.
+**Action:** When implementing visual loading states for asynchronous actions, always disable all form inputs to prevent duplicate/invalid submissions, and ensure the submit button maintains its size by absolutely positioning the loading state over a visually hidden original state.
