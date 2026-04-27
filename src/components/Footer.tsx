@@ -1,8 +1,10 @@
 import { useEffect,useState } from "react";
 import { toast } from "sonner";
+import { Loader2 } from "lucide-react";
 
 export default function Footer() {
     const [atBottom, setAtBottom] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     let ticking = false;
@@ -55,6 +57,7 @@ export default function Footer() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setIsLoading(true);
     const formData = new FormData(e.currentTarget);
     const email = formData.get("email") as string;
 
@@ -75,6 +78,8 @@ export default function Footer() {
     } catch (error) {
       console.error(error);
       toast.error("Error signing up. Please try again later.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -168,15 +173,22 @@ export default function Footer() {
               type="email"
               name="email"
               required
+              disabled={isLoading}
               placeholder="Email Address"
-              className="flex-1 px-3 py-2 text-black rounded-md outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2"
+              className="flex-1 px-3 py-2 text-black rounded-md outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 disabled:opacity-50"
             />
             <button
               type="submit"
+              disabled={isLoading}
               aria-label="Subscribe to newsletter"
-              className="px-5 bg-white text-black rounded-md font-medium outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2"
+              className="relative px-5 bg-white text-black rounded-md font-medium outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              →
+              <span className={isLoading ? "opacity-0" : "opacity-100"}>→</span>
+              {isLoading && (
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <Loader2 className="w-4 h-4 animate-spin text-black" />
+                </div>
+              )}
             </button>
           </form>
         </div>
