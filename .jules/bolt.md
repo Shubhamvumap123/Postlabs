@@ -17,3 +17,7 @@
 ## 2024-05-18 - Inverted Image Loading Strategies Anti-Pattern
 **Learning:** Found a systemic anti-pattern where critical above-the-fold images (Header logo, Hero down arrow) were intentionally deferred using `loading="lazy"`, actively delaying the Largest Contentful Paint (LCP) and worsening initial render times. Conversely, deeply nested below-the-fold images (e.g., in the Footer) were missing lazy loading entirely, bloating the initial payload.
 **Action:** Always eagerly load above-the-fold critical images (use `fetchPriority="high"` where appropriate) and explicitly apply `loading="lazy"` to all below-the-fold images. Never apply `loading="lazy"` to LCP elements.
+
+## 2024-05-18 - Text Animation Array Recalculation Bottleneck
+**Learning:** Generating arrays of DOM elements (like text spans for character-by-character animations) inside the main render loop causes React to recalculate and allocate hundreds of elements on every state change, stalling the main thread.
+**Action:** Always extract static text outside components and wrap the span array generation in `useMemo` with empty dependencies. Toggle visibility using parent CSS selectors (like `group-data-[visible=true]`) instead of conditionally applying classes inside the mapped array.
