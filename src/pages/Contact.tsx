@@ -5,7 +5,7 @@ import Navigation from "../components/Navigation";
 import Footer from "../components/Footer";
 import { Input } from "../components/ui/input";
 import { Button } from "../components/ui/button";
-import { Send, Mail, MapPin, Phone } from "lucide-react";
+import { Send, Mail, MapPin, Phone, Loader2 } from "lucide-react";
 
 const Contact = () => {
   const [loading, setLoading] = useState(false);
@@ -102,13 +102,13 @@ const Contact = () => {
                   <label htmlFor="firstName" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
                     First Name
                   </label>
-                  <Input id="firstName" required placeholder="John" />
+                  <Input id="firstName" required placeholder="John" disabled={loading} />
                 </div>
                 <div className="space-y-2">
                   <label htmlFor="lastName" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
                     Last Name
                   </label>
-                  <Input id="lastName" required placeholder="Doe" />
+                  <Input id="lastName" required placeholder="Doe" disabled={loading} />
                 </div>
               </div>
 
@@ -116,7 +116,7 @@ const Contact = () => {
                 <label htmlFor="email" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
                   Email
                 </label>
-                <Input id="email" type="email" required placeholder="john@example.com" />
+                <Input id="email" type="email" required placeholder="john@example.com" disabled={loading} />
               </div>
 
               <div className="space-y-2">
@@ -126,17 +126,22 @@ const Contact = () => {
                 <textarea
                   id="message"
                   required
+                  disabled={loading}
                   placeholder="How can we help you?"
                   className="flex min-h-[120px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 resize-none"
                 />
               </div>
 
-              <Button type="submit" className="w-full" disabled={loading}>
-                {loading ? "Sending..." : (
-                  <>
-                    Send Message <Send className="w-4 h-4 ml-2" />
-                  </>
+              <Button type="submit" className="w-full relative" disabled={loading}>
+                {loading && (
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <Loader2 className="w-5 h-5 animate-spin" />
+                    <span className="sr-only">Sending message...</span>
+                  </div>
                 )}
+                <span className={loading ? "opacity-0 flex items-center" : "flex items-center"}>
+                  Send Message <Send className="w-4 h-4 ml-2" />
+                </span>
               </Button>
             </form>
           </motion.div>
