@@ -17,3 +17,7 @@
 ## 2024-05-18 - Inverted Image Loading Strategies Anti-Pattern
 **Learning:** Found a systemic anti-pattern where critical above-the-fold images (Header logo, Hero down arrow) were intentionally deferred using `loading="lazy"`, actively delaying the Largest Contentful Paint (LCP) and worsening initial render times. Conversely, deeply nested below-the-fold images (e.g., in the Footer) were missing lazy loading entirely, bloating the initial payload.
 **Action:** Always eagerly load above-the-fold critical images (use `fetchPriority="high"` where appropriate) and explicitly apply `loading="lazy"` to all below-the-fold images. Never apply `loading="lazy"` to LCP elements.
+
+## 2024-05-18 - Text Animation Re-render Bottleneck
+**Learning:** Generating arrays of span elements inside the render loop based on dynamic state causes unnecessary O(N) recalculations and full DOM re-renders of the text elements on every state toggle, which blocks the main thread.
+**Action:** Extract static text outside the component, memoize the span generation with useMemo, and shift animation visibility to CSS attribute selectors (e.g., group-data-[visible=true]) on a parent element.
