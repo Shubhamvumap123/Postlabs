@@ -34,7 +34,27 @@ const AnimWords = React.forwardRef<
     localRef.current = node;
   };
   const inView = useInView(localRef, { once: true, amount: 0.2 });
-  const words = React.useMemo(() => text.split(/\s+/), [text]);
+
+  // OPTIMIZATION: Move the split logic and map loop outside the render flow
+  // by memoizing the array of motion.span elements. This prevents React from
+  // recreating these heavy framer-motion components on every re-render of
+  // the parent or when `inView` changes state.
+  const animatedWords = React.useMemo(() => {
+    const words = text.split(/\s+/);
+    return words.map((w: string, i: number) => (
+      <motion.span
+        key={`${w}-${i}`}
+        aria-hidden="true"
+        initial={{ opacity: 0, y: 8 }}
+        animate={inView ? { opacity: 1, y: 0 } : {}}
+        transition={{ delay: i * 0.03, duration: 0.35, ease: "easeOut" }}
+        className="inline-block relative"
+      >
+        {w}
+        {i < words.length - 1 ? " " : ""}
+      </motion.span>
+    ));
+  }, [text, inView]);
 
   return (
     <Tag
@@ -45,19 +65,7 @@ const AnimWords = React.forwardRef<
       data-speed={speed}
       {...rest}
     >
-      {words.map((w: string, i: number) => (
-        <motion.span
-          key={`${w}-${i}`}
-          aria-hidden="true"
-          initial={{ opacity: 0, y: 8 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ delay: i * 0.03, duration: 0.35, ease: "easeOut" }}
-          className="inline-block relative"
-        >
-          {w}
-          {i < words.length - 1 ? " " : ""}
-        </motion.span>
-      ))}
+      {animatedWords}
     </Tag>
   );
 });
