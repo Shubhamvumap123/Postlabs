@@ -160,6 +160,7 @@ export default function Footer() {
           </ul>
           <h2 className="text-xl font-semibold">Sign Up for Our Newsletter</h2>
           <form className="flex gap-2 max-w-md" onSubmit={handleSubmit}>
+            {/* SECURITY: Added maxLength limit to prevent DoS via massive payloads */}
             <label htmlFor="newsletter-email" className="sr-only">
               Email Address
             </label>
@@ -168,6 +169,7 @@ export default function Footer() {
               type="email"
               name="email"
               required
+              maxLength={100}
               placeholder="Email Address"
               className="flex-1 px-3 py-2 text-black rounded-md outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2"
             />

@@ -265,6 +265,7 @@ export default function TaskDashboard() {
         description="Add a new task to your dashboard."
       >
         <form onSubmit={addTask} className="space-y-4">
+          {/* SECURITY: Added maxLength limit to prevent DoS via massive payloads */}
           <div className="space-y-2">
             <label htmlFor="title" className="text-sm font-medium text-zinc-300">
               Task Title
@@ -273,6 +274,7 @@ export default function TaskDashboard() {
               id="title"
               value={newTaskTitle}
               onChange={(e) => setNewTaskTitle(e.target.value)}
+              maxLength={100}
               placeholder="e.g. Review system performance"
               className="bg-zinc-900 border-zinc-700 text-zinc-100 focus:ring-purple-500"
               autoFocus
