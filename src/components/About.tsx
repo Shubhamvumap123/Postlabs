@@ -1,10 +1,10 @@
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
+
+const text = "Post Labs is rethinking how digital media works for Canadians. Our mission is simple: make journalism profitable, sustainable, and trusted – built for Canadians, by Canadians.";
 
 const About = () => {
   const [isVisible, setIsVisible] = useState(false);
-  
-  const text = "Post Labs is rethinking how digital media works for Canadians. Our mission is simple: make journalism profitable, sustainable, and trusted – built for Canadians, by Canadians.";
   
   useEffect(() => {
     // Trigger the animation after component mounts
@@ -12,13 +12,13 @@ const About = () => {
     return () => clearTimeout(timer);
   }, []);
 
-  const splitText = (text: string) => {
+  // PERFORMANCE: Memoize the split text elements to prevent recreating the array
+  // and React elements on every render. Use CSS selectors for toggling visibility.
+  const splitTextElements = useMemo(() => {
     return text.split('').map((char, index) => (
       <span
         key={index}
-        className={`inline-block transition-all duration-700 ease-out ${
-          isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
-        }`}
+        className={`inline-block transition-all duration-700 ease-out opacity-0 translate-y-4 group-data-[visible=true]:opacity-100 group-data-[visible=true]:translate-y-0`}
         style={{
           transitionDelay: `${index * 50}ms`,
           whiteSpace: char === ' ' ? 'pre' : 'normal'
@@ -28,7 +28,7 @@ const About = () => {
         {char}
       </span>
     ));
-  };
+  }, []);
 
   return (
     <section className="relative z-10 bg-cream-50 min-h-screen">
@@ -48,8 +48,8 @@ const About = () => {
             aria-label={text}
           >
             <span className="sr-only">{text}</span>
-            <span aria-hidden="true">
-              {splitText(text)}
+            <span aria-hidden="true" className="group" data-visible={isVisible}>
+              {splitTextElements}
             </span>
           </p>
         </div>
