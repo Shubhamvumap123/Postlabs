@@ -65,6 +65,7 @@ const Settings = () => {
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     placeholder="Enter your name"
+                    autoComplete="name"
                   />
                 </div>
                 <Button type="submit">Save Changes</Button>
