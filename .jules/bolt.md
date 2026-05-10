@@ -17,3 +17,7 @@
 ## 2024-05-18 - Inverted Image Loading Strategies Anti-Pattern
 **Learning:** Found a systemic anti-pattern where critical above-the-fold images (Header logo, Hero down arrow) were intentionally deferred using `loading="lazy"`, actively delaying the Largest Contentful Paint (LCP) and worsening initial render times. Conversely, deeply nested below-the-fold images (e.g., in the Footer) were missing lazy loading entirely, bloating the initial payload.
 **Action:** Always eagerly load above-the-fold critical images (use `fetchPriority="high"` where appropriate) and explicitly apply `loading="lazy"` to all below-the-fold images. Never apply `loading="lazy"` to LCP elements.
+
+## $(date +%Y-%m-%d) - Native Lazy Loading for Offscreen Images
+**Learning:** React components containing multiple below-the-fold decorative images (like `CardSection` and `PrivacySection`) can inadvertently increase initial load times and bandwidth consumption if native browser lazy loading is omitted.
+**Action:** Always append the `loading="lazy"` attribute to `<img />` elements that are not part of the initial viewport (LCP) to defer their fetch until they scroll into view.
