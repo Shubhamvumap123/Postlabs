@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import process from 'node:process';
 import User from '../models/User';
 
 export const register = async (req: Request, res: Response): Promise<void> => {
@@ -15,7 +16,7 @@ export const register = async (req: Request, res: Response): Promise<void> => {
     const user = await User.create({ email, password: hashedPassword });
     const token = jwt.sign({ userId: user._id, role: user.role }, process.env.JWT_SECRET || 'secret', { expiresIn: '1d' });
     res.status(201).json({ token, user: { id: user._id, email: user.email, role: user.role } });
-  } catch (error) {
+  } catch (_error) {
     res.status(500).json({ message: 'Error creating user' });
   }
 };
@@ -35,11 +36,11 @@ export const login = async (req: Request, res: Response): Promise<void> => {
     }
     const token = jwt.sign({ userId: user._id, role: user.role }, process.env.JWT_SECRET || 'secret', { expiresIn: '1d' });
     res.status(200).json({ token, user: { id: user._id, email: user.email, role: user.role } });
-  } catch (error) {
+  } catch (_error) {
     res.status(500).json({ message: 'Error logging in' });
   }
 };
 
-export const logout = async (req: Request, res: Response): Promise<void> => {
+export const logout = (_req: Request, res: Response): void => {
   res.status(200).json({ message: 'Logged out successfully' });
 };
