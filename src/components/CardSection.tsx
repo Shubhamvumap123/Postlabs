@@ -69,6 +69,7 @@ const CardSection: React.FC = () => {
             <img
               src={card.icon}
               alt={card.text}
+              loading="lazy"
               className="w-10 h-10 absolute top-2 left-2"
             />
             <div className="text-white text-base font-medium mt-10">
