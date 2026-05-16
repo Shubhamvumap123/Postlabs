@@ -1,54 +1,103 @@
-# React + TypeScript + Vite
+# JobTracker Pro - Full Stack SaaS Dashboard
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A production-ready Job Tracker application with a modern React frontend and a Node.js/Express backend.
 
-Currently, two official plugins are available:
+## 🚀 Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **User Authentication:** Secure JWT-based signup, login, and logout.
+- **Job Management:** Complete CRUD operations (Add, Edit, Delete) for job applications.
+- **Status Tracking:** Track applications through stages (Applied, Interview, Offer, Rejected).
+- **Search & Filter:** Easily find jobs by company name or filter by application status.
+- **Analytics Dashboard:** Visual charts (using Recharts) to analyze your application success rate.
+- **Responsive UI:** Modern, accessible interface built with Tailwind CSS.
 
-## Expanding the ESLint configuration
+## 💻 Tech Stack
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+**Frontend:**
+- React.js 19 + TypeScript
+- Vite
+- Tailwind CSS
+- React Router DOM
+- React Query (TanStack Query)
+- Recharts (for Analytics)
+- Lucide React (Icons)
+- Sonner (Toast notifications)
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+**Backend:**
+- Node.js + Express.js
+- MongoDB + Mongoose
+- JSON Web Token (JWT)
+- bcryptjs (Password hashing)
+- TypeScript
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## 📸 Screenshots
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+*(Add screenshots here)*
+- `[Dashboard Screenshot Placeholder]`
+- `[Jobs List Screenshot Placeholder]`
+- `[Add Job Screenshot Placeholder]`
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
-```
+## 🛠️ Setup Instructions
+
+### Prerequisites
+- Node.js (v18+)
+- pnpm (v10+)
+- MongoDB (local or Atlas URI)
+
+### Backend Setup
+1. Open a terminal and navigate to the `server` directory:
+   ```bash
+   cd server
+   ```
+2. Install dependencies:
+   ```bash
+   pnpm install
+   ```
+3. Create a `.env` file in the `server` root and add your MongoDB connection string and JWT secret:
+   ```env
+   PORT=5000
+   MONGO_URI=mongodb://127.0.0.1:27017/jobtracker
+   JWT_SECRET=your_super_secret_key
+   ```
+4. Start the backend development server:
+   ```bash
+   pnpm run dev
+   ```
+
+### Frontend Setup
+1. Open another terminal and navigate to the `client` directory:
+   ```bash
+   cd client
+   ```
+2. Install dependencies:
+   ```bash
+   pnpm install
+   ```
+3. Create a `.env` file in the `client` root (if your API URL differs from default):
+   ```env
+   VITE_API_URL=http://localhost:5000/api
+   ```
+4. Start the frontend development server:
+   ```bash
+   pnpm run dev
+   ```
+
+## 🚀 Deployment Guide
+
+### Backend Deployment (Render)
+1. Push your code to a GitHub repository.
+2. Go to [Render](https://render.com) and create a new **Web Service**.
+3. Connect your repository.
+4. Set the Root Directory to `server`.
+5. Build Command: `pnpm install && pnpm build`
+6. Start Command: `pnpm start` (which runs `node dist/index.js`)
+7. Add Environment Variables (`MONGO_URI`, `JWT_SECRET`).
+
+### Frontend Deployment (Vercel)
+1. Go to [Vercel](https://vercel.com) and import your GitHub repository.
+2. Set the Framework Preset to **Vite**.
+3. Set the Root Directory to `client`.
+4. Build Command: `pnpm run build`
+5. Output Directory: `dist`
+6. Add Environment Variable: `VITE_API_URL=https://your-render-backend-url.onrender.com/api`
+7. Deploy!
