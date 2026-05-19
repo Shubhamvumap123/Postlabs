@@ -2,7 +2,7 @@ import React, { useEffect, useState, useId } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { X } from "lucide-react";
-import { cn } from "../../lib/utils";
+import { cn } from "../../lib/utils.ts";
 
 interface DialogProps {
   isOpen: boolean;
@@ -95,6 +95,7 @@ export const Dialog: React.FC<DialogProps> = ({
                   )}
                 </div>
                 <button
+                  type="button"
                   onClick={onClose}
                   aria-label="Close dialog"
                   className="p-2 text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800 rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400"

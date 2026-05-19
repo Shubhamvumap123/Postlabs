@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
-import Navigation from "../components/Navigation";
-import Footer from "../components/Footer";
-import { Input } from "../components/ui/input";
-import { Button } from "../components/ui/button";
+import Navigation from "../components/Navigation.tsx";
+import Footer from "../components/Footer.tsx";
+import { Input } from "../components/ui/input.tsx";
+import { Button } from "../components/ui/button.tsx";
 import { Send, Mail, MapPin, Phone } from "lucide-react";
 
 const Contact = () => {
