@@ -4,6 +4,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import authRoutes from './routes/authRoutes.js';
 import jobRoutes from './routes/jobRoutes.js';
+import process from "node:process";
 
 dotenv.config();
 
@@ -19,12 +20,12 @@ app.use('/api/auth', authRoutes);
 app.use('/api/jobs', jobRoutes);
 
 // Basic route
-app.get('/', (req, res) => {
+app.get('/', (_req, res) => {
   res.send('Job Tracker API is running...');
 });
 
 // Error handling middleware
-app.use((err, req, res, next) => {
+app.use((err, _req, res, _next) => {
   console.error(err.stack);
   res.status(500).json({ message: 'Something went wrong on the server', error: err.message });
 });

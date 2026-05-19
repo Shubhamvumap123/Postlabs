@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken';
 import User from '../models/User.js';
+import process from "node:process";
 
 const generateToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET || 'fallback_secret_key', {

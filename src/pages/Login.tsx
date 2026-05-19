@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
-import { Button } from '../components/ui/button';
-import { Input } from '../components/ui/input';
+import { useAuth } from '../context/AuthContext.tsx';
+import { Button } from '../components/ui/button.tsx';
+import { Input } from '../components/ui/input.tsx';
 import { toast } from 'sonner';
 
 export default function Login() {

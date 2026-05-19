@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../context/AuthContext.tsx';
 import { useNavigate } from 'react-router-dom';
-import { Button } from '../components/ui/button';
-import { Input } from '../components/ui/input';
+import { Button } from '../components/ui/button.tsx';
+import { Input } from '../components/ui/input.tsx';
 import { toast } from 'sonner';
 import { Briefcase, Building2, MapPin, DollarSign, LogOut, Plus, Trash2, Edit2 } from 'lucide-react';
 
@@ -142,7 +142,7 @@ export default function Dashboard() {
   };
 
   const handleDelete = async (id: string) => {
-    if (!window.confirm('Are you sure you want to delete this job application?')) return;
+    if (!globalThis.confirm('Are you sure you want to delete this job application?')) return;
 
     try {
       const response = await fetch(`http://localhost:5000/api/jobs/${id}`, {
@@ -237,6 +237,7 @@ export default function Dashboard() {
           <div className="flex gap-2 w-full md:w-auto overflow-x-auto pb-2 md:pb-0">
             {['All', 'Applied', 'Interview', 'Offer', 'Rejected'].map((status) => (
               <button
+                type="button"
                 key={status}
                 onClick={() => setStatusFilter(status)}
                 className={`px-4 py-2 rounded-full text-sm whitespace-nowrap transition-colors ${
@@ -300,10 +301,10 @@ export default function Dashboard() {
                       Added {new Date(job.createdAt).toLocaleDateString()}
                     </span>
                     <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <button onClick={() => openDialog(job)} className="p-1.5 text-zinc-400 hover:text-white hover:bg-zinc-800 rounded-md transition-colors">
+                      <button type="button" onClick={() => openDialog(job)} className="p-1.5 text-zinc-400 hover:text-white hover:bg-zinc-800 rounded-md transition-colors">
                         <Edit2 className="w-4 h-4" />
                       </button>
-                      <button onClick={() => handleDelete(job._id)} className="p-1.5 text-zinc-400 hover:text-red-500 hover:bg-zinc-800 rounded-md transition-colors">
+                      <button type="button" onClick={() => handleDelete(job._id)} className="p-1.5 text-zinc-400 hover:text-red-500 hover:bg-zinc-800 rounded-md transition-colors">
                         <Trash2 className="w-4 h-4" />
                       </button>
                     </div>
@@ -322,7 +323,7 @@ export default function Dashboard() {
           <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-6 w-full max-w-md shadow-2xl">
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-xl font-semibold text-white">{editingJob ? 'Edit Application' : 'Add Application'}</h2>
-              <button onClick={closeDialog} className="text-zinc-400 hover:text-white">&times;</button>
+              <button type="button" onClick={closeDialog} className="text-zinc-400 hover:text-white">&times;</button>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-4">

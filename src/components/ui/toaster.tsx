@@ -1,5 +1,5 @@
 // Update the import path below if your use-toast hook is located elsewhere
-import { useToast } from "../../hooks/use-toast"
+import { useToast } from "../../hooks/use-toast.tsx"
 import {
   Toast,
   ToastClose,
@@ -7,7 +7,7 @@ import {
   ToastProvider,
   ToastTitle,
   ToastViewport,
-} from "../../components/ui/toast"
+} from "./toast.tsx"
 
 export function Toaster() {
   const { toasts } = useToast()
