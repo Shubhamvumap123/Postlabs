@@ -60,6 +60,8 @@ export const useScrollAnimations = () => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
           entry.target.classList.add('in-view');
+          // PERFORMANCE: Calling unobserve prevents redundant callbacks for elements already in view.
+          fadeUpObserver.unobserve(entry.target);
         }
       });
     };

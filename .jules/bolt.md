@@ -17,3 +17,7 @@
 ## 2024-05-18 - Inverted Image Loading Strategies Anti-Pattern
 **Learning:** Found a systemic anti-pattern where critical above-the-fold images (Header logo, Hero down arrow) were intentionally deferred using `loading="lazy"`, actively delaying the Largest Contentful Paint (LCP) and worsening initial render times. Conversely, deeply nested below-the-fold images (e.g., in the Footer) were missing lazy loading entirely, bloating the initial payload.
 **Action:** Always eagerly load above-the-fold critical images (use `fetchPriority="high"` where appropriate) and explicitly apply `loading="lazy"` to all below-the-fold images. Never apply `loading="lazy"` to LCP elements.
+
+## 2024-05-21 - Double-Staggered Animation Anti-Pattern
+**Learning:** Using nested setTimeout calls within an IntersectionObserver callback to manually sequence staggered DOM style mutations causes unnecessary JavaScript execution. Missing unobserve calls on scroll animations also cause redundant callback executions.
+**Action:** Rely purely on CSS transition-delay assigned during element creation for staggered animations. Always ensure observers call unobserve after the initial trigger.
