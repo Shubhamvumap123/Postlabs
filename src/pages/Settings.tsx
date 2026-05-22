@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
 import Navigation from "../components/Navigation";
@@ -9,17 +9,14 @@ import { User, Bell, Smartphone } from "lucide-react";
 import { useTheme } from "next-themes";
 
 const Settings = () => {
-  const [name, setName] = useState("");
-  const [notifications, setNotifications] = useState(true);
-  const { theme, setTheme } = useTheme();
-
-  useEffect(() => {
-    const savedName = globalThis.localStorage.getItem("userName");
-    if (savedName) setName(savedName);
-
+  const [name, setName] = useState(() => {
+    return globalThis.localStorage.getItem("userName") || "";
+  });
+  const [notifications, setNotifications] = useState(() => {
     const savedNotifs = globalThis.localStorage.getItem("notifications");
-    if (savedNotifs) setNotifications(JSON.parse(savedNotifs));
-  }, []);
+    return savedNotifs ? JSON.parse(savedNotifs) : true;
+  });
+  const { theme, setTheme } = useTheme();
 
   const handleSave = (e: React.FormEvent) => {
     e.preventDefault();
@@ -60,6 +57,7 @@ const Settings = () => {
                   <label htmlFor="name" className="text-sm font-medium text-foreground">
                     Display Name
                   </label>
+                  {/* PERFORMANCE: Synchronous lazy initialization prevents redundant initial renders */}
                   <Input
                     id="name"
                     value={name}
@@ -92,6 +90,7 @@ const Settings = () => {
                     Receive notifications about your tasks
                   </p>
                 </div>
+                {/* PERFORMANCE: Synchronous lazy initialization prevents redundant initial renders */}
                 <button
                   type="button"
                   role="switch"
