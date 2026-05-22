@@ -60,9 +60,11 @@ const Settings = () => {
                   <label htmlFor="name" className="text-sm font-medium text-foreground">
                     Display Name
                   </label>
+                  {/* SECURITY: Added maxLength to prevent DoS via excessively large input */}
                   <Input
                     id="name"
                     value={name}
+                    maxLength={100}
                     onChange={(e) => setName(e.target.value)}
                     placeholder="Enter your name"
                   />
