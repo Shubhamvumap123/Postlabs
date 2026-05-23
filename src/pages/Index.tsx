@@ -1,41 +1,37 @@
-import { useEffect } from "react";
-import Navigation from "../components/Navigation";
-import Hero from "../components/Hero";
-import FeatureCards from "../components/FeatureCards";
-import About from "../components/About";
-import VideoSection from "../components/VideoSection";
-import BuildingSection from "../components/BuildingSection";
-import Footer from "../components/Footer";
-import { useScrollAnimations, initSmoothScrolling } from "../hooks/useScrollAnimations";
-import FullWidthVideoSection from "../components/FullWidthVideoSection";
-import PrivacySection from "../components/PrivacySection";
-import FloatingGrid from "../components/FloatingGrid";
+import { Link } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
+import { Button } from "../components/ui/button";
 
 const Index = () => {
-  useScrollAnimations();
-
-  useEffect(() => {
-    const cleanup = initSmoothScrolling();
-    return cleanup;
-  }, []);
+  const { user } = useAuth();
 
   return (
-    <div className="min-h-screen bg-background font-['Inter_Tight',Verdana,sans-serif]">
-      <Navigation />
-      {/* relative container so FloatingGrid stays only behind main content */}
-      <div className="relative">
-        <FloatingGrid />
-        <main className="relative z-10">
-          <Hero />
-          <About />
-          <FullWidthVideoSection />
-          <BuildingSection />
-          <PrivacySection />
-          <VideoSection />
-          <FeatureCards />
-        </main>
-      </div>
-      <Footer />
+    <div className="min-h-screen bg-zinc-950 flex flex-col items-center justify-center text-center p-4">
+      <h1 className="text-5xl font-bold text-white mb-6">Job Tracker Pro</h1>
+      <p className="text-xl text-zinc-400 max-w-2xl mb-8">
+        Manage your job search efficiently. Track applications, interviews, and offers all in one place.
+      </p>
+
+      {user ? (
+        <Link to="/dashboard">
+          <Button className="bg-purple-600 hover:bg-purple-700 text-white px-8 py-6 text-lg">
+            Go to Dashboard
+          </Button>
+        </Link>
+      ) : (
+        <div className="flex gap-4">
+          <Link to="/login">
+            <Button className="bg-zinc-800 hover:bg-zinc-700 text-white px-8 py-6 text-lg">
+              Log In
+            </Button>
+          </Link>
+          <Link to="/register">
+            <Button className="bg-purple-600 hover:bg-purple-700 text-white px-8 py-6 text-lg">
+              Get Started
+            </Button>
+          </Link>
+        </div>
+      )}
     </div>
   );
 };
