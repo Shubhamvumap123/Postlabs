@@ -1,54 +1,61 @@
-# React + TypeScript + Vite
+# Job Tracker SaaS
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A production-ready full-stack job tracking application built with React, Node.js, Express, and MongoDB.
 
-Currently, two official plugins are available:
+## Features
+- **User Authentication**: Secure JWT-based login and registration.
+- **Job Management**: Full CRUD operations for job applications.
+- **Status Tracking**: Keep track of applications (Applied, Interview, Offer, Rejected).
+- **Dashboard Analytics**: Visualize job application statistics with interactive charts.
+- **Search & Filter**: Easily find jobs by status or search terms.
+- **Responsive Design**: Modern UI built with TailwindCSS and Radix UI.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Tech Stack
+- **Frontend**: React (Vite), TailwindCSS, React Query, Recharts, Lucide Icons.
+- **Backend**: Node.js, Express.js, MongoDB (Mongoose), JWT, bcryptjs.
 
-## Expanding the ESLint configuration
+## Setup Instructions
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+1. **Clone the repository**
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+2. **Backend Setup**
+   ```bash
+   cd server
+   pnpm install
+   ```
+   Create a `.env` file in the `server` directory:
+   ```env
+   PORT=5000
+   MONGO_URI=your_mongodb_connection_string
+   JWT_SECRET=your_jwt_secret
+   ```
+   Start the backend:
+   ```bash
+   pnpm run dev
+   ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+3. **Frontend Setup**
+   ```bash
+   pnpm install
+   ```
+   Create a `.env` file in the root directory:
+   ```env
+   VITE_API_URL=http://localhost:5000/api
+   ```
+   Start the frontend:
+   ```bash
+   pnpm run dev
+   ```
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## Screenshots
+![Dashboard Placeholder](screenshot-dashboard.png)
+![Jobs List Placeholder](screenshot-jobs.png)
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
-```
+## Deployment (Suggested)
+- **Frontend**: Deploy to Vercel by importing the repository and setting the build command to `pnpm run build` and the output directory to `dist`.
+- **Backend**: Deploy to Render as a Web Service using Node.js. Set the environment variables in the Render dashboard.
+
+## Architecture & Scalability Improvements
+- **Pagination & Caching**: Implement cursor-based pagination for job listings and use Redis for caching frequently accessed data.
+- **Microservices**: For very large scale, separate authentication and job tracking into distinct microservices.
+- **Message Queues**: Use RabbitMQ or AWS SQS for asynchronous tasks like email notifications for upcoming interviews.
