@@ -3,6 +3,7 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import User from '../models/User';
 import { AuthRequest } from '../middleware/auth';
+import process from 'node:process';
 
 const generateToken = (id: string) => {
   return jwt.sign({ id }, process.env.JWT_SECRET || 'secret', { expiresIn: '30d' });
@@ -24,7 +25,7 @@ export const registerUser = async (req: Request, res: Response): Promise<void> =
     } else {
       res.status(400).json({ message: 'Invalid user data' });
     }
-  } catch (error) {
+  } catch (_error) {
     res.status(500).json({ message: 'Server Error' });
   }
 };
@@ -38,7 +39,7 @@ export const loginUser = async (req: Request, res: Response): Promise<void> => {
     } else {
       res.status(401).json({ message: 'Invalid email or password' });
     }
-  } catch (error) {
+  } catch (_error) {
     res.status(500).json({ message: 'Server Error' });
   }
 };
@@ -47,7 +48,7 @@ export const getMe = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const user = await User.findById(req.user?.id).select('-password');
     res.json(user);
-  } catch (error) {
+  } catch (_error) {
     res.status(500).json({ message: 'Server Error' });
   }
 };

@@ -39,7 +39,7 @@ const JobDashboard = () => {
     try {
       const response = await api.get('/jobs');
       setJobs(response.data);
-    } catch (error) {
+    } catch (_error) {
       toast.error('Failed to fetch jobs');
     } finally {
       setLoading(false);
@@ -60,18 +60,18 @@ const JobDashboard = () => {
         toast.success('Job added successfully');
       }
       handleCloseModal();
-    } catch (error) {
+    } catch (_error) {
       toast.error('Failed to save job');
     }
   };
 
   const handleDelete = async (id: string) => {
-    if (!window.confirm('Are you sure you want to delete this job?')) return;
+    if (!globalThis.confirm('Are you sure you want to delete this job?')) return;
     try {
       await api.delete(`/jobs/${id}`);
       setJobs(jobs.filter(j => j._id !== id));
       toast.success('Job deleted');
-    } catch (error) {
+    } catch (_error) {
       toast.error('Failed to delete job');
     }
   };
@@ -251,7 +251,7 @@ const JobDashboard = () => {
             <label className="block text-sm font-medium text-zinc-400 mb-1">Status</label>
             <select
               value={status}
-              onChange={(e) => setStatus(e.target.value as any)}
+              onChange={(e) => setStatus(e.target.value as 'Applied' | 'Interview' | 'Offer' | 'Rejected')}
               className="w-full bg-zinc-900 border border-zinc-700 text-white rounded-md h-10 px-3 focus:outline-none focus:ring-2 focus:ring-purple-500"
             >
               <option value="Applied">Applied</option>
