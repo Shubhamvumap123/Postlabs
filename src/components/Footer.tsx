@@ -1,33 +1,26 @@
-import { useEffect,useState } from "react";
+import { useEffect,useState,useRef } from "react";
 import { toast } from "sonner";
 
 export default function Footer() {
     const [atBottom, setAtBottom] = useState(false);
+    const sentinelRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    let ticking = false;
-    let frameId: number = 0;
+    // PERFORMANCE: Use IntersectionObserver on a sentinel element to track bottom
+    // of page instead of querying layout properties inside a scroll handler
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setAtBottom(entry.isIntersecting);
+      },
+      // A small positive rootMargin means the footer starts revealing just before reaching the absolute bottom
+      { rootMargin: "200px" }
+    );
 
-    const handleScroll = () => {
-      if (!ticking) {
-        frameId = globalThis.requestAnimationFrame(() => {
-          const bottom =
-            globalThis.innerHeight + globalThis.scrollY >= document.body.offsetHeight - 50;
-          setAtBottom(bottom);
-          ticking = false;
-        });
-        ticking = true;
-      }
-    };
+    if (sentinelRef.current) {
+      observer.observe(sentinelRef.current);
+    }
 
-    // Call once to set initial state in case the page is already at the bottom
-    handleScroll();
-
-    globalThis.addEventListener("scroll", handleScroll, { passive: true });
-    return () => {
-      globalThis.removeEventListener("scroll", handleScroll);
-      globalThis.cancelAnimationFrame(frameId);
-    };
+    return () => observer.disconnect();
   }, []);
 
   useEffect(() => {
@@ -80,6 +73,7 @@ export default function Footer() {
 
 
   return (
+    <>
     <footer    className={ `bg-black text-white transition-all duration-700 ease-in-out z-50 
         ${atBottom ? "opacity-100 translate-y-0" : "opacity-0 translate-y-full"}
       `}>
@@ -194,5 +188,8 @@ export default function Footer() {
       </div>
       
     </footer>
+    {/* Sentinel element placed at the bottom to trigger IntersectionObserver */}
+    <div ref={sentinelRef} className="w-full h-1 pointer-events-none" />
+    </>
   );
 }
