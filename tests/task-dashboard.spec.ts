@@ -30,7 +30,7 @@ test('TaskDashboard component functionality', async ({ page }) => {
   await expect(container).toHaveClass(/border-zinc-800/);
 
   // Verify empty state text
-  await expect(page.getByText('Scheduled tasks will show up here')).toBeVisible();
+  await expect(page.getByText('No scheduled tasks found')).toBeVisible();
 
   // Verify filter chips existence
   const performanceChip = page.getByRole('button', { name: 'Performance' });
@@ -46,7 +46,7 @@ test('TaskDashboard component functionality', async ({ page }) => {
   await newButton.click();
   await page.getByLabel('Task Title').fill('Performance Task');
   // Default category is Performance
-  await page.getByRole('button', { name: 'Create Task' }).click();
+  await page.locator('form').getByRole('button', { name: 'Create Task' }).click();
 
   // Task 2: Design
   await newButton.click();
@@ -77,7 +77,7 @@ test('TaskDashboard component functionality', async ({ page }) => {
   // We are on "All" tab, create a new task for completion test
   await newButton.click();
   await page.getByLabel('Task Title').fill('Task to Complete');
-  await page.getByRole('button', { name: 'Create Task' }).click();
+  await page.locator('form').getByRole('button', { name: 'Create Task' }).click();
   await expect(page.locator('form')).toBeHidden();
 
   // Use .group class to target the task row container
@@ -98,7 +98,7 @@ test('TaskDashboard component functionality', async ({ page }) => {
   // Create a new task for archiving
   await newButton.click();
   await page.getByLabel('Task Title').fill('Task to Archive');
-  await page.getByRole('button', { name: 'Create Task' }).click();
+  await page.locator('form').getByRole('button', { name: 'Create Task' }).click();
   await expect(page.locator('form')).toBeHidden();
 
   // It should be visible in Scheduled tab
@@ -126,7 +126,7 @@ test('TaskDashboard persistence', async ({ page }) => {
   const newButton = page.getByRole('button', { name: 'New' });
   await newButton.click();
   await page.getByLabel('Task Title').fill('Persistent Task');
-  await page.getByRole('button', { name: 'Create Task' }).click();
+  await page.locator('form').getByRole('button', { name: 'Create Task' }).click();
   await expect(page.locator('form')).toBeHidden();
 
   // Verify task is visible

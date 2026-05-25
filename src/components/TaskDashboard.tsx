@@ -25,7 +25,7 @@ interface Task {
  * - Navigation: Segmented control with tabs: "All", "Scheduled", "Completed", "Archived".
  * - Interactions: "Pill" shape background animation for the active tab state.
  * - Primary Action: Highly visible "+ New" button with purple accent color (bg-purple-600) and hover effect.
- * - Empty State: Centered clock icon with "Scheduled tasks will show up here" text in muted gray when no tasks are present.
+ * - Empty State: Context-aware icons and text based on the active tab, with a call-to-action button when applicable.
  * - Bottom Filter Chips: "Skill-based agents" section with toggleable filters for "Performance" (lightning), "Design" (palette), and "Security" (shield).
  * - Tech Stack: React, Tailwind CSS, Framer Motion, Lucide-React.
  */
@@ -190,9 +190,30 @@ export default function TaskDashboard() {
         {filteredTasks.length === 0 ? (
           <div className="flex flex-col items-center justify-center text-center p-8 h-[300px]">
             <div className="w-16 h-16 mb-4 rounded-full bg-zinc-800/50 flex items-center justify-center">
-              <Clock className="w-8 h-8 text-zinc-400" aria-hidden="true" />
+              {activeTab === 'Completed' ? (
+                <CheckCircle2 className="w-8 h-8 text-zinc-400" aria-hidden="true" />
+              ) : activeTab === 'Archived' ? (
+                <Archive className="w-8 h-8 text-zinc-400" aria-hidden="true" />
+              ) : (
+                <Clock className="w-8 h-8 text-zinc-400" aria-hidden="true" />
+              )}
             </div>
-            <p className="text-zinc-400 font-medium">Scheduled tasks will show up here</p>
+            <p className="text-zinc-400 font-medium mb-4">
+              {activeTab === 'Completed'
+                ? "No completed tasks yet"
+                : activeTab === 'Archived'
+                ? "No archived tasks"
+                : "No scheduled tasks found"}
+            </p>
+            {activeTab !== 'Completed' && activeTab !== 'Archived' && (
+              <Button
+                onClick={() => setIsNewTaskOpen(true)}
+                variant="outline"
+                className="bg-transparent border-zinc-700 text-zinc-300 hover:text-white hover:bg-zinc-800"
+              >
+                Create Task
+              </Button>
+            )}
           </div>
         ) : (
           <div className="divide-y divide-zinc-800">
