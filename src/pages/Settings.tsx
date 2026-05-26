@@ -18,11 +18,25 @@ const Settings = () => {
     if (savedName) setName(savedName);
 
     const savedNotifs = globalThis.localStorage.getItem("notifications");
-    if (savedNotifs) setNotifications(JSON.parse(savedNotifs));
+    if (savedNotifs) {
+      try {
+        setNotifications(JSON.parse(savedNotifs));
+      } catch (e) {
+        // SECURITY: Prevent app crash if local storage is corrupted
+        console.error("Failed to parse notifications setting from local storage", e);
+      }
+    }
   }, []);
 
   const handleSave = (e: React.FormEvent) => {
     e.preventDefault();
+
+    // SECURITY: Validate input length
+    if (name.length > 50) {
+      toast.error("Display Name cannot exceed 50 characters");
+      return;
+    }
+
     globalThis.localStorage.setItem("userName", name);
     globalThis.localStorage.setItem("notifications", JSON.stringify(notifications));
     toast.success("Settings saved successfully");
@@ -65,6 +79,7 @@ const Settings = () => {
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     placeholder="Enter your name"
+                    maxLength={50}
                   />
                 </div>
                 <Button type="submit">Save Changes</Button>
