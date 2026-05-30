@@ -17,3 +17,7 @@
 ## 2024-05-18 - Inverted Image Loading Strategies Anti-Pattern
 **Learning:** Found a systemic anti-pattern where critical above-the-fold images (Header logo, Hero down arrow) were intentionally deferred using `loading="lazy"`, actively delaying the Largest Contentful Paint (LCP) and worsening initial render times. Conversely, deeply nested below-the-fold images (e.g., in the Footer) were missing lazy loading entirely, bloating the initial payload.
 **Action:** Always eagerly load above-the-fold critical images (use `fetchPriority="high"` where appropriate) and explicitly apply `loading="lazy"` to all below-the-fold images. Never apply `loading="lazy"` to LCP elements.
+
+## 2026-05-30 - React State Synchronous Lazy Initialization
+**Learning:** Using `useEffect` to initialize state from synchronous sources like `localStorage` on mount causes an unnecessary component re-render and can result in a flash of incorrect uninitialized state before the effect fires.
+**Action:** Always use synchronous lazy initialization `useState(() => localStorage.getItem(...))` for reading from synchronous storage, eliminating the secondary render cycle and preventing UI flicker.
