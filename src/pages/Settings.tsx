@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
 import Navigation from "../components/Navigation";
@@ -9,17 +9,17 @@ import { User, Bell, Smartphone } from "lucide-react";
 import { useTheme } from "next-themes";
 
 const Settings = () => {
-  const [name, setName] = useState("");
-  const [notifications, setNotifications] = useState(true);
-  const { theme, setTheme } = useTheme();
-
-  useEffect(() => {
+  const [name, setName] = useState(() => {
+    /* PERFORMANCE: Prevent flash of uninitialized state and extra re-render on mount */
     const savedName = globalThis.localStorage.getItem("userName");
-    if (savedName) setName(savedName);
+    return savedName || "";
+  });
 
+  const [notifications, setNotifications] = useState(() => {
     const savedNotifs = globalThis.localStorage.getItem("notifications");
-    if (savedNotifs) setNotifications(JSON.parse(savedNotifs));
-  }, []);
+    return savedNotifs ? JSON.parse(savedNotifs) : true;
+  });
+  const { theme, setTheme } = useTheme();
 
   const handleSave = (e: React.FormEvent) => {
     e.preventDefault();
