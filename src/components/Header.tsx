@@ -17,6 +17,7 @@ const Header = () => {
           <a
             href="/"
             aria-current="page"
+            aria-label="Post Labs Home"
             className="logo-link inline-block"
           >
             <img
