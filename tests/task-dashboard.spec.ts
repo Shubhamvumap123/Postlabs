@@ -83,7 +83,7 @@ test('TaskDashboard component functionality', async ({ page }) => {
   // Use .group class to target the task row container
   const taskToCompleteRow = page.locator('.group', { hasText: 'Task to Complete' }).first();
   // Click the check circle button
-  await taskToCompleteRow.getByRole('button', { name: 'Mark as complete' }).click();
+  await taskToCompleteRow.getByRole('checkbox', { name: 'Complete task: Task to Complete' }).click();
 
   // Go to "Completed" tab
   const completedTab = page.getByRole('tab', { name: 'Completed' });
