@@ -209,7 +209,9 @@ export default function TaskDashboard() {
                   <button
                     onClick={() => toggleTaskStatus(task.id)}
                     className="flex-shrink-0 text-zinc-400 hover:text-purple-400 transition-colors rounded-full outline-none focus-visible:ring-2 focus-visible:ring-purple-500"
-                    aria-label={task.status === 'Completed' ? "Mark as incomplete" : "Mark as complete"}
+                    role="checkbox"
+                    aria-checked={task.status === 'Completed'}
+                    aria-label={`Complete task: ${task.title}`}
                   >
                     {task.status === 'Completed' ? (
                       <CheckCircle2 className="w-5 h-5 text-purple-500" />
@@ -235,8 +237,8 @@ export default function TaskDashboard() {
                       <button
                         onClick={() => archiveTask(task.id)}
                         className="p-1.5 text-zinc-400 hover:text-zinc-300 rounded hover:bg-zinc-800 outline-none focus-visible:ring-2 focus-visible:ring-purple-500"
-                        title="Archive"
-                        aria-label="Archive"
+                        title={`Archive task: ${task.title}`}
+                        aria-label={`Archive task: ${task.title}`}
                       >
                         <Archive className="w-4 h-4" />
                       </button>
@@ -244,8 +246,8 @@ export default function TaskDashboard() {
                     <button
                       onClick={() => deleteTask(task.id)}
                       className="p-1.5 text-zinc-400 hover:text-red-400 rounded hover:bg-zinc-800 outline-none focus-visible:ring-2 focus-visible:ring-purple-500"
-                      title="Delete"
-                      aria-label="Delete"
+                      title={`Delete task: ${task.title}`}
+                      aria-label={`Delete task: ${task.title}`}
                     >
                       <Trash2 className="w-4 h-4" />
                     </button>
