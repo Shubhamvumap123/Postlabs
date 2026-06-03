@@ -17,3 +17,7 @@
 ## 2024-05-18 - Inverted Image Loading Strategies Anti-Pattern
 **Learning:** Found a systemic anti-pattern where critical above-the-fold images (Header logo, Hero down arrow) were intentionally deferred using `loading="lazy"`, actively delaying the Largest Contentful Paint (LCP) and worsening initial render times. Conversely, deeply nested below-the-fold images (e.g., in the Footer) were missing lazy loading entirely, bloating the initial payload.
 **Action:** Always eagerly load above-the-fold critical images (use `fetchPriority="high"` where appropriate) and explicitly apply `loading="lazy"` to all below-the-fold images. Never apply `loading="lazy"` to LCP elements.
+
+## 2025-03-01 - Footer Scroll Event Listener Bottleneck
+**Learning:** Attaching a scroll event listener that continuously queries layout properties (like `document.body.offsetHeight`) in the Footer component causes synchronous reflows and excessive React state updates, even when wrapped in `requestAnimationFrame`, severely degrading scroll performance.
+**Action:** Use `IntersectionObserver` (via framer-motion's `useInView` hook) with a sentinel element instead of binding to window scroll events to trigger scroll-based animations at the bottom of the page.
