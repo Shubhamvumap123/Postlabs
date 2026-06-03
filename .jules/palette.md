@@ -7,3 +7,7 @@
 ## 2025-05-18 - Custom Toggle Switch Accessibility
 **Learning:** Building custom toggle switches using `<div>` elements with `onClick` handlers removes keyboard accessibility and screen reader support. Users navigating via keyboard cannot focus or activate the toggle, and screen readers do not recognize its state or purpose.
 **Action:** When creating custom interactive elements like toggles, always use a native interactive element (e.g., `<button type="button">`) with the appropriate ARIA roles (e.g., `role="switch"`), state attributes (e.g., `aria-checked`), and associated labels (`aria-labelledby` or `aria-label`). Ensure the element has clear `:focus-visible` styles for keyboard navigation.
+
+## 2025-06-03 - Toggle Button ARIA Labels
+**Learning:** When implementing task completion toggles, combining `role="checkbox"` (which announces state via `aria-checked`) with dynamic action-oriented verbs in `aria-label` (like "Mark as complete" or "Mark as incomplete") creates redundant and confusing screen reader output. The label should describe the item, while the state handles the current status.
+**Action:** Always implement toggle buttons with `role="checkbox"` or `role="switch"`, use `aria-checked` to manage state, and provide a static, descriptive `aria-label` (e.g., "Complete task: [Title]") rather than action verbs that change based on state.
