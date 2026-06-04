@@ -17,3 +17,8 @@
 ## 2024-05-18 - Inverted Image Loading Strategies Anti-Pattern
 **Learning:** Found a systemic anti-pattern where critical above-the-fold images (Header logo, Hero down arrow) were intentionally deferred using `loading="lazy"`, actively delaying the Largest Contentful Paint (LCP) and worsening initial render times. Conversely, deeply nested below-the-fold images (e.g., in the Footer) were missing lazy loading entirely, bloating the initial payload.
 **Action:** Always eagerly load above-the-fold critical images (use `fetchPriority="high"` where appropriate) and explicitly apply `loading="lazy"` to all below-the-fold images. Never apply `loading="lazy"` to LCP elements.
+
+
+## 2024-05-18 - Scroll Event Listeners
+**Learning:** Using `framer-motion`'s `useScroll` instead of raw DOM event listeners provides a more concise, readable, and optimized way to track scroll position.
+**Action:** Always prefer `useScroll` for scroll tracking when `framer-motion` is already in the project.
