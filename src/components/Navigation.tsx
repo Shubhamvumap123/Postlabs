@@ -1,5 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { useScroll, useMotionValueEvent } from 'framer-motion';
 import { ThemeToggle } from './ThemeToggle';
 import { Home, LayoutDashboard, Settings, Mail } from 'lucide-react';
 import { cn } from '../lib/utils';
@@ -14,28 +15,14 @@ const navItems = [
 const Navigation = () => {
   const [isVisible, setIsVisible] = useState(false);
   const location = useLocation();
+  const { scrollY } = useScroll();
 
-  useEffect(() => {
-    let ticking = false;
-    let frameId: number = 0;
-
-    const handleScroll = () => {
-      if (!ticking) {
-        frameId = globalThis.requestAnimationFrame(() => {
-          const scrollY = globalThis.scrollY;
-          setIsVisible(scrollY > 100);
-          ticking = false;
-        });
-        ticking = true;
-      }
-    };
-
-    globalThis.addEventListener('scroll', handleScroll, { passive: true });
-    return () => {
-      globalThis.removeEventListener('scroll', handleScroll);
-      globalThis.cancelAnimationFrame(frameId);
-    };
-  }, []);
+  // PERFORMANCE: Use Framer Motion's centralized scroll tracking
+  // instead of attaching raw window scroll event listeners to prevent
+  // redundant layout thrashing and excessive re-renders.
+  useMotionValueEvent(scrollY, "change", (latest) => {
+    setIsVisible(latest > 100);
+  });
 
   return (
     <>
