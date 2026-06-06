@@ -1,54 +1,76 @@
-# React + TypeScript + Vite
+# Job Tracker Application
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A full stack, production-ready SaaS application for tracking job applications.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **User Authentication:** Secure JWT-based signup, login, and logout.
+- **Job Tracking:** Add, edit, and delete job applications.
+- **Status Pipeline:** Track applications across multiple stages (Applied, Interview, Offer, Rejected).
+- **Search & Filter:** Easily find jobs and filter by status.
+- **Analytics Dashboard:** Visualize application progress using charts.
 
-## Expanding the ESLint configuration
+## Tech Stack
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- **Frontend:** React.js / Vite, TailwindCSS
+- **Backend:** Node.js, Express.js
+- **Database:** MongoDB
+- **Authentication:** JWT (JSON Web Tokens)
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+## Setup Instructions
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### Prerequisites
+- Node.js (v18+)
+- MongoDB Atlas account (or local MongoDB instance)
+- pnpm package manager
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+### 1. Clone & Install Dependencies
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
-```
+\`\`\`bash
+git clone <repository-url>
+cd job-tracker
+
+# Install Client Dependencies
+cd client
+pnpm install
+
+# Install Server Dependencies
+cd ../server
+pnpm install
+\`\`\`
+
+### 2. Environment Variables
+
+Create \`.env\` file in the \`server\` directory:
+
+\`\`\`env
+PORT=5000
+MONGODB_URI=your_mongodb_connection_string
+JWT_SECRET=your_jwt_secret_key
+NODE_ENV=development
+\`\`\`
+
+### 3. Run the Application
+
+\`\`\`bash
+# Run Server (from /server)
+npm run start:dev
+
+# Run Client (from /client)
+pnpm run start:dev
+\`\`\`
+
+## Screenshots
+
+*(Placeholders for screenshots)*
+- Dashboard View
+- Job Board View
+- Analytics Charts View
+
+## Deployment
+
+**Frontend (Vercel):**
+Connect the \`client/\` folder to Vercel and build using standard Vite/React settings.
+
+**Backend (Render):**
+Deploy the \`server/\` directory as a Node.js web service on Render, adding the required environment variables.
