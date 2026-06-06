@@ -1,34 +1,10 @@
-import { useEffect,useState } from "react";
+import { useEffect, useRef } from "react";
 import { toast } from "sonner";
+import { useInView } from "framer-motion";
 
 export default function Footer() {
-    const [atBottom, setAtBottom] = useState(false);
-
-  useEffect(() => {
-    let ticking = false;
-    let frameId: number = 0;
-
-    const handleScroll = () => {
-      if (!ticking) {
-        frameId = globalThis.requestAnimationFrame(() => {
-          const bottom =
-            globalThis.innerHeight + globalThis.scrollY >= document.body.offsetHeight - 50;
-          setAtBottom(bottom);
-          ticking = false;
-        });
-        ticking = true;
-      }
-    };
-
-    // Call once to set initial state in case the page is already at the bottom
-    handleScroll();
-
-    globalThis.addEventListener("scroll", handleScroll, { passive: true });
-    return () => {
-      globalThis.removeEventListener("scroll", handleScroll);
-      globalThis.cancelAnimationFrame(frameId);
-    };
-  }, []);
+  const ref = useRef(null);
+  const isInView = useInView(ref, { margin: "0px 0px 50px 0px" });
 
   useEffect(() => {
    
@@ -80,8 +56,9 @@ export default function Footer() {
 
 
   return (
+    <>
     <footer    className={ `bg-black text-white transition-all duration-700 ease-in-out z-50 
-        ${atBottom ? "opacity-100 translate-y-0" : "opacity-0 translate-y-full"}
+        ${isInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-full"}
       `}>
       {/* Marquee */}
       <div className="relative flex w-full overflow-hidden justify-start items-center py-16 md:py-10">
@@ -194,5 +171,7 @@ export default function Footer() {
       </div>
       
     </footer>
+    <div ref={ref} className="w-full h-px" />
+    </>
   );
 }
