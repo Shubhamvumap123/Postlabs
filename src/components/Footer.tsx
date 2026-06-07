@@ -1,34 +1,13 @@
-import { useEffect,useState } from "react";
+import { useEffect, useRef } from "react";
 import { toast } from "sonner";
+import { useInView } from "framer-motion";
 
 export default function Footer() {
-    const [atBottom, setAtBottom] = useState(false);
+  const sentinelRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    let ticking = false;
-    let frameId: number = 0;
-
-    const handleScroll = () => {
-      if (!ticking) {
-        frameId = globalThis.requestAnimationFrame(() => {
-          const bottom =
-            globalThis.innerHeight + globalThis.scrollY >= document.body.offsetHeight - 50;
-          setAtBottom(bottom);
-          ticking = false;
-        });
-        ticking = true;
-      }
-    };
-
-    // Call once to set initial state in case the page is already at the bottom
-    handleScroll();
-
-    globalThis.addEventListener("scroll", handleScroll, { passive: true });
-    return () => {
-      globalThis.removeEventListener("scroll", handleScroll);
-      globalThis.cancelAnimationFrame(frameId);
-    };
-  }, []);
+  // PERFORMANCE: Replaced raw scroll listener and synchronous layout queries (offsetHeight)
+  // with an IntersectionObserver sentinel to eliminate layout thrashing.
+  const atBottom = useInView(sentinelRef, { margin: "0px 0px 50px 0px" });
 
   useEffect(() => {
    
@@ -193,6 +172,8 @@ export default function Footer() {
         </div>
       </div>
       
+      {/* Sentinel element to trigger intersection observer when bottom is reached */}
+      <div ref={sentinelRef} className="h-px w-full invisible" aria-hidden="true" />
     </footer>
   );
 }
