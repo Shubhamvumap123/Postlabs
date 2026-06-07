@@ -7,3 +7,7 @@
 ## 2025-05-18 - Custom Toggle Switch Accessibility
 **Learning:** Building custom toggle switches using `<div>` elements with `onClick` handlers removes keyboard accessibility and screen reader support. Users navigating via keyboard cannot focus or activate the toggle, and screen readers do not recognize its state or purpose.
 **Action:** When creating custom interactive elements like toggles, always use a native interactive element (e.g., `<button type="button">`) with the appropriate ARIA roles (e.g., `role="switch"`), state attributes (e.g., `aria-checked`), and associated labels (`aria-labelledby` or `aria-label`). Ensure the element has clear `:focus-visible` styles for keyboard navigation.
+
+## 2026-06-07 - Dynamic ARIA Labels in List Items
+**Learning:** When using `aria-label` attributes to add item-specific context to list actions (e.g., `aria-label={\`Archive task: ${task.title}\`}`), existing Playwright tests using `getByRole` with substring matching (e.g., `{ name: 'Archive' }`) may fail due to strict mode violations if they resolve to multiple elements on the page (like filtering chips and task action buttons sharing similar text). Furthermore, custom toggles need `role="checkbox"` and static descriptive `aria-label`s rather than dynamic, action-oriented verbs (like "Mark as complete").
+**Action:** When modifying `aria-label` attributes to add context, always update corresponding test locators to use `{ exact: true }` or to match the newly updated, fully qualified labels.
