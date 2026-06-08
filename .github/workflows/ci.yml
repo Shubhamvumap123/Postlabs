@@ -22,13 +22,10 @@ jobs:
       - name: Install pnpm
         uses: pnpm/action-setup@v3
         with:
-          version: 8
+          version: 10
 
       - name: Install dependencies
         run: pnpm install --no-frozen-lockfile
-
-      - name: Approve builds
-        run: echo -e "a\ny\n" | pnpm approve-builds
 
       - name: Run linter
         run: pnpm run lint
