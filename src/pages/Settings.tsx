@@ -64,6 +64,7 @@ const Settings = () => {
                     id="name"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
+                    maxLength={50}
                     placeholder="Enter your name"
                   />
                 </div>
