@@ -62,6 +62,8 @@ const Settings = () => {
                   </label>
                   <Input
                     id="name"
+                    name="name"
+                    autoComplete="name"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     placeholder="Enter your name"
