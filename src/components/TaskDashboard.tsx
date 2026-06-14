@@ -192,7 +192,21 @@ export default function TaskDashboard() {
             <div className="w-16 h-16 mb-4 rounded-full bg-zinc-800/50 flex items-center justify-center">
               <Clock className="w-8 h-8 text-zinc-400" aria-hidden="true" />
             </div>
-            <p className="text-zinc-400 font-medium">Scheduled tasks will show up here</p>
+            <p className="text-zinc-400 font-medium mb-4">
+              {activeTab === 'All' ? "No tasks found" :
+               activeTab === 'Scheduled' ? "No scheduled tasks yet" :
+               activeTab === 'Completed' ? "No completed tasks yet" :
+               "No archived tasks"}
+            </p>
+            {activeTab !== 'Archived' && (
+              <Button
+                onClick={() => setIsNewTaskOpen(true)}
+                variant="outline"
+                className="bg-transparent border-zinc-700 text-zinc-300 hover:bg-zinc-800 hover:text-white"
+              >
+                Create a task
+              </Button>
+            )}
           </div>
         ) : (
           <div className="divide-y divide-zinc-800">
