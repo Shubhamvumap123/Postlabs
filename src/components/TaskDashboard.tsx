@@ -46,7 +46,9 @@ export default function TaskDashboard() {
   const [tasks, setTasks] = useState<Task[]>(() => {
     try {
       const savedTasks = globalThis.localStorage.getItem('tasks');
-      return savedTasks ? JSON.parse(savedTasks) : [];
+      if (!savedTasks) return [];
+      const parsed = JSON.parse(savedTasks);
+      return Array.isArray(parsed) ? parsed : [];
     } catch (e) {
       console.error('Failed to parse tasks', e);
       return [];
@@ -278,6 +280,7 @@ export default function TaskDashboard() {
               placeholder="e.g. Review system performance"
               className="bg-zinc-900 border-zinc-700 text-zinc-100 focus:ring-purple-500"
               autoFocus
+              maxLength={100}
             />
           </div>
           <div className="space-y-2">
