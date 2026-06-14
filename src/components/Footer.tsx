@@ -145,6 +145,7 @@ export default function Footer() {
               type="email"
               name="email"
               required
+              maxLength={254}
               placeholder="Email Address"
               className="flex-1 px-3 py-2 text-black rounded-md outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2"
             />
