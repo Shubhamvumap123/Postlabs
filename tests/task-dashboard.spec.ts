@@ -29,8 +29,25 @@ test('TaskDashboard component functionality', async ({ page }) => {
   await expect(container).toHaveClass(/bg-zinc-900/);
   await expect(container).toHaveClass(/border-zinc-800/);
 
-  // Verify empty state text
-  await expect(page.getByText('Scheduled tasks will show up here')).toBeVisible();
+  // Verify empty state text for 'All' tab
+  await expect(page.getByText('No tasks found')).toBeVisible();
+
+  // Verify 'Scheduled' tab empty state
+  await scheduledTab.click();
+  await expect(page.getByText('No scheduled tasks yet')).toBeVisible();
+
+  // Verify 'Completed' tab empty state
+  const completedTab = page.getByRole('tab', { name: 'Completed' });
+  await completedTab.click();
+  await expect(page.getByText('No completed tasks yet')).toBeVisible();
+
+  // Verify 'Archived' tab empty state
+  const archivedTab = page.getByRole('tab', { name: 'Archived' });
+  await archivedTab.click();
+  await expect(page.getByText('No archived tasks')).toBeVisible();
+
+  // Switch back to 'All' tab
+  await allTab.click();
 
   // Verify filter chips existence
   const performanceChip = page.getByRole('button', { name: 'Performance', exact: true });
@@ -86,7 +103,6 @@ test('TaskDashboard component functionality', async ({ page }) => {
   await taskToCompleteRow.getByRole('checkbox', { name: 'Complete task: Task to Complete' }).click();
 
   // Go to "Completed" tab
-  const completedTab = page.getByRole('tab', { name: 'Completed' });
   await completedTab.click();
   await expect(page.getByText('Task to Complete')).toBeVisible();
 
@@ -115,7 +131,6 @@ test('TaskDashboard component functionality', async ({ page }) => {
   await expect(page.getByText('Task to Archive')).toBeHidden();
 
   // Go to "Archived" tab
-  const archivedTab = page.getByRole('tab', { name: 'Archived' });
   await archivedTab.click();
   await expect(page.getByText('Task to Archive')).toBeVisible();
 
