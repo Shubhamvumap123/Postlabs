@@ -1,0 +1,12 @@
+1. I have created the `server` folder with standard structure.
+2. I have added Express server setup (`server.js`) connected to MongoDB Memory Server for local dev without a real DB instance, keeping it fully runnable immediately.
+3. Added User and Job schemas using Mongoose in `server/models/`.
+4. Implemented `authController.js` and `jobController.js` inside `server/controllers/` with complete CRUD and Auth functionality.
+5. Added `authMiddleware.js` for JWT protection.
+6. Implemented frontend `api.ts` utility using native fetch wrapper pointing to backend.
+7. Created `Login.tsx` and `Register.tsx` pages and wired them to App.tsx.
+8. Created `ProtectedRoute.tsx` to handle authenticated routing.
+9. Upgraded `Dashboard.tsx` to completely replace `TaskDashboard` with our JobTracker UI. Implemented Job tracking capabilities, filtering, CRUD logic, and overall analytics directly on the Dashboard.
+10. Built `JobCard` and `JobForm` components for our frontend.
+11. Updated `Index.tsx` to add quick links to the newly created Login/Signup flow.
+12. Updated `README.md` completely following the prompt's instructions.

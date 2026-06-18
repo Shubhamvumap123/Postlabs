@@ -1,54 +1,109 @@
-# React + TypeScript + Vite
+# Job Tracker SaaS
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A production-ready full stack Job Tracker application. Manage your job search process efficiently with authentication, job tracking, and analytics.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **User Authentication:** Secure signup, login, and logout using JWT.
+- **Job Tracking:** Add, edit, delete, and view your job applications.
+- **Status Management:** Track applications through stages (Applied, Interview, Offer, Rejected).
+- **Dashboard Analytics:** Visual overview of your job search progress.
+- **Search & Filter:** Easily find specific job applications.
+- **Responsive Design:** Beautiful, mobile-friendly SaaS UI using Tailwind CSS.
 
-## Expanding the ESLint configuration
+## Tech Stack
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+**Frontend:**
+- React.js (Vite)
+- Tailwind CSS
+- React Router
+- TanStack Query
+- Lucide React
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+**Backend:**
+- Node.js
+- Express.js
+- MongoDB & Mongoose
+- JSON Web Tokens (JWT) for authentication
+- bcryptjs for password hashing
+
+## Project Structure
+
+```
+├── client/          # Frontend React application (in root folder)
+│   ├── src/
+│   │   ├── components/  # Reusable UI components
+│   │   ├── pages/       # Route components
+│   │   ├── lib/         # API integration
+│   │   └── ...
+├── server/          # Backend Express application
+│   ├── controllers/ # Request handlers
+│   ├── models/      # Mongoose schemas
+│   ├── routes/      # Express routes
+│   ├── middleware/  # Custom middleware (auth)
+│   └── server.js    # Entry point
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Setup Instructions
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+### Prerequisites
+- Node.js (v16+)
+- MongoDB (Local or Atlas)
+- pnpm (recommended) or npm
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
-```
+### Backend Setup
+
+1. Navigate to the server directory:
+   ```bash
+   cd server
+   ```
+
+2. Install dependencies:
+   ```bash
+   pnpm install
+   ```
+
+3. Create a `.env` file in the server directory:
+   ```env
+   PORT=5000
+   MONGODB_URI=your_mongodb_connection_string
+   JWT_SECRET=your_jwt_secret_key
+   ```
+   *(Note: For local testing, if MONGODB_URI is not provided, the server uses an in-memory MongoDB instance).*
+
+4. Start the backend development server:
+   ```bash
+   pnpm dev
+   ```
+
+### Frontend Setup
+
+1. From the project root, install dependencies:
+   ```bash
+   pnpm install
+   ```
+
+2. Start the frontend development server:
+   ```bash
+   pnpm dev
+   ```
+
+## Deployment Steps
+
+### Backend (Render / Heroku)
+1. Push your code to a GitHub repository.
+2. Create a new Web Service on Render.
+3. Set the Root Directory to `server/`.
+4. Set Build Command: `npm install`
+5. Set Start Command: `node server.js`
+6. Add Environment Variables (`MONGODB_URI`, `JWT_SECRET`, etc.).
+
+### Frontend (Vercel / Netlify)
+1. Import your GitHub repository to Vercel.
+2. Set the Framework Preset to Vite.
+3. The Build Command should be `npm run build` or `pnpm run build`.
+4. Add environment variables (e.g., `VITE_API_URL` pointing to your deployed backend url).
+
+## Screenshots
+
+*(Placeholder for screenshots - Add images of the dashboard, job list, and authentication pages here)*

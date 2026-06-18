@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { Link } from "react-router-dom";
 import Navigation from "../components/Navigation";
 import Hero from "../components/Hero";
 import FeatureCards from "../components/FeatureCards";
@@ -22,6 +23,10 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background font-['Inter_Tight',Verdana,sans-serif]">
       <Navigation />
+      <div className="absolute top-4 right-4 z-50 flex gap-4">
+        <Link to="/login" className="px-4 py-2 text-sm font-medium text-white bg-zinc-800 rounded-md hover:bg-zinc-700">Login</Link>
+        <Link to="/register" className="px-4 py-2 text-sm font-medium text-white bg-purple-600 rounded-md hover:bg-purple-500">Sign Up</Link>
+      </div>
       {/* relative container so FloatingGrid stays only behind main content */}
       <div className="relative">
         <FloatingGrid />
