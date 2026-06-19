@@ -33,10 +33,11 @@ dist/
 server/dist/
 client/dist/
 
-*.js
+
 *.map
 *.d.ts
 server/pnpm-lock.yaml
 
 server/.env
 client/.env
+server/**/*.js
