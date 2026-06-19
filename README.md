@@ -1,54 +1,54 @@
-# React + TypeScript + Vite
+# Job Tracker SaaS
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A production-ready full stack Job Tracker application.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+* **User Authentication**: Secure signup, login, and logout using JWT. Role-based access control.
+* **Job Application Management**: CRUD operations to add, edit, delete, and view job applications.
+* **Status Tracking**: Track applications across statuses like Applied, Interview, Offer, and Rejected.
+* **Search & Filters**: Easily search and filter jobs by status, position, etc.
+* **Dashboard Analytics**: Visual overview of your job search progress with charts.
+* **Responsive SaaS UI**: Built with React, TailwindCSS, and shadcn/ui components.
 
-## Expanding the ESLint configuration
+## Tech Stack
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+* **Frontend**: React.js, Vite, TailwindCSS, React Router, React Query, Recharts
+* **Backend**: Node.js, Express.js, TypeScript
+* **Database**: MongoDB, Mongoose
+* **Authentication**: JSON Web Tokens (JWT), bcryptjs
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+## Setup Instructions
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### Prerequisites
+* Node.js (v18 or higher)
+* MongoDB database (local or Atlas)
+* pnpm package manager
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+### Backend Setup
+1. Navigate to the `server` directory: `cd server`
+2. Install dependencies: `pnpm install`
+3. Configure environment variables in `server/.env`:
+   ```env
+   PORT=5000
+   MONGODB_URI=your_mongodb_connection_string
+   JWT_SECRET=your_jwt_secret
+   ```
+4. Start the development server: `pnpm run dev`
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
-```
+### Frontend Setup
+1. Navigate to the `client` directory: `cd client`
+2. Install dependencies: `pnpm install`
+3. Start the development server: `pnpm run dev`
+
+### Deployment
+* **Frontend**: Can be easily deployed to Vercel. Push to GitHub and connect to Vercel. Make sure to set the build command to `pnpm run build` and output directory to `dist`.
+* **Backend**: Can be deployed to Render. Create a Web Service, connect your repo, set the build command to `pnpm install && pnpm run build`, and the start command to `node dist/index.js`. Don't forget to add environment variables.
+* **Database**: MongoDB Atlas is recommended for production.
+
+## Screenshots
+
+*(Placeholders for screenshots)*
+- [Dashboard View](#)
+- [Add Job Modal](#)
+- [Login Screen](#)
