@@ -37,3 +37,6 @@ client/dist/
 *.map
 *.d.ts
 server/pnpm-lock.yaml
+
+server/.env
+client/.env

@@ -7,16 +7,20 @@ import { Input } from "../components/ui/input";
 import { useToast } from "../components/ui/use-toast";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "../lib/utils";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer } from 'recharts';
 
-const API_URL = 'http://localhost:5000/api';
+
+const API_URL = import.meta.env.VITE_API_URL || '/api';
 
 const Dashboard = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [jobs, setJobs] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [stats, setStats] = useState({ Applied: 0, Interview: 0, Offer: 0, Rejected: 0 });
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingJob, setEditingJob] = useState<any>(null); // eslint-disable-line @typescript-eslint/no-explicit-any
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [editingJob, setEditingJob] = useState<any>(null);
   const [formData, setFormData] = useState({ company: '', position: '', status: 'Applied', workLocation: 'Remote', jobType: 'Full-time' });
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
@@ -35,6 +39,7 @@ const Dashboard = () => {
       if (res.ok) {
         setJobs(data.jobs);
       }
+      setIsLoading(false);
     } catch (error) {
       console.error(error);
     }
@@ -108,7 +113,8 @@ const Dashboard = () => {
     }
   };
 
-  const openEditModal = (job: any) => { // eslint-disable-line @typescript-eslint/no-explicit-any
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const openEditModal = (job: any) => {
     setEditingJob(job);
     setFormData({
       company: job.company,
@@ -164,6 +170,28 @@ const Dashboard = () => {
           </div>
         </div>
 
+
+        {/* Charts */}
+        <div className="bg-zinc-900 border border-zinc-800 p-6 rounded-xl mt-8">
+          <h2 className="text-xl font-semibold mb-4 text-white">Application Status Overview</h2>
+          <div className="h-[300px] w-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={[
+                { name: 'Applied', count: stats.Applied },
+                { name: 'Interviewing', count: stats.Interview },
+                { name: 'Offers', count: stats.Offer },
+                { name: 'Rejected', count: stats.Rejected }
+              ]}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#3f3f46" />
+                <XAxis dataKey="name" stroke="#a1a1aa" />
+                <YAxis allowDecimals={false} stroke="#a1a1aa" />
+                <RechartsTooltip cursor={{fill: '#27272a'}} contentStyle={{ backgroundColor: '#18181b', border: 'none', borderRadius: '8px', color: '#fff' }} />
+                <Bar dataKey="count" fill="#8b5cf6" radius={[4, 4, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+
         {/* Actions & Filters */}
         <div className="flex flex-col sm:flex-row justify-between gap-4">
           <div className="flex gap-4 flex-1">
@@ -195,12 +223,15 @@ const Dashboard = () => {
 
         {/* Jobs List */}
         <div className="bg-zinc-900/50 border border-zinc-800 rounded-xl overflow-hidden">
-          {jobs.length === 0 ? (
+          {isLoading ? (
+             <div className="p-8 text-center text-zinc-500">Loading jobs...</div>
+          ) : jobs.length === 0 ? (
              <div className="p-8 text-center text-zinc-500">No jobs found. Add one to get started!</div>
           ) : (
             <div className="divide-y divide-zinc-800">
               <AnimatePresence mode="popLayout">
-                {jobs.map((job: any) => ( // eslint-disable-line @typescript-eslint/no-explicit-any
+                {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+                {jobs.map((job: any) => (
                   <motion.div key={job._id} layout initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="p-4 flex items-center justify-between hover:bg-zinc-800/30 transition-colors">
                     <div>
                       <h3 className="font-medium text-white text-lg">{job.position}</h3>
