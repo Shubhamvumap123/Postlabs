@@ -25,13 +25,13 @@ jobs:
           version: 10
 
       - name: Install dependencies
-        run: pnpm install --no-frozen-lockfile
+        run: cd client && pnpm install --no-frozen-lockfile
 
       - name: Run linter
-        run: pnpm run lint
+        run: cd client && pnpm run lint
 
       - name: Install Playwright Browsers
-        run: pnpm exec playwright install --with-deps chromium
+        run: cd client && pnpm exec playwright install --with-deps chromium
 
       - name: Run Playwright tests
-        run: pnpm exec playwright test
+        run: cd client && pnpm exec playwright test

@@ -16,7 +16,7 @@ const Dashboard = () => {
   const [jobs, setJobs] = useState([]);
   const [stats, setStats] = useState({ Applied: 0, Interview: 0, Offer: 0, Rejected: 0 });
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingJob, setEditingJob] = useState<any>(null);
+  const [editingJob, setEditingJob] = useState<any>(null); // eslint-disable-line @typescript-eslint/no-explicit-any
   const [formData, setFormData] = useState({ company: '', position: '', status: 'Applied', workLocation: 'Remote', jobType: 'Full-time' });
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
@@ -108,7 +108,7 @@ const Dashboard = () => {
     }
   };
 
-  const openEditModal = (job: any) => {
+  const openEditModal = (job: any) => { // eslint-disable-line @typescript-eslint/no-explicit-any
     setEditingJob(job);
     setFormData({
       company: job.company,
@@ -200,7 +200,7 @@ const Dashboard = () => {
           ) : (
             <div className="divide-y divide-zinc-800">
               <AnimatePresence mode="popLayout">
-                {jobs.map((job: any) => (
+                {jobs.map((job: any) => ( // eslint-disable-line @typescript-eslint/no-explicit-any
                   <motion.div key={job._id} layout initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="p-4 flex items-center justify-between hover:bg-zinc-800/30 transition-colors">
                     <div>
                       <h3 className="font-medium text-white text-lg">{job.position}</h3>

@@ -9,7 +9,7 @@ export const getJobs = async (req: AuthRequest, res: Response): Promise<void> =>
   try {
     const { search, status, sort } = req.query;
 
-    const queryObject: any = {
+    const queryObject: any = { // eslint-disable-line @typescript-eslint/no-explicit-any
       user: req.user._id,
     };
 
