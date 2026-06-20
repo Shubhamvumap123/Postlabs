@@ -1,9 +1,11 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { useInView } from "framer-motion";
+import { Loader2 } from "lucide-react";
 
 export default function Footer() {
   const sentinelRef = useRef<HTMLDivElement>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const atBottom = useInView(sentinelRef, { margin: "0px 0px 50px 0px" });
 
   useEffect(() => {
@@ -36,6 +38,7 @@ export default function Footer() {
 
     // Capture the form element before the await
     const form = e.currentTarget;
+    setIsSubmitting(true);
 
     try {
       // SECURITY: In a real production app, never call the Mailchimp API directly from the client.
@@ -51,6 +54,8 @@ export default function Footer() {
     } catch (error) {
       console.error(error);
       toast.error("Error signing up. Please try again later.");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -150,10 +155,11 @@ export default function Footer() {
             />
             <button
               type="submit"
+              disabled={isSubmitting}
               aria-label="Subscribe to newsletter"
-              className="px-5 bg-white text-black rounded-md font-medium outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2"
+              className="min-w-[56px] flex items-center justify-center px-5 bg-white text-black rounded-md font-medium outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              →
+              {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : "→"}
             </button>
           </form>
         </div>
