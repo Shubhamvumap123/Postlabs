@@ -11,3 +11,6 @@
 ## 2026-06-08 - Contextual ARIA labels and roles for list items
 **Learning:** When using list actions (like complete, archive, delete) for specific items in a list, generic `aria-label`s like 'Mark as complete' or 'Archive' create ambiguity for screen reader users as they do not indicate *which* item is being affected. Using action verbs with checkboxes can also be confusing.
 **Action:** When implementing item-specific actions in a list, always include the item's title in the `aria-label` (e.g., `Archive task: ${task.title}`). For completion toggles, use `role="checkbox"`, `aria-checked`, and an `aria-label` that concisely describes the item (e.g., `Complete task: ${task.title}`) instead of action-oriented verbs.
+## 2026-06-24 - Prevent Layout Jank on Loading Buttons
+**Learning:** When replacing symbol-based or icon-only buttons with a loading spinner, the width can change leading to layout jank.
+**Action:** Swap horizontal padding for an explicit minimum width (e.g., `min-w-[56px]`) and add centering properties (`flex items-center justify-center`).
