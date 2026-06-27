@@ -5,6 +5,7 @@
     "dev": "concurrently \"pnpm -C client dev\" \"pnpm -C server dev\"",
     "build": "pnpm -r run build",
     "lint": "pnpm -r run lint",
+    "test": "pnpm -C client exec playwright test",
     "start": "concurrently \"pnpm -C client start\" \"pnpm -C server start\""
   },
   "devDependencies": {
