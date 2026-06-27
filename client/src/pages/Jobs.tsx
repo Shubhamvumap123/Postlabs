@@ -33,7 +33,7 @@ const Jobs = () => {
   });
 
   const createMutation = useMutation({
-    mutationFn: (newJob: any) => api.post('/jobs', newJob),
+    mutationFn: (newJob: Record<string, unknown>) => api.post('/jobs', newJob),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['jobs'] });
       queryClient.invalidateQueries({ queryKey: ['jobStats'] });
@@ -43,7 +43,7 @@ const Jobs = () => {
   });
 
   const updateMutation = useMutation({
-    mutationFn: (updatedJob: any) => api.patch(`/jobs/${updatedJob._id}`, updatedJob),
+    mutationFn: (updatedJob: Record<string, unknown>) => api.patch(`/jobs/${updatedJob._id}`, updatedJob),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['jobs'] });
       queryClient.invalidateQueries({ queryKey: ['jobStats'] });

@@ -21,8 +21,9 @@ const Signup = () => {
       const res = await api.post('/auth/register', { name, email, password });
       login(res.data.token, res.data.user);
       navigate('/dashboard');
-    } catch (err: any) {
-      setError(err.response?.data?.message || 'Signup failed');
+    } catch (err) {
+      const error = err as { response?: { data?: { message?: string } } };
+      setError(error.response?.data?.message || 'Signup failed');
     } finally {
       setIsLoading(false);
     }
