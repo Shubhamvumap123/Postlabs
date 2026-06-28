@@ -140,11 +140,13 @@ export default function Footer() {
             <label htmlFor="newsletter-email" className="sr-only">
               Email Address
             </label>
+            {/* SECURITY: Added maxLength to prevent extremely long email inputs from causing DoS or resource exhaustion */}
             <input
               id="newsletter-email"
               type="email"
               name="email"
               required
+              maxLength={100}
               placeholder="Email Address"
               className="flex-1 px-3 py-2 text-black rounded-md outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2"
             />
