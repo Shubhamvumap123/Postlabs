@@ -23,6 +23,11 @@ const Settings = () => {
 
   const handleSave = (e: React.FormEvent) => {
     e.preventDefault();
+    // SECURITY: Input length limit to prevent localStorage exhaustion
+    if (name.length > 50) {
+      toast.error("Display name cannot exceed 50 characters.");
+      return;
+    }
     globalThis.localStorage.setItem("userName", name);
     globalThis.localStorage.setItem("notifications", JSON.stringify(notifications));
     toast.success("Settings saved successfully");
@@ -65,6 +70,7 @@ const Settings = () => {
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     placeholder="Enter your name"
+                    maxLength={50}
                   />
                 </div>
                 <Button type="submit">Save Changes</Button>
