@@ -271,12 +271,14 @@ export default function TaskDashboard() {
             <label htmlFor="title" className="text-sm font-medium text-zinc-300">
               Task Title
             </label>
+            {/* SECURITY: Added maxLength to prevent huge strings from filling up localStorage */}
             <Input
               id="title"
               value={newTaskTitle}
               onChange={(e) => setNewTaskTitle(e.target.value)}
               placeholder="e.g. Review system performance"
               className="bg-zinc-900 border-zinc-700 text-zinc-100 focus:ring-purple-500"
+              maxLength={100}
               autoFocus
             />
           </div>
