@@ -1,9 +1,9 @@
-import TaskDashboard from "../components/TaskDashboard";
+import JobDashboard from "./JobDashboard";
 
 const Dashboard = () => {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-zinc-950 p-4">
-      <TaskDashboard />
+    <div className="min-h-screen bg-zinc-950 p-4">
+      <JobDashboard />
     </div>
   );
 };

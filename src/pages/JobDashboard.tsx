@@ -1,0 +1,1 @@
+export default function JobDashboard() { return <div className="text-white">Job Tracker Dashboard</div>; }
