@@ -46,7 +46,12 @@ export default function TaskDashboard() {
   const [tasks, setTasks] = useState<Task[]>(() => {
     try {
       const savedTasks = globalThis.localStorage.getItem('tasks');
-      return savedTasks ? JSON.parse(savedTasks) : [];
+      // SECURITY: Validate parsed data is an array to prevent Client-Side DoS via localStorage poisoning
+      if (savedTasks) {
+        const parsed = JSON.parse(savedTasks);
+        return Array.isArray(parsed) ? parsed : [];
+      }
+      return [];
     } catch (e) {
       console.error('Failed to parse tasks', e);
       return [];
@@ -274,6 +279,8 @@ export default function TaskDashboard() {
             <Input
               id="title"
               value={newTaskTitle}
+              // SECURITY: Add input length limits to prevent client-side DoS/memory exhaustion
+              maxLength={100}
               onChange={(e) => setNewTaskTitle(e.target.value)}
               placeholder="e.g. Review system performance"
               className="bg-zinc-900 border-zinc-700 text-zinc-100 focus:ring-purple-500"
