@@ -71,6 +71,12 @@ export default function TaskDashboard() {
     e.preventDefault();
     if (!newTaskTitle.trim()) return;
 
+    // SECURITY: Limit input length to prevent potential DoS or massive payload storage
+    if (newTaskTitle.length > 250) {
+      toast.error("Task title is too long (max 250 characters).");
+      return;
+    }
+
     const newTask: Task = {
       id: crypto.randomUUID(),
       title: newTaskTitle,
@@ -278,6 +284,7 @@ export default function TaskDashboard() {
               placeholder="e.g. Review system performance"
               className="bg-zinc-900 border-zinc-700 text-zinc-100 focus:ring-purple-500"
               autoFocus
+              maxLength={250}
             />
           </div>
           <div className="space-y-2">
