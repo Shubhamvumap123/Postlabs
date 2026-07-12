@@ -126,13 +126,14 @@ const Settings = () => {
                 </div>
               </div>
 
-              <div className="grid grid-cols-3 gap-4">
+              <div className="grid grid-cols-3 gap-4" role="group" aria-label="Theme selection">
                 {['light', 'dark', 'system'].map((t) => (
                   <button
                     key={t}
+                    aria-pressed={theme === t}
                     onClick={() => setTheme(t)}
                     className={`
-                      flex flex-col items-center gap-2 p-4 rounded-lg border transition-all
+                      flex flex-col items-center gap-2 p-4 rounded-lg border transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2
                       ${theme === t
                         ? 'border-primary bg-primary/5 ring-1 ring-primary'
                         : 'border-border hover:border-primary/50 hover:bg-accent/50'}
