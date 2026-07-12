@@ -38,7 +38,7 @@ export default function JobDashboard() {
   const [activeTab, setActiveTab] = useState<Tab>("All");
   const [searchQuery, setSearchQuery] = useState("");
   const [jobs, setJobs] = useState<Job[]>([]);
-  const [stats, setStats] = useState<any>({});
+  const [stats, setStats] = useState<Record<string, number>>({});
 
   const [isJobModalOpen, setIsJobModalOpen] = useState(false);
   const [editingJobId, setEditingJobId] = useState<string | null>(null);
@@ -60,7 +60,7 @@ export default function JobDashboard() {
     try {
       const res = await api.get('/api/jobs');
       setJobs(res.data);
-    } catch (error) {
+    } catch {
       toast.error('Failed to fetch jobs');
     } finally {
       setLoading(false);
@@ -71,7 +71,7 @@ export default function JobDashboard() {
     try {
       const res = await api.get('/api/jobs/stats');
       setStats(res.data);
-    } catch (error) {
+    } catch {
       console.error('Failed to fetch stats');
     }
   };
@@ -96,7 +96,7 @@ export default function JobDashboard() {
       setIsJobModalOpen(false);
       resetForm();
       fetchStats();
-    } catch (error) {
+    } catch {
       toast.error(editingJobId ? "Failed to update job" : "Failed to add job");
     }
   };
@@ -131,7 +131,7 @@ export default function JobDashboard() {
       setJobs(prev => prev.filter(j => j._id !== id));
       toast.info("Job deleted");
       fetchStats();
-    } catch (error) {
+    } catch {
       toast.error("Failed to delete job");
     }
   };
@@ -142,7 +142,7 @@ export default function JobDashboard() {
       setJobs(prev => prev.map(j => j._id === id ? res.data : j));
       toast.success("Job status updated");
       fetchStats();
-    } catch (error) {
+    } catch {
       toast.error("Failed to update job status");
     }
   };

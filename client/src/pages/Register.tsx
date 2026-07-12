@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
@@ -24,7 +25,7 @@ const Register = () => {
       toast.success('Account created successfully');
       navigate('/dashboard');
     } catch (error: any) {
-      toast.error(error.response?.data?.message || 'Registration failed');
+      toast.error(error?.response?.data?.message || 'Registration failed');
     } finally {
       setIsLoading(false);
     }

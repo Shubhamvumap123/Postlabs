@@ -8,7 +8,7 @@ import { ThemeProvider } from "./components/ThemeProvider";
 import LoadingFallback from "./components/LoadingFallback";
 import { AuthProvider } from "./context/AuthContext";
 import { ProtectedRoute } from "./components/ProtectedRoute";
-import Navigation from "./components/Navigation"; // For navbar if needed
+
 
 const Index = lazy(() => import("./pages/Index"));
 const Dashboard = lazy(() => import("./pages/Dashboard"));
