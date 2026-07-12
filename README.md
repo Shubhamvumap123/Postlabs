@@ -1,54 +1,73 @@
-# React + TypeScript + Vite
+# Full Stack Job Tracker Application
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A production-ready full stack SaaS dashboard application for tracking job applications.
 
-Currently, two official plugins are available:
+## Features
+- **Frontend**: Built with React, Vite, and Tailwind CSS.
+- **Backend**: Node.js and Express.js RESTful API.
+- **Database**: MongoDB for scalable data storage.
+- **Authentication**: Secure JWT-based authentication (Login, Register).
+- **Job Tracking**: Add, edit, delete, and view job applications.
+- **Dashboard**: Track job application metrics dynamically.
+- **Clean Architecture**: Structured correctly with client and server separated.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Tech Stack
+- Frontend: React 19, Tailwind CSS, Framer Motion, Lucide React
+- Backend: Node.js, Express.js
+- Database: MongoDB, Mongoose
+- Auth: JWT, bcryptjs
 
-## Expanding the ESLint configuration
+## Setup Instructions
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+1. Clone the repository:
+   ```sh
+   git clone <repo-url>
+   cd postlabs
+   ```
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+2. Install dependencies for the workspace:
+   ```sh
+   pnpm install
+   ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+3. Setup environment variables:
+   - Create a `.env` file in the `server` directory:
+     ```
+     PORT=5000
+     MONGODB_URI=mongodb://localhost:27017/job-tracker
+     JWT_SECRET=your_jwt_secret_key_here
+     ```
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+4. Run the development environment:
+   - To start both frontend and backend (you can use concurrently or simply run in separate terminals):
+   - Terminal 1 (Backend):
+     ```sh
+     cd server
+     pnpm run dev
+     ```
+   - Terminal 2 (Frontend):
+     ```sh
+     cd client
+     pnpm run dev
+     ```
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
-```
+## Deployment
+
+### Backend (Render)
+1. Push your code to GitHub.
+2. Go to [Render](https://render.com) and create a new Web Service.
+3. Select your repository and set the Root Directory to `server`.
+4. Build command: `pnpm install && pnpm run build`
+5. Start command: `pnpm run start`
+6. Add the `.env` variables to the Environment Variables section.
+
+### Frontend (Vercel)
+1. Push your code to GitHub.
+2. Go to [Vercel](https://vercel.com) and import your repository.
+3. Set the Framework Preset to Vite.
+4. Set the Root Directory to `client`.
+5. Add any required frontend environment variables (like `VITE_API_URL` if you extract it to env).
+6. Deploy!
+
+## Screenshots
+*(Add screenshot placeholders here)*
