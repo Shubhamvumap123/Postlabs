@@ -16,18 +16,23 @@ export const useScrollAnimations = () => {
           const words = element.innerText.split(' ');
           element.textContent = ''; // Clear existing content
 
+          // PERFORMANCE: Batch DOM mutations using a DocumentFragment
+          const fragment = document.createDocumentFragment();
+
           words.forEach((word, index) => {
             const span = document.createElement('span');
             span.className = 'inline-block opacity-15 transition-opacity duration-300 ease-out';
             span.style.transitionDelay = `${index * 50}ms`;
             span.textContent = word;
-            element.appendChild(span);
+            fragment.appendChild(span);
 
             // Add space between words, but avoid trailing spaces
             if (index < words.length - 1) {
-                element.appendChild(document.createTextNode(' '));
+                fragment.appendChild(document.createTextNode(' '));
             }
           });
+
+          element.appendChild(fragment);
           
           // Trigger animation
           setTimeout(() => {
@@ -83,10 +88,13 @@ export const useScrollAnimations = () => {
 export const initSmoothScrolling = () => {
   // deno-lint-ignore no-explicit-any
   let lenis: any = null; // eslint-disable-line @typescript-eslint/no-explicit-any
+  let rafId: number | null = null;
+  let isDestroyed = false;
 
   const loadLenis = async () => {
     try {
       const Lenis = (await import('@studio-freight/lenis')).default;
+      if (isDestroyed) return;
       
       lenis = new Lenis({
         duration: 1.2,
@@ -95,11 +103,12 @@ export const initSmoothScrolling = () => {
 
       const raf = (time: number) => {
         lenis.raf(time);
-        requestAnimationFrame(raf);
+        rafId = requestAnimationFrame(raf);
       };
 
-      requestAnimationFrame(raf);
+      rafId = requestAnimationFrame(raf);
     } catch {
+      if (isDestroyed) return;
       console.warn('Lenis not available, using native smooth scroll');
       document.documentElement.style.scrollBehavior = 'smooth';
     }
@@ -108,6 +117,10 @@ export const initSmoothScrolling = () => {
   loadLenis();
 
   return () => {
+    isDestroyed = true;
+    if (rafId !== null) {
+      cancelAnimationFrame(rafId);
+    }
     if (lenis) {
       lenis.destroy();
     }
