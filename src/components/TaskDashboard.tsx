@@ -284,7 +284,7 @@ export default function TaskDashboard() {
             <label className="text-sm font-medium text-zinc-300">
               Category
             </label>
-            <div className="flex gap-2">
+            <div className="flex gap-2" role="group" aria-label="Select task category">
               {filters.map(filter => (
                 <button
                   key={filter.id}
