@@ -16,26 +16,30 @@ export const useScrollAnimations = () => {
           const words = element.innerText.split(' ');
           element.textContent = ''; // Clear existing content
 
+          // PERFORMANCE: Use DocumentFragment to batch DOM insertions and avoid layout thrashing
+          const fragment = document.createDocumentFragment();
+
           words.forEach((word, index) => {
             const span = document.createElement('span');
             span.className = 'inline-block opacity-15 transition-opacity duration-300 ease-out';
             span.style.transitionDelay = `${index * 50}ms`;
             span.textContent = word;
-            element.appendChild(span);
+            fragment.appendChild(span);
 
             // Add space between words, but avoid trailing spaces
             if (index < words.length - 1) {
-                element.appendChild(document.createTextNode(' '));
+                fragment.appendChild(document.createTextNode(' '));
             }
           });
           
+          element.appendChild(fragment);
+
           // Trigger animation
+          // PERFORMANCE: Rely on CSS transitionDelay and remove O(N) nested setTimeouts to unblock the main thread
           setTimeout(() => {
             const spans = element.querySelectorAll('span');
-            spans.forEach((span, index) => {
-              setTimeout(() => {
-                span.style.opacity = '1';
-              }, index * 50);
+            spans.forEach((span) => {
+              span.style.opacity = '1';
             });
           }, 100);
           

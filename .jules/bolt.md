@@ -20,3 +20,6 @@
 ## 2026-06-08 - Layout Thrashing in Throttled Scroll Listeners
 **Learning:** Querying layout properties like `document.body.offsetHeight` inside a scroll listener still triggers continuous synchronous layout thrashing (forced reflow), severely impacting performance even when throttled with `requestAnimationFrame`.
 **Action:** Replace layout-thrashing scroll listeners with `framer-motion`'s `useInView` combined with a sentinel element naturally placed at the end of the document flow.
+## 2026-07-14 - Optimize scroll animation DOM writes
+**Learning:** In scroll reveal animations, repeatedly calling `appendChild` on a live DOM element inside a loop causes layout thrashing and nested `setTimeout` calls within loops can unnecessarily block the main thread when CSS `transition-delay` is already being used.
+**Action:** Use a `DocumentFragment` to batch DOM insertions outside the loop, and rely on CSS transitions where possible instead of relying on JS timeouts for sequential animations.
