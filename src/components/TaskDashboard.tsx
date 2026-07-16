@@ -46,7 +46,18 @@ export default function TaskDashboard() {
   const [tasks, setTasks] = useState<Task[]>(() => {
     try {
       const savedTasks = globalThis.localStorage.getItem('tasks');
-      return savedTasks ? JSON.parse(savedTasks) : [];
+      if (!savedTasks) return [];
+      const parsed = JSON.parse(savedTasks);
+      // SECURITY: Validate tasks from localStorage to prevent XSS/DoS from corrupted data
+      if (!Array.isArray(parsed)) return [];
+      return parsed.filter(t =>
+        t && typeof t === 'object' &&
+        typeof t.id === 'string' &&
+        typeof t.title === 'string' &&
+        ['Scheduled', 'Completed', 'Archived'].includes(t.status) &&
+        typeof t.category === 'string' &&
+        typeof t.createdAt === 'number'
+      ).slice(0, 1000); // Limit max tasks to prevent memory issues
     } catch (e) {
       console.error('Failed to parse tasks', e);
       return [];
@@ -69,11 +80,15 @@ export default function TaskDashboard() {
 
   const addTask = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newTaskTitle.trim()) return;
+    const trimmedTitle = newTaskTitle.trim();
+    if (!trimmedTitle) return;
+
+    // SECURITY: Limit title length to prevent excessive memory usage/layout breakage
+    const safeTitle = trimmedTitle.substring(0, 200);
 
     const newTask: Task = {
       id: crypto.randomUUID(),
-      title: newTaskTitle,
+      title: safeTitle,
       status: 'Scheduled',
       category: newTaskCategory,
       createdAt: Date.now(),
@@ -277,6 +292,7 @@ export default function TaskDashboard() {
               onChange={(e) => setNewTaskTitle(e.target.value)}
               placeholder="e.g. Review system performance"
               className="bg-zinc-900 border-zinc-700 text-zinc-100 focus:ring-purple-500"
+              maxLength={200}
               autoFocus
             />
           </div>
