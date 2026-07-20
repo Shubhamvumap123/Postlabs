@@ -273,6 +273,7 @@ export default function TaskDashboard() {
             </label>
             <Input
               id="title"
+              required
               value={newTaskTitle}
               onChange={(e) => setNewTaskTitle(e.target.value)}
               placeholder="e.g. Review system performance"
