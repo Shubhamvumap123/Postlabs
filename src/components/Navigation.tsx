@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { ThemeToggle } from './ThemeToggle';
+import { useScroll, useMotionValueEvent } from 'framer-motion';
 import { Home, LayoutDashboard, Settings, Mail } from 'lucide-react';
 import { cn } from '../lib/utils';
 
@@ -15,27 +16,12 @@ const Navigation = () => {
   const [isVisible, setIsVisible] = useState(false);
   const location = useLocation();
 
-  useEffect(() => {
-    let ticking = false;
-    let frameId: number = 0;
-
-    const handleScroll = () => {
-      if (!ticking) {
-        frameId = globalThis.requestAnimationFrame(() => {
-          const scrollY = globalThis.scrollY;
-          setIsVisible(scrollY > 100);
-          ticking = false;
-        });
-        ticking = true;
-      }
-    };
-
-    globalThis.addEventListener('scroll', handleScroll, { passive: true });
-    return () => {
-      globalThis.removeEventListener('scroll', handleScroll);
-      globalThis.cancelAnimationFrame(frameId);
-    };
-  }, []);
+  // PERFORMANCE: Replaced manual rAF scroll listener with framer-motion's useScroll
+  // to achieve centralized read/write batching and prevent layout thrashing.
+  const { scrollY } = useScroll();
+  useMotionValueEvent(scrollY, "change", (latest) => {
+    setIsVisible(latest > 100);
+  });
 
   return (
     <>
