@@ -1,8 +1,10 @@
-import { useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import { toast } from "sonner";
 import { useInView } from "framer-motion";
+import { Loader2 } from "lucide-react";
 
 export default function Footer() {
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const sentinelRef = useRef<HTMLDivElement>(null);
   const atBottom = useInView(sentinelRef, { margin: "0px 0px 50px 0px" });
 
@@ -31,6 +33,7 @@ export default function Footer() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setIsSubmitting(true);
     const formData = new FormData(e.currentTarget);
     const email = formData.get("email") as string;
 
@@ -51,6 +54,8 @@ export default function Footer() {
     } catch (error) {
       console.error(error);
       toast.error("Error signing up. Please try again later.");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -151,9 +156,10 @@ export default function Footer() {
             <button
               type="submit"
               aria-label="Subscribe to newsletter"
-              className="px-5 bg-white text-black rounded-md font-medium outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2"
+              disabled={isSubmitting}
+              className="px-5 bg-white text-black rounded-md font-medium outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center min-w-[50px]"
             >
-              →
+              {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : "→"}
             </button>
           </form>
         </div>
