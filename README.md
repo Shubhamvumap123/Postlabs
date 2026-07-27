@@ -1,54 +1,34 @@
-# React + TypeScript + Vite
+# Job Tracker SaaS
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A full-stack Job Tracker application built with React, Node.js, Express, and MongoDB.
 
-Currently, two official plugins are available:
+## Features
+- 🔐 JWT Authentication (Login/Register)
+- 📊 Analytics Dashboard with Recharts
+- 📝 CRUD Operations for Job Applications
+- 🔍 Search and filter jobs
+- 🛡️ Protected routes
+- 🌓 Dark mode support
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Tech Stack
+- Frontend: React (Vite), TypeScript, TailwindCSS, Framer Motion, Recharts
+- Backend: Node.js, Express.js
+- Database: MongoDB
+- Auth: JSON Web Tokens (JWT)
 
-## Expanding the ESLint configuration
+## Setup Instructions
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### Backend (Server)
+1. Navigate to the `server` directory: `cd server`
+2. Install dependencies: `npm install`
+3. Create a `.env` file based on `.env.example` (or set `MONGO_URI` and `JWT_SECRET`).
+4. Start the server: `npm run dev` (runs on port 5000)
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+### Frontend (Client)
+1. Navigate to the `client` directory: `cd client`
+2. Install dependencies: `pnpm install`
+3. Start the dev server: `pnpm run dev` (proxies `/api` to localhost:5000)
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
-```
+## Deployment
+- Frontend: Deploy the `client` folder to Vercel. Ensure build command is `pnpm run build` and output directory is `dist`.
+- Backend: Deploy the `server` folder to Render or Heroku. Add environment variables for `MONGO_URI` and `JWT_SECRET`.
