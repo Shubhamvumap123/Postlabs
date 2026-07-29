@@ -1,54 +1,81 @@
-# React + TypeScript + Vite
+# Job Tracker SaaS
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A production-ready full stack job application tracking dashboard.
 
-Currently, two official plugins are available:
+## Features
+- **User Authentication:** Secure JWT-based signup, login, and logout.
+- **Job Management:** Add, edit, delete, and view job applications.
+- **Status Tracking:** Organize applications by status (Applied, Interview, Offer, Rejected).
+- **Search & Filter:** Easily find jobs by company, position, or status.
+- **Analytics:** Visual charts showing the distribution of application statuses.
+- **Responsive UI:** Dark-themed, modern interface built with Tailwind CSS.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Tech Stack
+- **Frontend:** React.js (Vite), TailwindCSS, Recharts, Framer Motion, Lucide React
+- **Backend:** Node.js, Express.js
+- **Database:** MongoDB (Mongoose)
+- **Authentication:** JWT, bcryptjs
 
-## Expanding the ESLint configuration
+## Setup Instructions
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### Prerequisites
+- Node.js (v18+)
+- pnpm
+- MongoDB instance (local or Atlas)
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+### Installation
+1. Clone the repository and install dependencies:
+   ```bash
+   pnpm install
+   ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+2. Configure environment variables:
+   Create a `.env` file in the `server/` directory:
+   ```env
+   PORT=5000
+   MONGO_URI=your_mongodb_connection_string
+   JWT_SECRET=your_jwt_secret
+   ```
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+   Create a `.env` file in the `client/` directory:
+   ```env
+   VITE_API_URL=http://localhost:5000/api
+   ```
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
-```
+3. Start the development servers:
+   ```bash
+   # Starts both frontend and backend concurrently
+   pnpm run dev
+   ```
+
+## Architecture & Scalability Improvements
+- **Monorepo Structure:** Uses a pnpm workspace to cleanly separate `client` and `server` while sharing tooling.
+- **Centralized API Client:** Frontend uses a configured Axios instance with interceptors for automatic token injection and easier base URL management.
+- **Separation of Concerns:** Backend follows MVC pattern with distinct `routes`, `controllers`, and `models`.
+- **Future Scalability:**
+  - Implement Redis for caching frequent queries (e.g., dashboard analytics).
+  - Add rate limiting and helmet middleware for security.
+  - Implement pagination for the jobs list as the user data grows.
+
+## Deployment Steps
+
+### Backend (Render)
+1. Push your code to GitHub.
+2. Log in to Render and create a new "Web Service".
+3. Connect your repository.
+4. Set the Root Directory to `server`.
+5. Set the Build Command to `pnpm install` (or `npm install`).
+6. Set the Start Command to `npm start`.
+7. Add Environment Variables (`MONGO_URI`, `JWT_SECRET`).
+
+### Frontend (Vercel)
+1. Log in to Vercel and "Add New Project".
+2. Connect your repository.
+3. Set the Root Directory to `client`.
+4. The build settings should auto-detect Vite (`pnpm run build`).
+5. Add Environment Variables (`VITE_API_URL` pointing to your deployed Render backend).
+6. Deploy!
+
+## Screenshots
+![Dashboard Placeholder](https://via.placeholder.com/800x450.png?text=Dashboard+Analytics+and+Job+List)
+![Modal Placeholder](https://via.placeholder.com/800x450.png?text=Add/Edit+Job+Modal)
