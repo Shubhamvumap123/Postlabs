@@ -1,6 +1,7 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { useInView } from "framer-motion";
+import { Loader2 } from "lucide-react";
 
 export default function Footer() {
   const sentinelRef = useRef<HTMLDivElement>(null);
@@ -29,8 +30,11 @@ export default function Footer() {
     };
   }, []);
 
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setIsSubmitting(true);
     const formData = new FormData(e.currentTarget);
     const email = formData.get("email") as string;
 
@@ -51,6 +55,8 @@ export default function Footer() {
     } catch (error) {
       console.error(error);
       toast.error("Error signing up. Please try again later.");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -145,15 +151,21 @@ export default function Footer() {
               type="email"
               name="email"
               required
+              disabled={isSubmitting}
               placeholder="Email Address"
-              className="flex-1 px-3 py-2 text-black rounded-md outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2"
+              className="flex-1 px-3 py-2 text-black rounded-md outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
             />
             <button
               type="submit"
+              disabled={isSubmitting}
               aria-label="Subscribe to newsletter"
-              className="px-5 bg-white text-black rounded-md font-medium outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2"
+              className="px-5 flex items-center justify-center bg-white text-black rounded-md font-medium outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed min-w-[3.5rem]"
             >
-              →
+              {isSubmitting ? (
+                <Loader2 className="w-4 h-4 animate-spin text-black" aria-hidden="true" />
+              ) : (
+                "→"
+              )}
             </button>
           </form>
         </div>
