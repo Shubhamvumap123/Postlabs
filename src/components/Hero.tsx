@@ -43,9 +43,11 @@ const Hero = () => {
           </h1>
 
           {/* Down Arrow */}
+          {/* PERFORMANCE: Eagerly load critical above-the-fold images for faster LCP */}
           <img
             src="https://cdn.prod.website-files.com/681dfdff4444ca819f7050a2/68238111591ea94a69065212_Vector.svg"
             fetchPriority="high"
+            loading="eager"
             alt="Down arrow"
             className="down-arrow w-32 h-32 animate-bounce-slow"
           />
