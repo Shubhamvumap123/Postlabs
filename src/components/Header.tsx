@@ -19,9 +19,11 @@ const Header = () => {
             aria-current="page"
             className="logo-link inline-block"
           >
+            {/* PERFORMANCE: Eagerly load above-the-fold critical image */}
             <img
               src="https://cdn.prod.website-files.com/681dfdff4444ca819f7050a2/68227dfdc407523fbe5b56e7_post-labs-logo.svg"
               fetchPriority="high"
+              loading="eager"
               alt="Post Labs logo"
               className="h-8 md:h-10"
               style={{
