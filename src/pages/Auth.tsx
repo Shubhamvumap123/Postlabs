@@ -31,8 +31,14 @@ export default function Auth() {
         toast.success('Registered successfully. Please login.');
         setIsLogin(true);
       }
-    } catch (error: any) {
-      toast.error(error.response?.data?.message || error.response?.data?.error || error.message || 'Authentication failed');
+    } catch (error: unknown) {
+      if (error instanceof axios.AxiosError) {
+        toast.error(error.response?.data?.message || error.response?.data?.error || error.message || 'Authentication failed');
+      } else if (error instanceof Error) {
+        toast.error(error.message);
+      } else {
+        toast.error('Authentication failed');
+      }
     }
   };
 

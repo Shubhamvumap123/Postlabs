@@ -3,7 +3,7 @@ import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend, BarChart, Ba
 
 const COLORS = ['#8b5cf6', '#3b82f6', '#10b981', '#ef4444']; // purple, blue, green, red
 
-export default function DashboardCharts({ jobs }: { jobs: any[] }) {
+export default function DashboardCharts({ jobs }: { jobs: { status: string; type: string }[] }) {
   const statusData = useMemo(() => {
     const counts = { Applied: 0, Interview: 0, Offer: 0, Rejected: 0 };
     jobs.forEach(job => { if (counts[job.status as keyof typeof counts] !== undefined) counts[job.status as keyof typeof counts]++; });

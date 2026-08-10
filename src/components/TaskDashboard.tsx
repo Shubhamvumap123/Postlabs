@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Plus, Clock, Archive, Trash2, Shield, Zap, Paintbrush, Search, LogOut } from "lucide-react";
+import { Plus, Clock, Trash2, Shield, Zap, Paintbrush, Search, LogOut } from "lucide-react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Dialog } from "./ui/dialog";
@@ -54,8 +54,8 @@ export default function JobDashboard() {
       const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
       const res = await axios.get(`${API_URL}/api/jobs`, { headers: getAuthHeader() });
       setJobs(res.data);
-    } catch (error: any) {
-      if (error.response?.status === 401) {
+    } catch (error: unknown) {
+      if (error instanceof axios.AxiosError && error.response?.status === 401) {
         toast.error("Session expired, please login again");
         localStorage.removeItem('token');
         navigate('/auth');
@@ -77,7 +77,8 @@ export default function JobDashboard() {
       navigate('/auth');
       return;
     }
-    fetchJobs();
+    void fetchJobs();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [navigate]);
 
   const handleLogout = () => {
@@ -100,7 +101,7 @@ export default function JobDashboard() {
       setNewPosition("");
       setIsNewJobOpen(false);
       toast.success("Job application saved");
-    } catch (error) {
+    } catch {
       toast.error("Failed to add job");
     }
   };
@@ -111,7 +112,7 @@ export default function JobDashboard() {
       await axios.delete(`${API_URL}/api/jobs/${id}`, { headers: getAuthHeader() });
       setJobs(jobs.filter(j => j._id !== id));
       toast.success("Job removed");
-    } catch (error) {
+    } catch {
       toast.error("Failed to delete job");
     }
   };
@@ -122,7 +123,7 @@ export default function JobDashboard() {
       const res = await axios.put(`${API_URL}/api/jobs/${id}`, { status }, { headers: getAuthHeader() });
       setJobs(jobs.map(j => j._id === id ? res.data : j));
       toast.success("Status updated");
-    } catch (error) {
+    } catch {
       toast.error("Failed to update status");
     }
   };
