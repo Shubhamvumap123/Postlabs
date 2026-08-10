@@ -11,3 +11,6 @@
 ## 2026-06-08 - Contextual ARIA labels and roles for list items
 **Learning:** When using list actions (like complete, archive, delete) for specific items in a list, generic `aria-label`s like 'Mark as complete' or 'Archive' create ambiguity for screen reader users as they do not indicate *which* item is being affected. Using action verbs with checkboxes can also be confusing.
 **Action:** When implementing item-specific actions in a list, always include the item's title in the `aria-label` (e.g., `Archive task: ${task.title}`). For completion toggles, use `role="checkbox"`, `aria-checked`, and an `aria-label` that concisely describes the item (e.g., `Complete task: ${task.title}`) instead of action-oriented verbs.
+## 2026-08-10 - Contextual Empty States
+**Learning:** Providing specific empty state messages based on context (like active tabs) and a clear call-to-action reduces confusion and guides users, significantly improving the initial experience.
+**Action:** Always tailor empty state messaging to the current view or filter, and provide a quick way for users to populate the state if applicable.
