@@ -1,140 +1,104 @@
 import { test, expect } from '@playwright/test';
 
+// Skip auth tests in pure e2e without backend, or mock it.
+// We'll mock the auth and API calls using playwright's page.route
+
 test.beforeEach(async ({ page }) => {
+  // Mock localStorage for token
+  await page.addInitScript(() => {
+    window.localStorage.setItem('token', 'fake-jwt-token');
+    window.localStorage.setItem('user', JSON.stringify({ name: 'Test User' }));
+  });
+
+  // Mock API responses
+  await page.route('**/api/jobs', async (route) => {
+    if (route.request().method() === 'GET') {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify([
+          { _id: '1', company: 'Tech Corp', position: 'Frontend Engineer', status: 'Applied', type: 'Full-time', createdAt: new Date().toISOString() },
+          { _id: '2', company: 'Design Inc', position: 'UI Designer', status: 'Interview', type: 'Contract', createdAt: new Date().toISOString() }
+        ])
+      });
+    } else if (route.request().method() === 'POST') {
+      const postData = JSON.parse(route.request().postData() || '{}');
+      await route.fulfill({
+        status: 201,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          _id: Math.random().toString(),
+          ...postData,
+          createdAt: new Date().toISOString()
+        })
+      });
+    }
+  });
+
+  await page.route('**/api/jobs/*', async (route) => {
+    if (route.request().method() === 'PUT') {
+      const postData = JSON.parse(route.request().postData() || '{}');
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          _id: route.request().url().split('/').pop(),
+          company: 'Updated',
+          position: 'Updated',
+          type: 'Full-time',
+          ...postData,
+          createdAt: new Date().toISOString()
+        })
+      });
+    } else if (route.request().method() === 'DELETE') {
+      await route.fulfill({ status: 200, body: JSON.stringify({ message: 'Deleted' }) });
+    }
+  });
+
   await page.goto('/dashboard');
-  await page.evaluate(() => window.localStorage.clear());
-  await page.reload();
 });
 
-test('TaskDashboard component functionality', async ({ page }) => {
-  // Verify "Scheduled" tab is active by default
-  const scheduledTab = page.getByRole('tab', { name: 'Scheduled' });
-  await expect(scheduledTab).toBeVisible();
-  await expect(scheduledTab).toHaveAttribute('aria-selected', 'true');
+test('JobDashboard component functionality', async ({ page }) => {
+  // Verify "Applied" tab is active by default
+  const appliedTab = page.getByRole('tab', { name: 'Applied' });
+  await expect(appliedTab).toBeVisible();
+  await expect(appliedTab).toHaveAttribute('aria-selected', 'true');
 
   // Verify switching tabs
-  const allTab = page.getByRole('tab', { name: 'All' });
-  await allTab.click();
-  await expect(allTab).toHaveAttribute('aria-selected', 'true');
-  await expect(scheduledTab).toHaveAttribute('aria-selected', 'false');
+  const interviewTab = page.getByRole('tab', { name: 'Interview' });
+  await interviewTab.click();
+  await expect(interviewTab).toHaveAttribute('aria-selected', 'true');
+  await expect(appliedTab).toHaveAttribute('aria-selected', 'false');
 
-  // Verify "+ New" button
-  const newButton = page.getByRole('button', { name: 'New' });
+  // Go back to applied tab
+  await appliedTab.click();
+
+  // Verify "+ New Application" button
+  const newButton = page.getByRole('button', { name: 'New Application' });
   await expect(newButton).toBeVisible();
-  await expect(newButton).toHaveClass(/bg-purple-600/);
-
-  // Verify card styling (rounded-xl)
-  const container = page.locator('.rounded-xl').first();
-  await expect(container).toBeVisible();
-  await expect(container).toHaveClass(/bg-zinc-900/);
-  await expect(container).toHaveClass(/border-zinc-800/);
-
-  // Verify empty state text
-  await expect(page.getByText('Scheduled tasks will show up here')).toBeVisible();
-
-  // Verify filter chips existence
-  const performanceChip = page.getByRole('button', { name: 'Performance', exact: true });
-  const designChip = page.getByRole('button', { name: 'Design', exact: true });
-  const securityChip = page.getByRole('button', { name: 'Security', exact: true });
-
-  await expect(performanceChip).toBeVisible();
-  await expect(designChip).toBeVisible();
-  await expect(securityChip).toBeVisible();
 
   // Create tasks for testing filters
-  // Task 1: Performance
+  // Task 1: Full-time
   await newButton.click();
-  await page.getByLabel('Task Title').fill('Performance Task');
-  // Default category is Performance
-  await page.getByRole('button', { name: 'Create Task' }).click();
-
-  // Task 2: Design
-  await newButton.click();
-  await page.getByLabel('Task Title').fill('Design Task');
-  await page.locator('form').getByRole('button', { name: 'Design' }).click(); // Select Design category
-  await page.locator('form').getByRole('button', { name: 'Create Task' }).click();
+  await page.getByPlaceholder('e.g. Google').fill('Apple');
+  await page.getByPlaceholder('e.g. Senior Frontend Engineer').fill('Fullstack Engineer');
+  // Default category is Full-time
+  await page.getByRole('button', { name: 'Create' }).click();
 
   // Wait for dialog to close to avoid matching buttons inside it
   await expect(page.locator('form')).toBeHidden();
 
-  // Verify both tasks are visible initially (no filters active)
-  // Note: We switched to "All" tab earlier
-  await expect(page.getByText('Performance Task')).toBeVisible();
-  await expect(page.getByText('Design Task')).toBeVisible();
-
-  // Activate Performance filter
-  await performanceChip.click();
-  await expect(performanceChip).toHaveAttribute('aria-pressed', 'true');
-
-  // Verify filtering behavior
-  await expect(page.getByText('Performance Task')).toBeVisible();
-  await expect(page.getByText('Design Task')).toBeHidden();
-
-  // Deactivate filter
-  await performanceChip.click();
-
-  // Test Completing a task
-  // We are on "All" tab, create a new task for completion test
-  await newButton.click();
-  await page.getByLabel('Task Title').fill('Task to Complete');
-  await page.getByRole('button', { name: 'Create Task' }).click();
-  await expect(page.locator('form')).toBeHidden();
-
-  // Use .group class to target the task row container
-  const taskToCompleteRow = page.locator('.group', { hasText: 'Task to Complete' }).first();
-  // Click the check circle button
-  await taskToCompleteRow.getByRole('checkbox', { name: 'Complete task: Task to Complete' }).click();
-
-  // Go to "Completed" tab
-  const completedTab = page.getByRole('tab', { name: 'Completed' });
-  await completedTab.click();
-  await expect(page.getByText('Task to Complete')).toBeVisible();
-
-  // Verify it's not in "Scheduled" tab
-  await scheduledTab.click();
-  await expect(page.getByText('Task to Complete')).toBeHidden();
-
-  // Test Archiving a task
-  // Create a new task for archiving
-  await newButton.click();
-  await page.getByLabel('Task Title').fill('Task to Archive');
-  await page.getByRole('button', { name: 'Create Task' }).click();
-  await expect(page.locator('form')).toBeHidden();
-
-  // It should be visible in Scheduled tab
-  await expect(page.getByText('Task to Archive')).toBeVisible();
-
-  // Hover over the task row to show actions (Archive button appears on hover)
-  const taskToArchiveRow = page.locator('.group', { hasText: 'Task to Archive' }).first();
-  await taskToArchiveRow.hover();
-
-  // Click Archive button
-  await taskToArchiveRow.getByRole('button', { name: 'Archive task: Task to Archive' }).click();
-
-  // Verify it's gone from Scheduled tab
-  await expect(page.getByText('Task to Archive')).toBeHidden();
-
-  // Go to "Archived" tab
-  const archivedTab = page.getByRole('tab', { name: 'Archived' });
-  await archivedTab.click();
-  await expect(page.getByText('Task to Archive')).toBeVisible();
-
-});
-
-test('TaskDashboard persistence', async ({ page }) => {
-  // Create a task
-  const newButton = page.getByRole('button', { name: 'New' });
-  await newButton.click();
-  await page.getByLabel('Task Title').fill('Persistent Task');
-  await page.getByRole('button', { name: 'Create Task' }).click();
-  await expect(page.locator('form')).toBeHidden();
-
   // Verify task is visible
-  await expect(page.getByText('Persistent Task')).toBeVisible();
+  await expect(page.getByText('Fullstack Engineer')).toBeVisible();
 
-  // Reload page
-  await page.reload();
+  // Change status of first job to interview
+  const firstJobDropdown = page.locator('select').first();
+  await firstJobDropdown.selectOption('Interview');
 
-  // Verify task is still visible
-  await expect(page.getByText('Persistent Task')).toBeVisible();
+  // Go to Interview tab
+  await interviewTab.click();
+
+  // Delete the job from interview tab
+  const deleteBtn = page.getByRole('button', { name: 'Delete' }).first();
+  await deleteBtn.click();
 });
