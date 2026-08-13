@@ -281,15 +281,16 @@ export default function TaskDashboard() {
             />
           </div>
           <div className="space-y-2">
-            <label className="text-sm font-medium text-zinc-300">
+            <label id="category-label" className="text-sm font-medium text-zinc-300">
               Category
             </label>
-            <div className="flex gap-2">
+            <div role="radiogroup" aria-labelledby="category-label" className="flex gap-2">
               {filters.map(filter => (
                 <button
                   key={filter.id}
                   type="button"
-                  aria-pressed={newTaskCategory === filter.id}
+                  role="radio"
+                  aria-checked={newTaskCategory === filter.id}
                   onClick={() => setNewTaskCategory(filter.id)}
                   className={cn(
                     "flex-1 flex flex-col items-center justify-center p-3 rounded-lg border text-xs gap-1 transition-all outline-none focus-visible:ring-2 focus-visible:ring-purple-500",
@@ -325,8 +326,8 @@ export default function TaskDashboard() {
 
       {/* Bottom Filter Chips */}
       <div className="mt-8">
-        <h4 className="text-sm font-medium text-zinc-400 mb-3">Skill-based agents</h4>
-        <div className="flex flex-wrap gap-3">
+        <h4 id="agents-label" className="text-sm font-medium text-zinc-400 mb-3">Skill-based agents</h4>
+        <div role="group" aria-labelledby="agents-label" className="flex flex-wrap gap-3">
           {filters.map(({ id, label, icon: Icon }) => {
             const isActive = activeFilters.includes(id);
             return (
