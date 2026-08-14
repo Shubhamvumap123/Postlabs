@@ -11,3 +11,7 @@
 ## 2026-06-08 - Contextual ARIA labels and roles for list items
 **Learning:** When using list actions (like complete, archive, delete) for specific items in a list, generic `aria-label`s like 'Mark as complete' or 'Archive' create ambiguity for screen reader users as they do not indicate *which* item is being affected. Using action verbs with checkboxes can also be confusing.
 **Action:** When implementing item-specific actions in a list, always include the item's title in the `aria-label` (e.g., `Archive task: ${task.title}`). For completion toggles, use `role="checkbox"`, `aria-checked`, and an `aria-label` that concisely describes the item (e.g., `Complete task: ${task.title}`) instead of action-oriented verbs.
+
+## 2026-08-14 - Adding loading states to async form actions
+**Learning:** Found an async form in `Footer.tsx` without any loading state for the submit button during a network request. Without visual feedback, users might double-submit or think the app froze.
+**Action:** Add a loading spinner and disable the button while the form is submitting to improve interaction feedback.
