@@ -46,7 +46,9 @@ export default function TaskDashboard() {
   const [tasks, setTasks] = useState<Task[]>(() => {
     try {
       const savedTasks = globalThis.localStorage.getItem('tasks');
-      return savedTasks ? JSON.parse(savedTasks) : [];
+      const parsed = savedTasks ? JSON.parse(savedTasks) : [];
+      // SECURITY: Validate parsed localStorage data is an array to prevent runtime TypeError (DoS) if data is corrupted or manipulated
+      return Array.isArray(parsed) ? parsed : [];
     } catch (e) {
       console.error('Failed to parse tasks', e);
       return [];
