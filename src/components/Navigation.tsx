@@ -47,7 +47,8 @@ const Navigation = () => {
       )}
 
       {/* Main Navigation */}
-      <nav 
+      <nav
+        aria-label="Main Navigation"
         className={cn(
             "fixed bottom-6 left-1/2 -translate-x-1/2 z-40 transition-all duration-500 ease-out max-w-[90vw]",
              isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-5 pointer-events-none'
@@ -60,6 +61,7 @@ const Navigation = () => {
                    <Link
                      key={item.path}
                      to={item.path}
+                     aria-label={item.name}
                      className={cn(
                        "flex items-center gap-2 px-3 sm:px-4 py-2 rounded-full transition-all duration-300 text-sm font-medium",
                        isActive
@@ -67,7 +69,7 @@ const Navigation = () => {
                          : "text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800/50"
                      )}
                    >
-                     <item.icon className="w-4 h-4" />
+                     <item.icon className="w-4 h-4" aria-hidden="true" />
                      <span className="hidden sm:inline">{item.name}</span>
                    </Link>
                )
