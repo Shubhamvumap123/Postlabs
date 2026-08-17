@@ -13,9 +13,11 @@ const PrivacySection: React.FC = () => {
         Post Labs is building a homegrown platform designed for Canadians
         and the future of Canadian media.
       </p>
+      {/* PERFORMANCE: Add loading="lazy" to below-the-fold images to improve initial load time */}
       <img
         src="https://cdn.prod.website-files.com/681dfdff4444ca819f7050a2/68266ea52e91d548861b8d20_icon-1-transparent.svg"
         alt=""
+        loading="lazy"
         className="w-40 h-40 absolute"
       />
     </div>
