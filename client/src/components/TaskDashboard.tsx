@@ -37,7 +37,7 @@ export default function TaskDashboard() {
   useEffect(() => {
     const fetchJobs = async () => {
       try {
-        const res = await fetch('http://localhost:5000/api/jobs', {
+        const res = await fetch(`${import.meta.env.VITE_API_URL || "http://localhost:5000/api"}/jobs`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         if (res.status === 401) {
@@ -61,7 +61,7 @@ export default function TaskDashboard() {
 
     try {
       if (editingJobId) {
-        const res = await fetch(`http://localhost:5000/api/jobs/${editingJobId}`, {
+        const res = await fetch(`${import.meta.env.VITE_API_URL || "http://localhost:5000/api"}/jobs/${editingJobId}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
@@ -73,7 +73,7 @@ export default function TaskDashboard() {
         setTasks(prev => prev.map(t => t._id === editingJobId ? updatedJob : t));
         toast.success("Job application updated");
       } else {
-        const res = await fetch('http://localhost:5000/api/jobs', {
+        const res = await fetch(`${import.meta.env.VITE_API_URL || "http://localhost:5000/api"}/jobs`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -97,7 +97,7 @@ export default function TaskDashboard() {
 
   const deleteTask = async (id: string) => {
     try {
-      await fetch(`http://localhost:5000/api/jobs/${id}`, {
+      await fetch(`${import.meta.env.VITE_API_URL || "http://localhost:5000/api"}/jobs/${id}`, {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${token}` }
       });
@@ -120,7 +120,7 @@ export default function TaskDashboard() {
                        currentStatus === 'Interview' ? 'Offer' :
                        currentStatus === 'Offer' ? 'Rejected' : 'Applied';
     try {
-      await fetch(`http://localhost:5000/api/jobs/${id}`, {
+      await fetch(`${import.meta.env.VITE_API_URL || "http://localhost:5000/api"}/jobs/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
