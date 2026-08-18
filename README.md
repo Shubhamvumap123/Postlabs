@@ -1,54 +1,38 @@
-# React + TypeScript + Vite
+# Job Tracker SaaS Dashboard
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A full-stack, production-ready SaaS Job Tracker application.
 
-Currently, two official plugins are available:
+## Features
+- **User Authentication:** Secure JWT-based login and signup.
+- **Job Tracking:** Add, edit, and delete job applications.
+- **Status Management:** Track applications through stages (Applied, Interview, Offer, Rejected).
+- **Responsive Dashboard:** Modern UI built with TailwindCSS and Framer Motion.
+- **Role-based Access:** (Prepared for RBAC) Protected routes and API endpoints.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Tech Stack
+- **Frontend:** React.js (Vite), TailwindCSS, Framer Motion, Lucide-React
+- **Backend:** Node.js, Express.js
+- **Database:** MongoDB, Mongoose
+- **Authentication:** JWT, bcryptjs
 
-## Expanding the ESLint configuration
+## Setup Instructions
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### Prerequisites
+- Node.js (v18+)
+- pnpm
+- MongoDB URI
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+### Backend Setup
+1. `cd server`
+2. `pnpm install`
+3. Create a `.env` file in `server/` with `MONGO_URI` and `JWT_SECRET`.
+4. Start the server: `node server.js` (Runs on port 5000)
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### Frontend Setup
+1. `cd client`
+2. `pnpm install`
+3. Start the dev server: `pnpm run dev`
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
-```
+## Screenshots
+![Dashboard](placeholder-dashboard.png)
+![Login](placeholder-login.png)
