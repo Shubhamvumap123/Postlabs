@@ -46,7 +46,11 @@ export default function TaskDashboard() {
   const [tasks, setTasks] = useState<Task[]>(() => {
     try {
       const savedTasks = globalThis.localStorage.getItem('tasks');
-      return savedTasks ? JSON.parse(savedTasks) : [];
+      if (savedTasks) {
+        const parsed = JSON.parse(savedTasks);
+        return Array.isArray(parsed) ? parsed : [];
+      }
+      return [];
     } catch (e) {
       console.error('Failed to parse tasks', e);
       return [];
@@ -281,15 +285,16 @@ export default function TaskDashboard() {
             />
           </div>
           <div className="space-y-2">
-            <label className="text-sm font-medium text-zinc-300">
+            <label id="category-label" className="text-sm font-medium text-zinc-300">
               Category
             </label>
-            <div className="flex gap-2">
+            <div className="flex gap-2" role="radiogroup" aria-labelledby="category-label">
               {filters.map(filter => (
                 <button
                   key={filter.id}
                   type="button"
-                  aria-pressed={newTaskCategory === filter.id}
+                  role="radio"
+                  aria-checked={newTaskCategory === filter.id}
                   onClick={() => setNewTaskCategory(filter.id)}
                   className={cn(
                     "flex-1 flex flex-col items-center justify-center p-3 rounded-lg border text-xs gap-1 transition-all outline-none focus-visible:ring-2 focus-visible:ring-purple-500",
@@ -325,8 +330,8 @@ export default function TaskDashboard() {
 
       {/* Bottom Filter Chips */}
       <div className="mt-8">
-        <h4 className="text-sm font-medium text-zinc-400 mb-3">Skill-based agents</h4>
-        <div className="flex flex-wrap gap-3">
+        <h4 id="skill-agents-heading" className="text-sm font-medium text-zinc-400 mb-3">Skill-based agents</h4>
+        <div className="flex flex-wrap gap-3" role="group" aria-labelledby="skill-agents-heading">
           {filters.map(({ id, label, icon: Icon }) => {
             const isActive = activeFilters.includes(id);
             return (
