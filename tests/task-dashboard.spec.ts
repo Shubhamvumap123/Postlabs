@@ -19,7 +19,7 @@ test('TaskDashboard component functionality', async ({ page }) => {
   await expect(scheduledTab).toHaveAttribute('aria-selected', 'false');
 
   // Verify "+ New" button
-  const newButton = page.getByRole('button', { name: 'New' });
+  const newButton = page.getByRole('button', { name: 'New', exact: true });
   await expect(newButton).toBeVisible();
   await expect(newButton).toHaveClass(/bg-purple-600/);
 
@@ -51,7 +51,7 @@ test('TaskDashboard component functionality', async ({ page }) => {
   // Task 2: Design
   await newButton.click();
   await page.getByLabel('Task Title').fill('Design Task');
-  await page.locator('form').getByRole('button', { name: 'Design' }).click(); // Select Design category
+  await page.locator('form').getByRole('radio', { name: 'Design' }).click(); // Select Design category
   await page.locator('form').getByRole('button', { name: 'Create Task' }).click();
 
   // Wait for dialog to close to avoid matching buttons inside it
@@ -123,7 +123,7 @@ test('TaskDashboard component functionality', async ({ page }) => {
 
 test('TaskDashboard persistence', async ({ page }) => {
   // Create a task
-  const newButton = page.getByRole('button', { name: 'New' });
+  const newButton = page.getByRole('button', { name: 'New', exact: true });
   await newButton.click();
   await page.getByLabel('Task Title').fill('Persistent Task');
   await page.getByRole('button', { name: 'Create Task' }).click();
