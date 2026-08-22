@@ -11,3 +11,7 @@
 ## 2026-06-08 - Contextual ARIA labels and roles for list items
 **Learning:** When using list actions (like complete, archive, delete) for specific items in a list, generic `aria-label`s like 'Mark as complete' or 'Archive' create ambiguity for screen reader users as they do not indicate *which* item is being affected. Using action verbs with checkboxes can also be confusing.
 **Action:** When implementing item-specific actions in a list, always include the item's title in the `aria-label` (e.g., `Archive task: ${task.title}`). For completion toggles, use `role="checkbox"`, `aria-checked`, and an `aria-label` that concisely describes the item (e.g., `Complete task: ${task.title}`) instead of action-oriented verbs.
+
+## 2024-02-23 - Accessible Custom Radio Groups
+**Learning:** Using standard buttons for a theme selector group fails to provide screen readers with context about the available options and the currently selected state.
+**Action:** Always wrap theme selector buttons in a `role="radiogroup"` with an `aria-label` and add `role="radio"` with `aria-checked` to the individual buttons.

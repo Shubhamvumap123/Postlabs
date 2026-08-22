@@ -126,10 +126,12 @@ const Settings = () => {
                 </div>
               </div>
 
-              <div className="grid grid-cols-3 gap-4">
+              <div className="grid grid-cols-3 gap-4" role="radiogroup" aria-label="Theme preference">
                 {['light', 'dark', 'system'].map((t) => (
                   <button
                     key={t}
+                    role="radio"
+                    aria-checked={theme === t}
                     onClick={() => setTheme(t)}
                     className={`
                       flex flex-col items-center gap-2 p-4 rounded-lg border transition-all
