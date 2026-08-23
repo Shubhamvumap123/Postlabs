@@ -1,54 +1,52 @@
-# React + TypeScript + Vite
+# Job Tracker SaaS
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A production-ready full-stack Job Tracker application to help users manage their job applications.
 
-Currently, two official plugins are available:
+## Features
+- **User Authentication**: Secure signup, login, and logout using JWT and bcrypt.
+- **Job Management**: CRUD operations to Add, Edit, Delete, and View job applications.
+- **Status Tracking**: Keep track of job statuses (Applied, Interview, Offer, Rejected).
+- **Search & Filter**: Easily find jobs by company, position, or status.
+- **Analytics Dashboard**: Visual charts displaying application status breakdown.
+- **Responsive UI**: Built with React, TailwindCSS, and Recharts for a modern SaaS feel.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Tech Stack
+- **Frontend**: React.js / Vite / TailwindCSS / Recharts
+- **Backend**: Node.js / Express.js / MongoDB / Mongoose
+- **Authentication**: JWT
 
-## Expanding the ESLint configuration
+## Setup Instructions
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### Prerequisites
+- Node.js (v18+)
+- MongoDB (Local or Atlas)
+- `pnpm` package manager
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+### Backend Setup
+1. Navigate to the server directory:
+   `cd server`
+2. Install dependencies:
+   `pnpm install`
+3. Create a `.env` file in the `server` directory:
+   ```env
+   PORT=5000
+   MONGODB_URI=mongodb://localhost:27017/jobtracker
+   JWT_SECRET=your_super_secret_key
+   ```
+4. Start the backend server:
+   `npm start` or `node server.js`
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### Frontend Setup
+1. Navigate to the client directory:
+   `cd client`
+2. Install dependencies:
+   `pnpm install`
+3. Start the Vite development server:
+   `pnpm dev`
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+### Deployment (Suggested)
+- **Frontend (Vercel)**: Import the GitHub repository into Vercel, set the Root Directory to `client`, and configure Build Command as `pnpm build`.
+- **Backend (Render)**: Create a new Web Service on Render, connect the repo, set Root Directory to `server`, Build Command to `pnpm install`, and Start Command to `npm start`. Add required Environment Variables (`MONGODB_URI`, `JWT_SECRET`).
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
-```
+## Screenshots
+![Dashboard Placeholder](https://via.placeholder.com/800x400?text=Dashboard+Screenshot)
