@@ -20,3 +20,7 @@
 ## 2026-06-08 - Layout Thrashing in Throttled Scroll Listeners
 **Learning:** Querying layout properties like `document.body.offsetHeight` inside a scroll listener still triggers continuous synchronous layout thrashing (forced reflow), severely impacting performance even when throttled with `requestAnimationFrame`.
 **Action:** Replace layout-thrashing scroll listeners with `framer-motion`'s `useInView` combined with a sentinel element naturally placed at the end of the document flow.
+
+## 2024-05-18 - Video preload Attribute
+**Learning:** Found an anti-pattern where critical above-the-fold or immediate-scroll videos (FullWidthVideoSection, VideoSection) were using `preload="none"`. This prevents the browser from loading the video metadata or initial frames until playback is explicitly triggered (e.g. by scrolling), causing a noticeable delay and a flash of the poster image or blank space.
+**Action:** For videos that are very likely to be played quickly after load, change `preload="none"` to `preload="auto"` or at least `preload="metadata"` to ensure smooth playback without layout shifts or delays.
