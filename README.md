@@ -1,54 +1,84 @@
-# React + TypeScript + Vite
+# Job Tracker SaaS Dashboard
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A production-ready full-stack Job Tracker application designed to help users efficiently manage their job search process.
 
-Currently, two official plugins are available:
+![Dashboard Screenshot](./placeholder-dashboard.png)
+*(Screenshot Placeholder - Add dashboard image here)*
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🚀 Features
 
-## Expanding the ESLint configuration
+*   **Complete SaaS Dashboard UI**: Modern, responsive, and intuitive user interface built with React and Tailwind CSS.
+*   **Secure Authentication**: Role-based access control with JWT authentication (Signup, Login, Logout).
+*   **Comprehensive Job Management**: Full CRUD operations (Add, Edit, Delete) for job applications.
+*   **Status Tracking**: Easily monitor application progress (Applied, Interview, Offer, Rejected).
+*   **Search & Filter**: Quickly find specific applications using robust search and status filtering.
+*   **Analytics Dashboard**: Visual representations of application statistics using dynamic charts (Recharts).
+*   **Protected Routes**: Robust client-side and server-side route protection ensuring data privacy.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## 🛠 Tech Stack
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+**Frontend:**
+*   React.js (with Vite)
+*   Tailwind CSS (Styling)
+*   Framer Motion (Animations)
+*   Lucide-React (Icons)
+*   Recharts (Data Visualization)
+*   Axios (HTTP Client)
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+**Backend:**
+*   Node.js
+*   Express.js
+*   MongoDB (Database)
+*   Mongoose (ODM)
+*   JSON Web Tokens (JWT Authentication)
+*   Bcrypt.js (Password Hashing)
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## ⚙️ Setup Instructions
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
-```
+### Prerequisites
+*   Node.js (v18+ recommended)
+*   MongoDB instance (local or Atlas)
+*   pnpm (or npm/yarn)
+
+### Installation
+
+1.  **Clone the repository:**
+    ```bash
+    git clone <repository-url>
+    cd postlabs
+    ```
+
+2.  **Install dependencies:**
+    This project uses a unified root for simplicity in development. Install all necessary packages:
+    ```bash
+    pnpm install
+    ```
+
+3.  **Environment Configuration:**
+    Create a `.env` file in the root directory and configure the following variables:
+    ```env
+    PORT=5000
+    MONGO_URI=mongodb://localhost:27017/jobtracker
+    JWT_SECRET=your_super_secret_key
+    VITE_API_URL=http://localhost:5000/api
+    ```
+
+4.  **Run the application:**
+    You will need two terminal windows to run both the frontend and backend simultaneously.
+
+    *Terminal 1 (Backend):*
+    ```bash
+    node server/index.js
+    ```
+
+    *Terminal 2 (Frontend):*
+    ```bash
+    pnpm run dev
+    ```
+
+5.  **Access the app:**
+    Open your browser and navigate to `http://localhost:5173`.
+
+## 📚 Architecture & Deployment
+
+For a detailed breakdown of the project structure, architectural decisions, and step-by-step deployment instructions for Vercel and Render, please refer to the [Architecture and Deployment Guide](ARCHITECTURE_AND_DEPLOYMENT.md).
