@@ -1,10 +1,12 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { useInView } from "framer-motion";
+import { Loader2 } from "lucide-react";
 
 export default function Footer() {
   const sentinelRef = useRef<HTMLDivElement>(null);
   const atBottom = useInView(sentinelRef, { margin: "0px 0px 50px 0px" });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
    
@@ -36,6 +38,7 @@ export default function Footer() {
 
     // Capture the form element before the await
     const form = e.currentTarget;
+    setIsSubmitting(true);
 
     try {
       // SECURITY: In a real production app, never call the Mailchimp API directly from the client.
@@ -51,6 +54,8 @@ export default function Footer() {
     } catch (error) {
       console.error(error);
       toast.error("Error signing up. Please try again later.");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -145,15 +150,17 @@ export default function Footer() {
               type="email"
               name="email"
               required
+              disabled={isSubmitting}
               placeholder="Email Address"
-              className="flex-1 px-3 py-2 text-black rounded-md outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2"
+              className="flex-1 px-3 py-2 text-black rounded-md outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
             />
             <button
               type="submit"
-              aria-label="Subscribe to newsletter"
-              className="px-5 bg-white text-black rounded-md font-medium outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2"
+              disabled={isSubmitting}
+              aria-label={isSubmitting ? "Subscribing to newsletter" : "Subscribe to newsletter"}
+              className="px-5 bg-white text-black rounded-md font-medium outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center min-w-[56px]"
             >
-              →
+              {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin text-black" aria-hidden="true" /> : "→"}
             </button>
           </form>
         </div>
