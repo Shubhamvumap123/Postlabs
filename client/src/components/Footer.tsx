@@ -169,15 +169,10 @@ export default function Footer() {
             <button
               type="submit"
               disabled={isSubmitting}
-              aria-label="Subscribe to newsletter"
-              disabled={isSubmitting}
-              className="px-5 bg-white text-black rounded-md font-medium outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center min-w-[56px]"
+              aria-label={isSubmitting ? "Subscribing to newsletter" : "Subscribe to newsletter"}
+              className="flex items-center justify-center px-5 min-w-[64px] bg-white text-black rounded-md font-medium outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 disabled:opacity-70 disabled:cursor-not-allowed transition-opacity"
             >
-              {isSubmitting ? (
-                <Loader2 className="w-4 h-4 animate-spin" />
-              ) : (
-                "→"
-              )}
+              {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin text-black" /> : "→"}
             </button>
           </form>
         </div>
