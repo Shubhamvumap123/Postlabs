@@ -1,25 +1,38 @@
-# Full Stack Job Tracker
-A production-ready SaaS application for tracking job applications.
+# Job Tracker SaaS Dashboard
+
+A full-stack, production-ready SaaS Job Tracker application.
 
 ## Features
-- **User Authentication**: Secure JWT-based registration and login system.
-- **Job Tracking**: Complete CRUD operations for Job Applications.
-- **Status Management**: Track applications through stages (Applied, Interview, Offer, Rejected).
-- **Search & Filter**: Find specific jobs quickly by company name or position, and filter by job type.
-- **Analytics Dashboard**: Visual charts showing application status distribution and job type breakdown using Recharts.
+- **User Authentication:** Secure JWT-based login and signup.
+- **Job Tracking:** Add, edit, and delete job applications.
+- **Status Management:** Track applications through stages (Applied, Interview, Offer, Rejected).
+- **Responsive Dashboard:** Modern UI built with TailwindCSS and Framer Motion.
+- **Role-based Access:** (Prepared for RBAC) Protected routes and API endpoints.
 
 ## Tech Stack
-- **Frontend**: React.js (Vite), TailwindCSS, Recharts, Axios, Lucide React
-- **Backend**: Node.js, Express.js, Mongoose, JSON Web Tokens (JWT), bcryptjs
-- **Database**: MongoDB
+- **Frontend:** React.js (Vite), TailwindCSS, Framer Motion, Lucide-React
+- **Backend:** Node.js, Express.js
+- **Database:** MongoDB, Mongoose
+- **Authentication:** JWT, bcryptjs
 
 ## Setup Instructions
 
-### 1. Frontend Setup
-Navigate to the root directory and start by running pnpm install then pnpm dev
+### Prerequisites
+- Node.js (v18+)
+- pnpm
+- MongoDB URI
 
-### 2. Backend Setup
-Navigate to the server directory, install dependencies via npm install, and start via npm start
+### Backend Setup
+1. `cd server`
+2. `pnpm install`
+3. Create a `.env` file in `server/` with `MONGO_URI` and `JWT_SECRET`.
+4. Start the server: `node server.js` (Runs on port 5000)
+
+### Frontend Setup
+1. `cd client`
+2. `pnpm install`
+3. Start the dev server: `pnpm run dev`
 
 ## Screenshots
-![Dashboard Placeholder](https://via.placeholder.com/800x400?text=Dashboard+Screenshot)
+![Dashboard](placeholder-dashboard.png)
+![Login](placeholder-login.png)

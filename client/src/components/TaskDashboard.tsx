@@ -1,203 +1,199 @@
-import { useState, useEffect } from "react";
-import { Plus, Clock, Trash2, Shield, Zap, Paintbrush, Search, LogOut } from "lucide-react";
-import { Button } from "./ui/button";
-import { Input } from "./ui/input";
-import { Dialog } from "./ui/dialog";
-import { motion, AnimatePresence } from "framer-motion";
-import { cn } from "../lib/utils";
-import axios from "axios";
-import { useNavigate } from "react-router-dom";
-import { toast } from "sonner";
-import DashboardCharts from "./DashboardCharts";
+import { useState, useEffect, useMemo } from 'react';
+import { useAuth } from '../lib/AuthContext';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Clock, Plus, Trash2, CheckCircle2, Circle, Search, Edit2, BarChart2 } from 'lucide-react';
+import { cn } from '../lib/utils';
+import { toast } from 'sonner';
+import { Dialog } from './ui/dialog';
+import { Input } from './ui/input';
+import { Button } from './ui/button';
 
-type JobStatus = 'Applied' | 'Interview' | 'Offer' | 'Rejected';
-
-interface Job {
+interface Task {
   _id: string;
-  company: string;
   position: string;
-  status: JobStatus;
-  type: string;
+  company: string;
+  status: 'Applied' | 'Interview' | 'Offer' | 'Rejected';
   createdAt: string;
 }
 
-const tabs: JobStatus[] = ['Applied', 'Interview', 'Offer', 'Rejected'];
+const tabs = ["All", "Applied", "Interview", "Offer", "Rejected"] as const;
+type Tab = typeof tabs[number];
 
-const filters = [
-  { id: 'Full-time', label: 'Full-time', icon: Zap },
-  { id: 'Contract', label: 'Contract', icon: Paintbrush },
-  { id: 'Freelance', label: 'Freelance', icon: Shield },
-];
 
-export default function JobDashboard() {
-  const [jobs, setJobs] = useState<Job[]>([]);
-  const [activeTab, setActiveTab] = useState<JobStatus>('Applied');
-  const [activeFilters, setActiveFilters] = useState<string[]>([]);
+
+export default function TaskDashboard() {
+  const [activeTab, setActiveTab] = useState<Tab>("Applied");
   const [searchQuery, setSearchQuery] = useState("");
 
-  const [isNewJobOpen, setIsNewJobOpen] = useState(false);
-  const [newCompany, setNewCompany] = useState("");
-  const [newPosition, setNewPosition] = useState("");
-  const [newJobType, setNewJobType] = useState("Full-time");
+  const [tasks, setTasks] = useState<Task[]>([]);
 
-  const [isLoading, setIsLoading] = useState(true);
-  const navigate = useNavigate();
+  const { token, logout } = useAuth();
 
-  const getAuthHeader = () => {
-    const token = localStorage.getItem('token');
-    return token ? { Authorization: `Bearer ${token}` } : {};
-  };
-
-  const fetchJobs = async () => {
-    try {
-      setIsLoading(true);
-      const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
-      const res = await axios.get(`${API_URL}/api/jobs`, { headers: getAuthHeader() });
-      setJobs(res.data);
-    } catch (error: unknown) {
-      if (error instanceof axios.AxiosError && error.response?.status === 401) {
-        toast.error("Session expired, please login again");
-        localStorage.removeItem('token');
-        navigate('/auth');
-      } else {
-        toast.error("Failed to load jobs. Using offline mode.");
-        setJobs([
-          { _id: '1', company: 'Tech Corp (Offline)', position: 'Frontend Engineer', status: 'Applied', type: 'Full-time', createdAt: new Date().toISOString() }
-        ]);
-      }
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  const [isNewTaskOpen, setIsNewTaskOpen] = useState(false);
+  const [newTaskTitle, setNewTaskTitle] = useState("");
+  const [newTaskCompany, setNewTaskCompany] = useState("");
+  const [editingJobId, setEditingJobId] = useState<string | null>(null);
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (!token) {
-      // Allow viewing but fetch will fail, maybe redirect
-      navigate('/auth');
-      return;
-    }
-    void fetchJobs();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [navigate]);
+    const fetchJobs = async () => {
+      try {
+        const res = await fetch(`${import.meta.env.VITE_API_URL || "http://localhost:5000/api"}/jobs`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        if (res.status === 401) {
+          logout();
+          return;
+        }
+        const data = await res.json();
+        setTasks(data);
+      } catch {
+        toast.error('Failed to fetch jobs');
+      }
+    };
+    if (token) fetchJobs();
+  }, [token, logout]);
 
-  const handleLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    navigate('/auth');
-  };
 
-  const addJob = async (e: React.FormEvent) => {
+
+  const addTask = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newCompany.trim() || !newPosition.trim()) return;
-
-    const payload = { company: newCompany, position: newPosition, type: newJobType, status: 'Applied' };
+    if (!newTaskTitle.trim() || !newTaskCompany.trim()) return;
 
     try {
-      const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
-      const res = await axios.post(`${API_URL}/api/jobs`, payload, { headers: getAuthHeader() });
-      setJobs([...jobs, res.data]);
-      setNewCompany("");
-      setNewPosition("");
-      setIsNewJobOpen(false);
-      toast.success("Job application saved");
+      if (editingJobId) {
+        const res = await fetch(`${import.meta.env.VITE_API_URL || "http://localhost:5000/api"}/jobs/${editingJobId}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+          },
+          body: JSON.stringify({ position: newTaskTitle, company: newTaskCompany })
+        });
+        const updatedJob = await res.json();
+        setTasks(prev => prev.map(t => t._id === editingJobId ? updatedJob : t));
+        toast.success("Job application updated");
+      } else {
+        const res = await fetch(`${import.meta.env.VITE_API_URL || "http://localhost:5000/api"}/jobs`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+          },
+          body: JSON.stringify({ position: newTaskTitle, company: newTaskCompany, status: 'Applied' })
+        });
+
+        const newJob = await res.json();
+        setTasks(prev => [newJob, ...prev]);
+        toast.success("Job application created");
+      }
+      setIsNewTaskOpen(false);
+      setNewTaskTitle("");
+      setNewTaskCompany("");
+      setEditingJobId(null);
     } catch {
-      toast.error("Failed to add job");
+      toast.error(editingJobId ? 'Failed to update job' : 'Failed to create job');
     }
   };
 
-  const deleteJob = async (id: string) => {
+  const deleteTask = async (id: string) => {
     try {
-      const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
-      await axios.delete(`${API_URL}/api/jobs/${id}`, { headers: getAuthHeader() });
-      setJobs(jobs.filter(j => j._id !== id));
-      toast.success("Job removed");
+      await fetch(`${import.meta.env.VITE_API_URL || "http://localhost:5000/api"}/jobs/${id}`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setTasks(prev => prev.filter(t => t._id !== id));
+      toast.info("Job application deleted");
     } catch {
       toast.error("Failed to delete job");
     }
   };
 
-  const updateStatus = async (id: string, status: JobStatus) => {
+  const startEdit = (task: Task) => {
+    setEditingJobId(task._id);
+    setNewTaskTitle(task.position);
+    setNewTaskCompany(task.company);
+    setIsNewTaskOpen(true);
+  };
+
+  const toggleTaskStatus = async (id: string, currentStatus: string) => {
+    const nextStatus = currentStatus === 'Applied' ? 'Interview' :
+                       currentStatus === 'Interview' ? 'Offer' :
+                       currentStatus === 'Offer' ? 'Rejected' : 'Applied';
     try {
-      const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
-      const res = await axios.put(`${API_URL}/api/jobs/${id}`, { status }, { headers: getAuthHeader() });
-      setJobs(jobs.map(j => j._id === id ? res.data : j));
-      toast.success("Status updated");
+      await fetch(`${import.meta.env.VITE_API_URL || "http://localhost:5000/api"}/jobs/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({ status: nextStatus })
+      });
+      setTasks(prev => prev.map(t => {
+        if (t._id === id) return { ...t, status: nextStatus as Task['status'] };
+        return t;
+      }));
     } catch {
       toast.error("Failed to update status");
     }
   };
 
-  const filteredJobs = jobs.filter(job => {
-    const matchesTab = job.status === activeTab;
-    const matchesFilter = activeFilters.length === 0 || activeFilters.includes(job.type);
-    const matchesSearch = job.company.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                          job.position.toLowerCase().includes(searchQuery.toLowerCase());
-    return matchesTab && matchesFilter && matchesSearch;
-  });
-
-  if (isLoading) {
-    return <div className="text-zinc-400 p-8 text-center animate-pulse">Loading dashboard...</div>;
-  }
+  const filteredTasks = useMemo(() => {
+    return tasks.filter(task => {
+      if (activeTab === 'All') return true;
+      return task.status === activeTab;
+    });
+  }, [tasks, activeTab]);
 
   return (
-    <div className="w-full max-w-5xl mx-auto p-6 bg-zinc-900/50 rounded-2xl border border-zinc-800 text-zinc-100 shadow-xl mt-8">
-
-      <div className="flex justify-between items-center mb-8 pb-4 border-b border-zinc-800">
-        <h1 className="text-2xl font-bold text-white">Application Tracker</h1>
-        <Button variant="ghost" size="sm" onClick={handleLogout} className="text-zinc-400 hover:text-white">
-          <LogOut className="w-4 h-4 mr-2" />
-          Logout
-        </Button>
-      </div>
-
-      <DashboardCharts jobs={jobs} />
-
-      <div className="flex flex-col md:flex-row gap-4 mb-6 justify-between items-start md:items-center">
-        <div className="relative w-full md:w-64">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500" />
-          <Input
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search company or role..."
-            className="pl-9 bg-zinc-900 border-zinc-700 text-sm"
-          />
+    <div className="w-full max-w-2xl mx-auto p-4 sm:p-6 bg-zinc-900 rounded-xl border border-zinc-800 text-zinc-100 shadow-xl">
+      {/* Analytics Summary */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
+        <div className="bg-zinc-800/50 p-4 rounded-xl border border-zinc-700/50 flex flex-col items-center justify-center">
+          <span className="text-2xl font-bold text-zinc-100">{tasks.length}</span>
+          <span className="text-xs text-zinc-400 mt-1 flex items-center gap-1"><BarChart2 className="w-3 h-3"/> Total</span>
         </div>
-
-        <div className="flex gap-2 w-full md:w-auto overflow-x-auto pb-2 md:pb-0 no-scrollbar">
-          {filters.map(({ id, label, icon: Icon }) => {
-            const isActive = activeFilters.includes(id);
-            return (
-              <button
-                type="button"
-                key={id}
-                onClick={() => setActiveFilters(prev => prev.includes(id) ? prev.filter(f => f !== id) : [...prev, id])}
-                className={cn(
-                  "flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium border transition-all whitespace-nowrap",
-                  isActive
-                    ? "bg-zinc-800 border-zinc-700 text-white"
-                    : "bg-transparent border-zinc-800 text-zinc-400 hover:border-zinc-700"
-                )}
-              >
-                <Icon className={cn("w-3 h-3", isActive ? "text-purple-400" : "text-current")} />
-                {label}
-              </button>
-            );
-          })}
+        <div className="bg-zinc-800/50 p-4 rounded-xl border border-zinc-700/50 flex flex-col items-center justify-center">
+          <span className="text-2xl font-bold text-purple-400">{tasks.filter(t => t.status === 'Applied').length}</span>
+          <span className="text-xs text-zinc-400 mt-1">Applied</span>
+        </div>
+        <div className="bg-zinc-800/50 p-4 rounded-xl border border-zinc-700/50 flex flex-col items-center justify-center">
+          <span className="text-2xl font-bold text-blue-400">{tasks.filter(t => t.status === 'Interview').length}</span>
+          <span className="text-xs text-zinc-400 mt-1">Interviewing</span>
+        </div>
+         <div className="bg-zinc-800/50 p-4 rounded-xl border border-zinc-700/50 flex flex-col items-center justify-center">
+          <span className="text-2xl font-bold text-green-400">{tasks.filter(t => t.status === 'Offer').length}</span>
+          <span className="text-xs text-zinc-400 mt-1">Offers</span>
         </div>
       </div>
 
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
-        <div role="tablist" aria-label="Job status filters" className="flex p-1 bg-zinc-800/50 rounded-full overflow-x-auto no-scrollbar w-full sm:w-auto">
-          {tabs.map((tab) => (
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+        <div role="tablist" aria-label="Task filters" className="flex p-1 bg-zinc-800/50 rounded-full overflow-x-auto no-scrollbar">
+          {tabs.map((tab, index) => (
             <button
               type="button"
               role="tab"
               aria-selected={activeTab === tab}
+              aria-controls={`tabpanel-${tab}`}
+              id={`tab-${tab}`}
+              tabIndex={activeTab === tab ? 0 : -1}
               key={tab}
               onClick={() => setActiveTab(tab)}
+              onKeyDown={(e) => {
+                let newIndex = index;
+                if (e.key === 'ArrowRight') {
+                  newIndex = index === tabs.length - 1 ? 0 : index + 1;
+                } else if (e.key === 'ArrowLeft') {
+                  newIndex = index === 0 ? tabs.length - 1 : index - 1;
+                }
+                if (newIndex !== index) {
+                  e.preventDefault();
+                  setActiveTab(tabs[newIndex]);
+                  const nextTab = document.getElementById(`tab-${tabs[newIndex]}`);
+                  nextTab?.focus();
+                }
+              }}
               className={cn(
-                "relative flex-1 sm:flex-none px-4 py-1.5 text-sm font-medium rounded-full transition-colors whitespace-nowrap outline-none",
+                "relative px-4 py-1.5 text-sm font-medium rounded-full transition-colors whitespace-nowrap outline-none focus-visible:ring-2 focus-visible:ring-purple-500",
                 activeTab === tab ? "text-white" : "text-zinc-400 hover:text-zinc-200"
               )}
             >
@@ -213,57 +209,97 @@ export default function JobDashboard() {
           ))}
         </div>
 
+        <div className="relative flex-1 max-w-sm">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400" />
+          <Input
+            type="text"
+            placeholder="Search jobs..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="pl-9 bg-zinc-800/50 border-zinc-700 text-sm h-9"
+          />
+        </div>
+
         <Button
-          onClick={() => setIsNewJobOpen(true)}
-          className="flex items-center justify-center gap-2 px-4 py-2 bg-purple-600 hover:bg-purple-500 text-white text-sm font-medium rounded-lg transition-colors shadow-lg shadow-purple-900/20"
+          onClick={() => {
+            setEditingJobId(null);
+            setNewTaskTitle("");
+            setNewTaskCompany("");
+            setIsNewTaskOpen(true);
+          }}
+          className="flex items-center justify-center gap-2 px-4 py-2 bg-purple-600 hover:bg-purple-500 text-white text-sm font-medium rounded-lg transition-colors shadow-lg shadow-purple-900/20 cursor-pointer"
         >
           <Plus className="w-4 h-4" />
-          <span>New Application</span>
+          <span>New</span>
         </Button>
       </div>
 
-      <div className="min-h-[300px] bg-zinc-900/50 rounded-xl border border-zinc-800/50 overflow-hidden outline-none">
-        {filteredJobs.length === 0 ? (
+      <div
+        id={`tabpanel-${activeTab}`}
+        role="tabpanel"
+        aria-labelledby={`tab-${activeTab}`}
+        tabIndex={0}
+        className="min-h-[300px] bg-zinc-900/50 rounded-xl border border-zinc-800/50 overflow-hidden outline-none focus-visible:ring-2 focus-visible:ring-purple-500"
+      >
+        {filteredTasks.length === 0 ? (
           <div className="flex flex-col items-center justify-center text-center p-8 h-[300px]">
             <div className="w-16 h-16 mb-4 rounded-full bg-zinc-800/50 flex items-center justify-center">
-              <Clock className="w-8 h-8 text-zinc-500" />
+              <Clock className="w-8 h-8 text-zinc-400" aria-hidden="true" />
             </div>
-            <p className="text-zinc-400 font-medium">No applications match your criteria</p>
+            <p className="text-zinc-400 font-medium">No job applications found</p>
           </div>
         ) : (
           <div className="divide-y divide-zinc-800">
-            <AnimatePresence mode='popLayout'>
-              {filteredJobs.map((job) => (
+            <AnimatePresence mode="popLayout">
+              {filteredTasks.map((task) => (
                 <motion.div
-                  key={job._id}
+                  key={task._id}
                   layout
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, height: 0 }}
-                  className="flex flex-col sm:flex-row sm:items-center gap-4 p-4 hover:bg-zinc-800/30 transition-colors group"
+                  className="flex items-center gap-4 p-4 hover:bg-zinc-800/30 transition-colors group"
                 >
+                  <button
+                    role="checkbox"
+                    aria-checked={(task.status === 'Offer' || task.status === 'Rejected')}
+                    onClick={() => toggleTaskStatus(task._id, task.status)}
+                    className="flex-shrink-0 text-zinc-400 hover:text-purple-400 transition-colors rounded-full outline-none focus-visible:ring-2 focus-visible:ring-purple-500"
+                    aria-label={`Complete task: ${task.position}`}
+                  >
+                    {(task.status === 'Offer' || task.status === 'Rejected') ? (
+                      <CheckCircle2 className="w-5 h-5 text-purple-500" />
+                    ) : (
+                      <Circle className="w-5 h-5" />
+                    )}
+                  </button>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-zinc-200 truncate">
-                      {job.position} <span className="text-zinc-500">at</span> {job.company}
+                    <p className={cn(
+                      "text-sm font-medium text-zinc-200 truncate",
+                      (task.status === 'Offer' || task.status === 'Rejected') && "text-zinc-400 line-through"
+                    )}>
+                      {task.position}
                     </p>
-                    <div className="flex items-center gap-2 text-xs text-zinc-400 mt-1">
-                      <span className="px-1.5 py-0.5 rounded bg-zinc-800/80">{job.type}</span>
+                    <div className="flex items-center gap-2 text-xs text-zinc-400 mt-0.5">
+                      <span className="capitalize">{task.company}</span>
                       <span>•</span>
-                      <span>{new Date(job.createdAt).toLocaleDateString()}</span>
+                      <span>{new Date(task.createdAt).toLocaleDateString()}</span>
                     </div>
                   </div>
-                  <div className="flex items-center gap-3 self-end sm:self-auto mt-2 sm:mt-0">
-                    <select
-                      value={job.status}
-                      onChange={(e) => updateStatus(job._id, e.target.value as JobStatus)}
-                      className="bg-zinc-800 border border-zinc-700 text-xs text-zinc-200 rounded p-1.5 outline-none focus:ring-1 focus:ring-purple-500"
-                    >
-                      {tabs.map(t => <option key={t} value={t}>{t}</option>)}
-                    </select>
+                  <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 focus-within:opacity-100 transition-opacity">
                     <button
-                      onClick={() => deleteJob(job._id)}
+                      onClick={() => startEdit(task)}
+                      className="p-1.5 text-zinc-400 hover:text-blue-400 rounded hover:bg-zinc-800 outline-none focus-visible:ring-2 focus-visible:ring-purple-500"
+                      title="Edit"
+                      aria-label={`Edit task: ${task.position}`}
+                    >
+                      <Edit2 className="w-4 h-4" />
+                    </button>
+                    <button
+                      onClick={() => deleteTask(task._id)}
                       className="p-1.5 text-zinc-400 hover:text-red-400 rounded hover:bg-zinc-800 outline-none focus-visible:ring-2 focus-visible:ring-purple-500"
                       title="Delete"
+                      aria-label={`Delete task: ${task.position}`}
                     >
                       <Trash2 className="w-4 h-4" />
                     </button>
@@ -276,57 +312,52 @@ export default function JobDashboard() {
       </div>
 
       <Dialog
-        isOpen={isNewJobOpen}
-        onClose={() => setIsNewJobOpen(false)}
-        title="New Application"
-        description="Track a new job application."
+        isOpen={isNewTaskOpen}
+        onClose={() => setIsNewTaskOpen(false)}
+        title={editingJobId ? "Edit Job Application" : "Create New Job"}
+        description="Add a new task to your dashboard."
       >
-        <form onSubmit={addJob} className="space-y-4">
+        <form onSubmit={addTask} className="space-y-4">
           <div className="space-y-2">
-            <label className="text-sm font-medium text-zinc-300">Company</label>
+            <label htmlFor="title" className="text-sm font-medium text-zinc-300">
+              Position Title
+            </label>
             <Input
-              value={newCompany}
-              onChange={(e) => setNewCompany(e.target.value)}
-              placeholder="e.g. Google"
-              className="bg-zinc-900 border-zinc-700 text-zinc-100"
+              id="title"
+              value={newTaskTitle}
+              onChange={(e) => setNewTaskTitle(e.target.value)}
+              placeholder="e.g. Frontend Engineer"
+              className="bg-zinc-900 border-zinc-700 text-zinc-100 focus:ring-purple-500"
               autoFocus
-              required
             />
           </div>
           <div className="space-y-2">
-            <label className="text-sm font-medium text-zinc-300">Position</label>
+            <label htmlFor="company" className="text-sm font-medium text-zinc-300">
+              Company Name
+            </label>
             <Input
-              value={newPosition}
-              onChange={(e) => setNewPosition(e.target.value)}
-              placeholder="e.g. Senior Frontend Engineer"
-              className="bg-zinc-900 border-zinc-700 text-zinc-100"
-              required
+              id="company"
+              value={newTaskCompany}
+              onChange={(e) => setNewTaskCompany(e.target.value)}
+              placeholder="e.g. Acme Corp"
+              className="bg-zinc-900 border-zinc-700 text-zinc-100 focus:ring-purple-500"
             />
-          </div>
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-zinc-300">Type</label>
-            <div className="flex gap-2">
-              {filters.map(filter => (
-                <button
-                  key={filter.id}
-                  type="button"
-                  onClick={() => setNewJobType(filter.id)}
-                  className={cn(
-                    "flex-1 flex flex-col items-center justify-center p-3 rounded-lg border text-xs gap-1 transition-all outline-none",
-                    newJobType === filter.id
-                      ? "bg-purple-900/20 border-purple-500 text-purple-200"
-                      : "bg-zinc-900 border-zinc-800 text-zinc-400"
-                  )}
-                >
-                  <filter.icon className="w-4 h-4" />
-                  {filter.label}
-                </button>
-              ))}
-            </div>
           </div>
           <div className="flex justify-end gap-3 mt-6">
-            <Button type="button" variant="ghost" onClick={() => setIsNewJobOpen(false)} className="text-zinc-400">Cancel</Button>
-            <Button type="submit" className="bg-purple-600 hover:bg-purple-500 text-white">Create</Button>
+            <Button
+              type="button"
+              variant="ghost"
+              onClick={() => setIsNewTaskOpen(false)}
+              className="text-zinc-400 hover:text-white hover:bg-zinc-800"
+            >
+              Cancel
+            </Button>
+            <Button
+              type="submit"
+              className="bg-purple-600 hover:bg-purple-500 text-white"
+            >
+              {editingJobId ? "Save Changes" : "Create Job"}
+            </Button>
           </div>
         </form>
       </Dialog>

@@ -23,12 +23,19 @@ jobs:
         uses: pnpm/action-setup@v3
         with:
           version: 10
+          package_json_file: client/package.json
 
-      - name: Install dependencies
+      - name: Install backend dependencies
+        run: cd server && pnpm install --no-frozen-lockfile
+
+      - name: Install frontend dependencies
         run: cd client && pnpm install --no-frozen-lockfile
 
       - name: Run linter
         run: cd client && pnpm run lint
+
+      - name: Run build
+        run: cd client && pnpm run build
 
       - name: Install Playwright Browsers
         run: cd client && pnpm exec playwright install --with-deps chromium
