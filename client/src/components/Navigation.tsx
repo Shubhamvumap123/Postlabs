@@ -4,7 +4,7 @@ import { useScroll, useMotionValueEvent } from 'framer-motion';
 import { ThemeToggle } from './ThemeToggle';
 import { Home, LayoutDashboard, Settings, Mail, LogIn } from 'lucide-react';
 import { cn } from '../lib/utils';
-import { useScroll } from 'framer-motion';
+import { useScroll, useMotionValueEvent } from 'framer-motion';
 
 const navItems = [
   { name: 'Home', path: '/', icon: Home },
@@ -18,7 +18,7 @@ const Navigation = () => {
   const location = useLocation();
   const { scrollY } = useScroll();
 
-  // PERFORMANCE: Replaced manual requestAnimationFrame scroll listener with Framer Motion's useScroll and useMotionValueEvent to achieve centralized read/write batching and prevent layout thrashing.
+  // PERFORMANCE: Replaced manual requestAnimationFrame (rAF) scroll event listeners with Framer Motion's useMotionValueEvent to achieve centralized read/write batching and prevent layout thrashing.
   useMotionValueEvent(scrollY, "change", (latest) => {
     setIsVisible(latest > 100);
   });
