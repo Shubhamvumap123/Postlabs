@@ -12,11 +12,9 @@ const About = () => {
     return () => clearTimeout(timer);
   }, []);
 
-  // PERFORMANCE: Memoize the generation of the hundreds of spans to prevent
-  // main-thread blocking and re-renders when the `isVisible` state changes.
-  // We use parent CSS attribute selectors (`group-data-[visible=true]`) to handle
-  // the animation state directly in CSS rather than re-rendering React elements.
-  const animatedText = useMemo(() => {
+  // PERFORMANCE: Memoize generation of 100+ DOM spans to prevent main thread blocking on re-render.
+  // Decouple dynamic state by moving visibility toggle to CSS using group-data-[visible].
+  const splitText = useMemo(() => {
     return text.split('').map((char, index) => (
       <span
         key={index}
@@ -57,7 +55,7 @@ const About = () => {
           >
             <span className="sr-only">{text}</span>
             <span aria-hidden="true">
-              {animatedText}
+              {splitText}
             </span>
           </p>
         </div>
