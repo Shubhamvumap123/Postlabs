@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import { useScroll, useMotionValueEvent } from 'framer-motion';
 import { Link, useLocation } from 'react-router-dom';
 import { useScroll, useMotionValueEvent } from 'framer-motion';
 import { ThemeToggle } from './ThemeToggle';
+import { useScroll, useMotionValueEvent } from 'framer-motion';
 import { Home, LayoutDashboard, Settings, Mail } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { useScroll, useMotionValueEvent } from 'framer-motion';
@@ -19,9 +19,6 @@ const Navigation = () => {
   const location = useLocation();
   const { scrollY } = useScroll();
 
-  // PERFORMANCE: Use framer-motion's useMotionValueEvent instead of attaching an
-  // independent DOM scroll listener. This hooks into framer-motion's central
-  // projection loop for read/write batching and prevents layout thrashing.
   useMotionValueEvent(scrollY, "change", (latest) => {
     setIsVisible(latest > 100);
   });
