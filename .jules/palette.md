@@ -11,6 +11,7 @@
 ## 2026-06-08 - Contextual ARIA labels and roles for list items
 **Learning:** When using list actions (like complete, archive, delete) for specific items in a list, generic `aria-label`s like 'Mark as complete' or 'Archive' create ambiguity for screen reader users as they do not indicate *which* item is being affected. Using action verbs with checkboxes can also be confusing.
 **Action:** When implementing item-specific actions in a list, always include the item's title in the `aria-label` (e.g., `Archive task: ${task.title}`). For completion toggles, use `role="checkbox"`, `aria-checked`, and an `aria-label` that concisely describes the item (e.g., `Complete task: ${task.title}`) instead of action-oriented verbs.
-## 2026-06-22 - Symbol-based Button Loading States and Layout Jank
-**Learning:** Replacing a symbol or icon (like '→') with a loading spinner in a button that uses horizontal padding (`px-5`) causes layout jank because the spinner and the symbol often have different natural widths. This makes the button resize slightly during async operations, creating a jarring UX.
-**Action:** When adding loading states to symbol-based or icon-only buttons, always remove horizontal padding and replace it with an explicit minimum width (e.g., `min-w-[56px]`) and centering properties (`flex items-center justify-center`). This ensures the button's dimensions remain perfectly stable when the content changes state.
+
+## 2024-06-23 - Interactive Button States
+**Learning:** Using standard `<button>` elements in a list for making choices implies an action, but without native radio inputs or keyboard navigation handlers, `role="radio"` is inappropriate.
+**Action:** Use `aria-pressed="true"` on standard `<button>` elements to denote an active selection state instead of forcing `role="radio"` without full keyboard navigation implementation. Always include explicit `:focus-visible` outline styles.

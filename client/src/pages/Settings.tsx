@@ -132,15 +132,16 @@ const Settings = () => {
                   <Smartphone className="w-5 h-5" />
                 </div>
                 <div>
-                  <h2 className="text-lg font-semibold text-foreground">Appearance</h2>
+                  <h2 id="appearance-heading" className="text-lg font-semibold text-foreground">Appearance</h2>
                   <p className="text-sm text-muted-foreground">Customize the interface theme</p>
                 </div>
               </div>
 
-              <div role="group" aria-label="Theme preference" className="grid grid-cols-3 gap-4">
+              <div role="group" aria-labelledby="appearance-heading" className="grid grid-cols-3 gap-4">
                 {['light', 'dark', 'system'].map((t) => (
                   <button
                     type="button"
+                    aria-pressed={theme === t}
                     key={t}
                     type="button"
                     aria-pressed={theme === t}
