@@ -11,6 +11,7 @@
 ## 2026-06-08 - Contextual ARIA labels and roles for list items
 **Learning:** When using list actions (like complete, archive, delete) for specific items in a list, generic `aria-label`s like 'Mark as complete' or 'Archive' create ambiguity for screen reader users as they do not indicate *which* item is being affected. Using action verbs with checkboxes can also be confusing.
 **Action:** When implementing item-specific actions in a list, always include the item's title in the `aria-label` (e.g., `Archive task: ${task.title}`). For completion toggles, use `role="checkbox"`, `aria-checked`, and an `aria-label` that concisely describes the item (e.g., `Complete task: ${task.title}`) instead of action-oriented verbs.
-## 2026-07-19 - Added ARIA labels and focus-visible states to Navigation links
-**Learning:** Icon-only navigation links require `aria-label` for screen readers and `focus-visible` utility classes for clear keyboard navigation, particularly in fixed-position elements.
-**Action:** Always verify icon-only interactive elements contain screen-reader text or `aria-label`, and ensure custom styling preserves clear keyboard focus indicators.
+
+## 2025-05-20 - HTML5 Validation Context
+**Learning:** Relying solely on javascript to prevent blank form submission provides no accessible context to screen readers, whereas adding standard HTML5 `required` attributes triggers native, localized, screen-reader announced validation tooltips when standard forms are submitted.
+**Action:** Always add standard HTML validation attributes (like `required`, `type="email"`, etc.) to form inputs to ensure native error handling and accessibility contexts are triggered before JS handlers fire.

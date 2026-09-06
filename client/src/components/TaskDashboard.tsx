@@ -295,6 +295,7 @@ export default function TaskDashboard() {
             {/* SECURITY: Added input length limit to prevent excessively large storage allocation and potential DoS */}
             <Input
               id="title"
+              required
               value={newTaskTitle}
               // SECURITY: Add input length limits to prevent client-side DoS/memory exhaustion
               maxLength={100}
