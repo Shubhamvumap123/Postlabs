@@ -130,12 +130,12 @@ const Settings = () => {
                   <Smartphone className="w-5 h-5" />
                 </div>
                 <div>
-                  <h2 id="appearance-heading" className="text-lg font-semibold text-foreground">Appearance</h2>
+                  <h2 className="text-lg font-semibold text-foreground" id="appearance-heading">Appearance</h2>
                   <p className="text-sm text-muted-foreground">Customize the interface theme</p>
                 </div>
               </div>
 
-              <div className="grid grid-cols-3 gap-4" role="group" aria-label="Theme preference">
+              <div className="grid grid-cols-3 gap-4" role="group" aria-labelledby="appearance-heading">
                 {['light', 'dark', 'system'].map((t) => (
                   <button
                     type="button"
@@ -146,7 +146,7 @@ const Settings = () => {
                     onClick={() => setTheme(t)}
                     aria-pressed={theme === t}
                     className={`
-                      flex flex-col items-center gap-2 p-4 rounded-lg border transition-all outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2
+                      flex flex-col items-center gap-2 p-4 rounded-lg border transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background
                       ${theme === t
                         ? 'border-primary bg-primary/5 ring-1 ring-primary'
                         : 'border-border hover:border-primary/50 hover:bg-accent/50'}
