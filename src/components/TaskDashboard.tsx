@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useMemo } from 'react';
+import { useState, useEffect, useMemo, KeyboardEvent, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Clock, Plus, Zap, Palette, Shield, Trash2, CheckCircle2, Circle, Archive } from 'lucide-react';
 import { cn } from '../lib/utils';
@@ -130,32 +130,32 @@ export default function TaskDashboard() {
     toast.success("Task archived");
   };
 
-  const handleTabKeyDown = (e: React.KeyboardEvent<HTMLButtonElement>, index: number) => {
-    let newIndex = index;
+  const filteredTasks = useMemo(() => tasks.filter(task => {
+    if (activeFilters.length > 0 && !activeFilters.includes(task.category)) return false;
+
+    if (activeTab === 'All') return true;
+    if (activeTab === 'Scheduled' && (task.status === 'Scheduled')) return true;
+    if (activeTab === 'Completed' && task.status === 'Completed') return true;
+    if (activeTab === 'Archived' && task.status === 'Archived') return true;
+    return false;
+  }), [tasks, activeFilters, activeTab]);
+
+  const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
+
+  const handleTabKeyDown = (e: KeyboardEvent<HTMLButtonElement>, index: number) => {
+    let nextIndex = index;
     if (e.key === 'ArrowRight') {
-      newIndex = (index + 1) % tabs.length;
+      nextIndex = (index + 1) % tabs.length;
     } else if (e.key === 'ArrowLeft') {
-      newIndex = (index - 1 + tabs.length) % tabs.length;
+      nextIndex = (index - 1 + tabs.length) % tabs.length;
     } else {
       return;
     }
 
     e.preventDefault();
-    setActiveTab(tabs[newIndex]);
-    tabsRef.current[newIndex]?.focus();
+    setActiveTab(tabs[nextIndex]);
+    tabRefs.current[nextIndex]?.focus();
   };
-
-  const filteredTasks = useMemo(() => {
-    return tasks.filter(task => {
-      if (activeFilters.length > 0 && !activeFilters.includes(task.category)) return false;
-
-      if (activeTab === 'All') return true;
-      if (activeTab === 'Scheduled' && (task.status === 'Scheduled')) return true;
-      if (activeTab === 'Completed' && task.status === 'Completed') return true;
-      if (activeTab === 'Archived' && task.status === 'Archived') return true;
-      return false;
-    });
-  }, [tasks, activeFilters, activeTab]);
 
   return (
     <div className="w-full max-w-2xl mx-auto p-4 sm:p-6 bg-zinc-900 rounded-xl border border-zinc-800 text-zinc-100 shadow-xl">
@@ -167,10 +167,11 @@ export default function TaskDashboard() {
               ref={el => tabsRef.current[index] = el}
               type="button"
               role="tab"
+              id={`${tab}-tab`}
               aria-selected={activeTab === tab}
-              aria-controls={`panel-${tab.toLowerCase()}`}
-              id={`tab-${tab.toLowerCase()}`}
+              aria-controls="task-panel"
               tabIndex={activeTab === tab ? 0 : -1}
+              ref={(el) => tabRefs.current[index] = el}
               onKeyDown={(e) => handleTabKeyDown(e, index)}
               key={tab}
               type="button"
@@ -203,13 +204,7 @@ export default function TaskDashboard() {
       </div>
 
       {/* Content Area */}
-      <div
-        id={`panel-${activeTab.toLowerCase()}`}
-        role="tabpanel"
-        aria-labelledby={`tab-${activeTab.toLowerCase()}`}
-        tabIndex={0}
-        className="min-h-[300px] bg-zinc-900/50 rounded-xl border border-zinc-800/50 overflow-hidden outline-none focus-visible:ring-2 focus-visible:ring-purple-500"
-      >
+      <div id="task-panel" role="tabpanel" aria-labelledby={`${activeTab}-tab`} className="min-h-[300px] bg-zinc-900/50 rounded-xl border border-zinc-800/50 overflow-hidden">
         {filteredTasks.length === 0 ? (
           <div className="flex flex-col items-center justify-center text-center p-8 h-[300px]">
             <div className="w-16 h-16 mb-4 rounded-full bg-zinc-800/50 flex items-center justify-center">
@@ -255,7 +250,7 @@ export default function TaskDashboard() {
                       <span>{new Date(task.createdAt).toLocaleDateString()}</span>
                     </div>
                   </div>
-                  <div className="flex items-center gap-2 opacity-0 focus-within:opacity-100 group-hover:opacity-100 transition-opacity">
+                  <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 focus-within:opacity-100 transition-opacity">
                     {task.status !== 'Archived' && (
                       <button
                         onClick={() => archiveTask(task.id)}
