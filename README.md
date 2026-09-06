@@ -1,81 +1,25 @@
-# Job Tracker SaaS
-
-A production-ready full stack job application tracking dashboard.
+# Full Stack Job Tracker
+A production-ready SaaS application for tracking job applications.
 
 ## Features
-- **User Authentication:** Secure JWT-based signup, login, and logout.
-- **Job Management:** Add, edit, delete, and view job applications.
-- **Status Tracking:** Organize applications by status (Applied, Interview, Offer, Rejected).
-- **Search & Filter:** Easily find jobs by company, position, or status.
-- **Analytics:** Visual charts showing the distribution of application statuses.
-- **Responsive UI:** Dark-themed, modern interface built with Tailwind CSS.
+- **User Authentication**: Secure JWT-based registration and login system.
+- **Job Tracking**: Complete CRUD operations for Job Applications.
+- **Status Management**: Track applications through stages (Applied, Interview, Offer, Rejected).
+- **Search & Filter**: Find specific jobs quickly by company name or position, and filter by job type.
+- **Analytics Dashboard**: Visual charts showing application status distribution and job type breakdown using Recharts.
 
 ## Tech Stack
-- **Frontend:** React.js (Vite), TailwindCSS, Recharts, Framer Motion, Lucide React
-- **Backend:** Node.js, Express.js
-- **Database:** MongoDB (Mongoose)
-- **Authentication:** JWT, bcryptjs
+- **Frontend**: React.js (Vite), TailwindCSS, Recharts, Axios, Lucide React
+- **Backend**: Node.js, Express.js, Mongoose, JSON Web Tokens (JWT), bcryptjs
+- **Database**: MongoDB
 
 ## Setup Instructions
 
-### Prerequisites
-- Node.js (v18+)
-- pnpm
-- MongoDB instance (local or Atlas)
+### 1. Frontend Setup
+Navigate to the root directory and start by running pnpm install then pnpm dev
 
-### Installation
-1. Clone the repository and install dependencies:
-   ```bash
-   pnpm install
-   ```
-
-2. Configure environment variables:
-   Create a `.env` file in the `server/` directory:
-   ```env
-   PORT=5000
-   MONGO_URI=your_mongodb_connection_string
-   JWT_SECRET=your_jwt_secret
-   ```
-
-   Create a `.env` file in the `client/` directory:
-   ```env
-   VITE_API_URL=http://localhost:5000/api
-   ```
-
-3. Start the development servers:
-   ```bash
-   # Starts both frontend and backend concurrently
-   pnpm run dev
-   ```
-
-## Architecture & Scalability Improvements
-- **Monorepo Structure:** Uses a pnpm workspace to cleanly separate `client` and `server` while sharing tooling.
-- **Centralized API Client:** Frontend uses a configured Axios instance with interceptors for automatic token injection and easier base URL management.
-- **Separation of Concerns:** Backend follows MVC pattern with distinct `routes`, `controllers`, and `models`.
-- **Future Scalability:**
-  - Implement Redis for caching frequent queries (e.g., dashboard analytics).
-  - Add rate limiting and helmet middleware for security.
-  - Implement pagination for the jobs list as the user data grows.
-
-## Deployment Steps
-
-### Backend (Render)
-1. Push your code to GitHub.
-2. Log in to Render and create a new "Web Service".
-3. Connect your repository.
-4. Set the Root Directory to `server`.
-5. Set the Build Command to `pnpm install` (or `npm install`).
-6. Set the Start Command to `npm start`.
-7. Add Environment Variables (`MONGO_URI`, `JWT_SECRET`).
-
-### Frontend (Vercel)
-1. Log in to Vercel and "Add New Project".
-2. Connect your repository.
-3. Set the Root Directory to `client`.
-4. The build settings should auto-detect Vite (`pnpm run build`).
-5. Add Environment Variables (`VITE_API_URL` pointing to your deployed Render backend).
-6. Deploy!
+### 2. Backend Setup
+Navigate to the server directory, install dependencies via npm install, and start via npm start
 
 ## Screenshots
-![Dashboard Placeholder](https://via.placeholder.com/800x450.png?text=Dashboard+Analytics+and+Job+List)
-![Modal Placeholder](https://via.placeholder.com/800x450.png?text=Add/Edit+Job+Modal)
+![Dashboard Placeholder](https://via.placeholder.com/800x400?text=Dashboard+Screenshot)
