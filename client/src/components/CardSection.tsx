@@ -66,7 +66,7 @@ const CardSection: React.FC = () => {
             whileHover={{ scale: 1.05, y: -5 }}
             className="absolute bg-black rounded-xl shadow-xl w-64 h-48 p-4 cursor-pointer"
           >
-            {/* PERFORMANCE: Lazy load below-the-fold images */}
+            {/* PERFORMANCE: Lazy load deeply nested off-screen image to reduce initial payload */}
             <img
               src={card.icon}
               alt={card.text}
