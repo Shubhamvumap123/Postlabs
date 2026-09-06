@@ -17,6 +17,7 @@
 ## 2024-05-18 - Inverted Image Loading Strategies Anti-Pattern
 **Learning:** Found a systemic anti-pattern where critical above-the-fold images (Header logo, Hero down arrow) were intentionally deferred using `loading="lazy"`, actively delaying the Largest Contentful Paint (LCP) and worsening initial render times. Conversely, deeply nested below-the-fold images (e.g., in the Footer) were missing lazy loading entirely, bloating the initial payload.
 **Action:** Always eagerly load above-the-fold critical images (use `fetchPriority="high"` where appropriate) and explicitly apply `loading="lazy"` to all below-the-fold images. Never apply `loading="lazy"` to LCP elements.
-## 2024-05-18 - Footer Scroll Event Listener Bottleneck
-**Learning:** Attaching continuous scroll event listeners that synchronously query layout properties (like `document.body.offsetHeight`) causes layout thrashing and blocks the main thread, leading to severe scrolling jank.
-**Action:** Use an `IntersectionObserver` (or a hook like `framer-motion`'s `useInView`) attached to a sentinel element to efficiently detect when the user has scrolled to a specific point, offloading the check from the main thread.
+
+## 2024-05-18 - IntersectionObserver Margin Axis Mapping
+**Learning:** When using `useInView` from `framer-motion` (which wraps `IntersectionObserver`) with a `margin` to trigger intersections early, setting `margin: "50px 0px 0px 0px"` expands the *top* bounding box. To match a scroll threshold that triggers 50px *before* reaching an element at the bottom of the page, you must expand the *bottom* bounding box using `margin: "0px 0px 50px 0px"`.
+**Action:** Always map intersection margins directly to standard CSS shorthand (`top right bottom left`) and explicitly double-check which edge needs expansion relative to scroll direction.

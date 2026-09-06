@@ -188,8 +188,8 @@ export default function Footer() {
         </div>
       </div>
     </footer>
-      {/* PERFORMANCE: Sentinel element for IntersectionObserver to prevent scroll layout thrashing */}
-      <div ref={sentinelRef} className="h-px w-full" aria-hidden="true" />
+    {/* PERFORMANCE: Replaced global scroll event listener with IntersectionObserver to avoid continuous synchronous reflows and main thread stalling */}
+    <div ref={sentinelRef} className="h-px w-full" aria-hidden="true" />
     </>
   );
 }
