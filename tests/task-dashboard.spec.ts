@@ -51,7 +51,7 @@ test('TaskDashboard component functionality', async ({ page }) => {
   // Task 2: Design
   await newButton.click();
   await page.getByLabel('Task Title').fill('Design Task');
-  await page.locator('form').getByRole('button', { name: 'Design' }).click(); // Select Design category
+  await page.locator('form').getByRole('button', { name: 'Design', exact: true }).click(); // Select Design category
   await page.locator('form').getByRole('button', { name: 'Create Task' }).click();
 
   // Wait for dialog to close to avoid matching buttons inside it
