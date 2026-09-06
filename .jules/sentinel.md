@@ -3,7 +3,7 @@
 **Learning:** `element.innerHTML` assignment bypasses React's default XSS escaping mechanism. While it was extracting text from `innerText`, any previously injected scripts or user-controlled content in the DOM could be parsed and executed when re-assigned using `innerHTML`. This issue bypasses the React DOM and opens up XSS vectors through animation effects.
 **Prevention:** Avoid `element.innerHTML` assignment for manipulating DOM nodes inside custom React hooks. Use native DOM API `document.createElement`, set properties safely with `.textContent`, and `element.appendChild()`, or structure the markup safely using React state and JSX.
 
-## 2026-08-16 - Structural Validation for Local Storage
-**Vulnerability:** Unvalidated JSON deserialization from localStorage could lead to runtime TypeError crashes (Denial of Service) if the parsed data is not an array.
-**Learning:** Client-side storage is an untrusted data source. Deserialized data must be structurally validated before being used in operations like `.map()` or `.filter()`.
-**Prevention:** Always use structural validation (e.g., `Array.isArray()`) when hydrating state from localStorage or other client-side storage mechanisms.
+## 2024-05-18 - Missing Structural Validation on localStorage Data
+**Vulnerability:** A missing structural validation check allowed parsed data from `localStorage` to be blindly cast to a specific type (`Task[]`), creating a vulnerability where a `TypeError` could crash the application if non-array data was loaded and subsequently passed into array operations (e.g., `.filter()` or `.map()`).
+**Learning:** TypeScript type assertions (e.g., `as Task[]`) and implicit state types only provide compile-time safety. Data originating from untrusted client-side storage like `localStorage` can be modified by the user or corrupted. Deserializing this data without runtime structural validation (like checking `Array.isArray()`) can lead to unhandled exceptions and client-side Denial of Service.
+**Prevention:** Always validate the structure and type of data retrieved from `localStorage` at runtime before updating the application state. Use `Array.isArray()` for lists, and consider using schema validation libraries like `zod` for complex objects.
