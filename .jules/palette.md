@@ -12,6 +12,6 @@
 **Learning:** When using list actions (like complete, archive, delete) for specific items in a list, generic `aria-label`s like 'Mark as complete' or 'Archive' create ambiguity for screen reader users as they do not indicate *which* item is being affected. Using action verbs with checkboxes can also be confusing.
 **Action:** When implementing item-specific actions in a list, always include the item's title in the `aria-label` (e.g., `Archive task: ${task.title}`). For completion toggles, use `role="checkbox"`, `aria-checked`, and an `aria-label` that concisely describes the item (e.g., `Complete task: ${task.title}`) instead of action-oriented verbs.
 
-## 2026-08-23 - Component Implementation Validation
-**Learning:** The prompt requested the creation of a 'modern, responsive TaskDashboard component'. However, the component was already fully implemented in the repository, passing all Playwright tests. The only missing pieces were minor accessibility compliance details for ARIA roles based on strict memory guidelines.
-**Action:** When a prompt requests a component that is already implemented, ensure to verify the existing code meets all requirements and apply any necessary minor fixes (like accessibility compliance) rather than attempting to rewrite the component from scratch.
+## 2026-08-24 - Responsive Accessible Links
+**Learning:** Hiding text with `hidden` removes it from the accessibility tree on mobile, making icon-only links inaccessible to screen readers without an `aria-label`.
+**Action:** Always add `aria-label` to the parent and `aria-hidden="true"` to the decorative icon when visually hiding text for mobile responsiveness.
