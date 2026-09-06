@@ -1,68 +1,77 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
+import { useAuth } from '../hooks/useAuth';
+import { Button } from '../components/ui/button';
+import { Input } from '../components/ui/input';
 import { toast } from 'sonner';
-import api from '../lib/api';
 
 const Register = () => {
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const { login } = useAuth();
+  const [isLoading, setIsLoading] = useState(false);
+  const { register } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsLoading(true);
     try {
-      const response = await api.post('/auth/register', { email, password });
-      login(response.data.token, response.data.user);
+      await register({ name, email, password });
       toast.success('Registered successfully');
       navigate('/dashboard');
     } catch (error: unknown) {
-      if (typeof error === 'object' && error !== null && 'response' in error) {
-        const err = error as { response?: { data?: { message?: string } } };
-        toast.error(err.response?.data?.message || 'Registration failed');
-      } else {
-        toast.error('Registration failed');
-      }
+      const err = error as { response?: { data?: { message?: string } } };
+      toast.error(err.response?.data?.message || 'Failed to register');
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-zinc-950 p-4">
-      <div className="w-full max-w-md p-8 bg-zinc-900 rounded-xl border border-zinc-800 shadow-xl">
-        <h2 className="text-2xl font-bold text-white mb-6 text-center">Register</h2>
+    <div className="flex items-center justify-center min-h-screen bg-background">
+      <div className="w-full max-w-md p-8 space-y-6 bg-card rounded-lg shadow-lg border border-border">
+        <h1 className="text-2xl font-bold text-center text-foreground">Create an Account</h1>
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-zinc-300 mb-1">Email</label>
-            <input
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-foreground">Name</label>
+            <Input
+              type="text"
+              required
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="Enter your name"
+            />
+          </div>
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-foreground">Email</label>
+            <Input
               type="email"
+              required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full p-2 bg-zinc-800 border border-zinc-700 rounded text-white focus:ring-2 focus:ring-purple-500 outline-none"
-              required
-              autoComplete="email"
+              placeholder="Enter your email"
             />
           </div>
-          <div>
-            <label className="block text-sm font-medium text-zinc-300 mb-1">Password</label>
-            <input
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-foreground">Password</label>
+            <Input
               type="password"
+              required
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full p-2 bg-zinc-800 border border-zinc-700 rounded text-white focus:ring-2 focus:ring-purple-500 outline-none"
-              required
-              autoComplete="new-password"
+              placeholder="Create a password"
             />
           </div>
-          <button
-            type="submit"
-            className="w-full py-2 bg-purple-600 hover:bg-purple-500 text-white rounded font-medium transition-colors"
-          >
-            Sign Up
-          </button>
+          <Button type="submit" className="w-full" disabled={isLoading}>
+            {isLoading ? 'Registering...' : 'Register'}
+          </Button>
         </form>
-        <p className="mt-4 text-center text-sm text-zinc-400">
-          Already have an account? <Link to="/login" className="text-purple-400 hover:underline">Login</Link>
+        <p className="text-center text-sm text-muted-foreground">
+          Already have an account?{' '}
+          <Link to="/login" className="text-primary hover:underline">
+            Login here
+          </Link>
         </p>
       </div>
     </div>

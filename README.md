@@ -1,61 +1,76 @@
-# Job Tracker SaaS
+# Job Tracker Application
 
-A production-ready full-stack job tracking application built with React, Node.js, Express, and MongoDB.
+A full stack, production-ready SaaS application for tracking job applications.
 
 ## Features
-- **User Authentication**: Secure JWT-based login and registration.
-- **Job Management**: Full CRUD operations for job applications.
-- **Status Tracking**: Keep track of applications (Applied, Interview, Offer, Rejected).
-- **Dashboard Analytics**: Visualize job application statistics with interactive charts.
-- **Search & Filter**: Easily find jobs by status or search terms.
-- **Responsive Design**: Modern UI built with TailwindCSS and Radix UI.
+
+- **User Authentication:** Secure JWT-based signup, login, and logout.
+- **Job Tracking:** Add, edit, and delete job applications.
+- **Status Pipeline:** Track applications across multiple stages (Applied, Interview, Offer, Rejected).
+- **Search & Filter:** Easily find jobs and filter by status.
+- **Analytics Dashboard:** Visualize application progress using charts.
 
 ## Tech Stack
-- **Frontend**: React (Vite), TailwindCSS, React Query, Recharts, Lucide Icons.
-- **Backend**: Node.js, Express.js, MongoDB (Mongoose), JWT, bcryptjs.
+
+- **Frontend:** React.js / Vite, TailwindCSS
+- **Backend:** Node.js, Express.js
+- **Database:** MongoDB
+- **Authentication:** JWT (JSON Web Tokens)
 
 ## Setup Instructions
 
-1. **Clone the repository**
+### Prerequisites
+- Node.js (v18+)
+- MongoDB Atlas account (or local MongoDB instance)
+- pnpm package manager
 
-2. **Backend Setup**
-   ```bash
-   cd server
-   pnpm install
-   ```
-   Create a `.env` file in the `server` directory:
-   ```env
-   PORT=5000
-   MONGO_URI=your_mongodb_connection_string
-   JWT_SECRET=your_jwt_secret
-   ```
-   Start the backend:
-   ```bash
-   pnpm run dev
-   ```
+### 1. Clone & Install Dependencies
 
-3. **Frontend Setup**
-   ```bash
-   pnpm install
-   ```
-   Create a `.env` file in the root directory:
-   ```env
-   VITE_API_URL=http://localhost:5000/api
-   ```
-   Start the frontend:
-   ```bash
-   pnpm run dev
-   ```
+\`\`\`bash
+git clone <repository-url>
+cd job-tracker
+
+# Install Client Dependencies
+cd client
+pnpm install
+
+# Install Server Dependencies
+cd ../server
+pnpm install
+\`\`\`
+
+### 2. Environment Variables
+
+Create \`.env\` file in the \`server\` directory:
+
+\`\`\`env
+PORT=5000
+MONGODB_URI=your_mongodb_connection_string
+JWT_SECRET=your_jwt_secret_key
+NODE_ENV=development
+\`\`\`
+
+### 3. Run the Application
+
+\`\`\`bash
+# Run Server (from /server)
+npm run start:dev
+
+# Run Client (from /client)
+pnpm run start:dev
+\`\`\`
 
 ## Screenshots
-![Dashboard Placeholder](screenshot-dashboard.png)
-![Jobs List Placeholder](screenshot-jobs.png)
 
-## Deployment (Suggested)
-- **Frontend**: Deploy to Vercel by importing the repository and setting the build command to `pnpm run build` and the output directory to `dist`.
-- **Backend**: Deploy to Render as a Web Service using Node.js. Set the environment variables in the Render dashboard.
+*(Placeholders for screenshots)*
+- Dashboard View
+- Job Board View
+- Analytics Charts View
 
-## Architecture & Scalability Improvements
-- **Pagination & Caching**: Implement cursor-based pagination for job listings and use Redis for caching frequently accessed data.
-- **Microservices**: For very large scale, separate authentication and job tracking into distinct microservices.
-- **Message Queues**: Use RabbitMQ or AWS SQS for asynchronous tasks like email notifications for upcoming interviews.
+## Deployment
+
+**Frontend (Vercel):**
+Connect the \`client/\` folder to Vercel and build using standard Vite/React settings.
+
+**Backend (Render):**
+Deploy the \`server/\` directory as a Node.js web service on Render, adding the required environment variables.

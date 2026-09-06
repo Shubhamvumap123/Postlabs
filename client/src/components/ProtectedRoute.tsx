@@ -1,11 +1,11 @@
 import { Navigate, Outlet } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
+import { useAuth } from '../hooks/useAuth';
 import LoadingFallback from './LoadingFallback';
 
 const ProtectedRoute = () => {
-  const { user, isLoading } = useAuth();
+  const { user, loading } = useAuth();
 
-  if (isLoading) {
+  if (loading) {
     return <LoadingFallback />;
   }
 

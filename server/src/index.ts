@@ -1,10 +1,9 @@
 import express from 'express';
-import cors from 'cors';
 import mongoose from 'mongoose';
+import cors from 'cors';
 import dotenv from 'dotenv';
 import authRoutes from './routes/authRoutes';
 import jobRoutes from './routes/jobRoutes';
-import process from 'node:process';
 
 dotenv.config();
 
@@ -14,20 +13,26 @@ const PORT = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
 
+// Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/jobs', jobRoutes);
 
-app.get('/api/health', (_req, res) => {
-  res.json({ status: 'ok' });
+// Error Handler
+app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
+  console.error(err.stack);
+  res.status(500).json({ message: 'Internal server error' });
 });
 
-mongoose.connect(process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/job-tracker')
+// Database connection
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/jobtracker';
+
+mongoose.connect(MONGODB_URI)
   .then(() => {
     console.log('Connected to MongoDB');
     app.listen(PORT, () => {
-      console.log(`Server running on port ${PORT}`);
+      console.log(`Server is running on port ${PORT}`);
     });
   })
-  .catch((err) => {
-    console.error('MongoDB connection error:', err);
+  .catch((error) => {
+    console.error('Error connecting to MongoDB:', error);
   });
