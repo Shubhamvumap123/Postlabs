@@ -103,13 +103,13 @@ const Contact = () => {
                   <label htmlFor="firstName" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
                     First Name
                   </label>
-                  <Input id="firstName" required placeholder="John" maxLength={50} />
+                  <Input id="firstName" required placeholder="John" autoComplete="given-name" disabled={loading} />
                 </div>
                 <div className="space-y-2">
                   <label htmlFor="lastName" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
                     Last Name
                   </label>
-                  <Input id="lastName" required placeholder="Doe" maxLength={50} />
+                  <Input id="lastName" required placeholder="Doe" autoComplete="family-name" disabled={loading} />
                 </div>
               </div>
 
@@ -117,7 +117,7 @@ const Contact = () => {
                 <label htmlFor="email" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
                   Email
                 </label>
-                <Input id="email" type="email" required placeholder="john@example.com" maxLength={100} />
+                <Input id="email" type="email" required placeholder="john@example.com" autoComplete="email" disabled={loading} />
               </div>
 
               <div className="space-y-2">
@@ -136,6 +136,9 @@ const Contact = () => {
               </div>
 
               <Button type="submit" className="w-full relative" disabled={loading}>
+                <span className={`flex items-center justify-center transition-opacity ${loading ? "opacity-0" : "opacity-100"}`}>
+                  Send Message <Send className="w-4 h-4 ml-2" />
+                </span>
                 {loading && (
                   <div className="absolute inset-0 flex items-center justify-center">
                     <Loader2 className="w-5 h-5 animate-spin" />
