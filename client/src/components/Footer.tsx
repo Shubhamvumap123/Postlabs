@@ -4,7 +4,7 @@ import { Loader2 } from "lucide-react";
 
 export default function Footer() {
     const [atBottom, setAtBottom] = useState(false);
-    const sentinelRef = useRef<HTMLDivElement>(null);
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     // PERFORMANCE: Use IntersectionObserver on a sentinel element to track bottom
@@ -74,7 +74,7 @@ export default function Footer() {
       console.error(error);
       toast.error("Error signing up. Please try again later.");
     } finally {
-      setIsLoading(false);
+      setIsSubmitting(false);
     }
   };
 
@@ -175,22 +175,17 @@ export default function Footer() {
               required
               maxLength={255}
               placeholder="Email Address"
-              maxLength={254}
-              autoComplete="email"
-              className="flex-1 px-3 py-2 text-black rounded-md outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2"
+              disabled={isSubmitting}
+              className="flex-1 px-3 py-2 text-black rounded-md outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 disabled:opacity-50"
             />
             <button
               type="submit"
               disabled={isLoading}
               aria-label="Subscribe to newsletter"
-              className="relative px-5 bg-white text-black rounded-md font-medium outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              disabled={isSubmitting}
+              className="px-5 bg-white text-black rounded-md font-medium outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              <span className={isLoading ? "opacity-0" : "opacity-100"}>→</span>
-              {isLoading && (
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <Loader2 className="w-4 h-4 animate-spin text-black" />
-                </div>
-              )}
+              {isSubmitting ? "..." : "→"}
             </button>
           </form>
         </div>
