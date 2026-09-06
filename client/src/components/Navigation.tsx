@@ -61,6 +61,7 @@ const Navigation = () => {
                          ? "bg-zinc-800 text-zinc-100 shadow-sm"
                          : "text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800/50"
                      )}
+                     aria-label={item.name}
                    >
                      <item.icon className="w-4 h-4" aria-hidden="true" />
                      <span className="hidden sm:inline">{item.name}</span>
