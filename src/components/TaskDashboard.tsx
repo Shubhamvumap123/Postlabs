@@ -145,6 +145,11 @@ export default function TaskDashboard() {
     // SECURITY: Limit input length to prevent large payloads
     const safeTitle = newTaskTitle.trim().slice(0, 100);
 
+    if (tasks.length >= 100) {
+      toast.error("Maximum limit of 100 tasks reached");
+      return;
+    }
+
     const newTask: Task = {
       id: crypto.randomUUID(),
       title: safeTitle,
