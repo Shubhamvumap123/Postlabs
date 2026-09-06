@@ -43,7 +43,7 @@ const Hero = () => {
           </h1>
 
           {/* Down Arrow */}
-          {/* PERFORMANCE: Eagerly load above-the-fold critical image */}
+          {/* PERFORMANCE: Eagerly load critical above-the-fold hero image */}
           <img
             src="https://cdn.prod.website-files.com/681dfdff4444ca819f7050a2/68238111591ea94a69065212_Vector.svg"
             fetchPriority="high"
