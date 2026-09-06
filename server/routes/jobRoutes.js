@@ -1,9 +1,17 @@
-const express = require('express');
-const { getJobs, addJob, updateJob, deleteJob } = require('../controllers/jobController');
-const { protect } = require('../middleware/authMiddleware');
+import express from 'express';
+import { getJobs, createJob, updateJob, deleteJob } from '../controllers/jobController.js';
+import { protect } from '../middleware/auth.js';
+
 const router = express.Router();
 
-router.route('/').get(protect, getJobs).post(protect, addJob);
-router.route('/:id').put(protect, updateJob).delete(protect, deleteJob);
+router.use(protect); // All job routes are protected
 
-module.exports = router;
+router.route('/')
+  .get(getJobs)
+  .post(createJob);
+
+router.route('/:id')
+  .put(updateJob)
+  .delete(deleteJob);
+
+export default router;
