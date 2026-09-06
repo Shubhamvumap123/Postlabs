@@ -209,6 +209,18 @@ export default function TaskDashboard() {
       return;
     }
 
+    // SECURITY: Prevent LocalStorage exhaustion and DoS by enforcing a collection-size limit
+    if (tasks.length >= 100) {
+      toast.error("Maximum task limit (100) reached. Please delete or archive old tasks.");
+      return;
+    }
+
+    // SECURITY: Prevent LocalStorage exhaustion by enforcing input length limit
+    if (newTaskTitle.length > 200) {
+      toast.error("Task title exceeds maximum length of 200 characters.");
+      return;
+    }
+
     const newTask: Task = {
       id: crypto.randomUUID(),
       title: safeTitle,
