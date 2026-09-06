@@ -1,6 +1,5 @@
-import React from "react";
-import { useInView } from "framer-motion";
-import { motion } from "framer-motion";
+import React, { useMemo } from "react";
+import { motion, useInView } from "framer-motion";
 
 type AnimWordsProps = {
   text: string;
@@ -35,7 +34,23 @@ const AnimWords = React.forwardRef<
     localRef.current = node;
   };
   const inView = useInView(localRef, { once: true, amount: 0.2 });
-  const words = React.useMemo(() => text.split(/\s+/), [text]);
+
+  const wordSpans = useMemo(() => {
+    const words = text.split(/\s+/);
+    return words.map((w: string, i: number) => (
+      <motion.span
+        key={`${w}-${i}`}
+        aria-hidden="true"
+        initial={{ opacity: 0, y: 8 }}
+        animate={inView ? { opacity: 1, y: 0 } : {}}
+        transition={{ delay: i * 0.03, duration: 0.35, ease: "easeOut" }}
+        className="inline-block relative"
+      >
+        {w}
+        {i < words.length - 1 ? " " : ""}
+      </motion.span>
+    ));
+  }, [text, inView]);
 
   const animatedWords = React.useMemo(() => {
     return words.map((w: string, i: number) => (
@@ -64,7 +79,7 @@ const AnimWords = React.forwardRef<
       data-visible={inView}
       {...rest}
     >
-      {animatedWords}
+      {wordSpans}
     </Tag>
   );
 });

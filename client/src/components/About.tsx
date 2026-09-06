@@ -1,7 +1,5 @@
-
 import { useEffect, useState, useMemo } from 'react';
 
-// PERFORMANCE: Extract static text outside the component to prevent recreation on every render
 const ABOUT_TEXT = "Post Labs is rethinking how digital media works for Canadians. Our mission is simple: make journalism profitable, sustainable, and trusted – built for Canadians, by Canadians.";
 
 const About = () => {
@@ -13,9 +11,7 @@ const About = () => {
     return () => clearTimeout(timer);
   }, []);
 
-  // PERFORMANCE: Memoize character spans and use CSS variants to toggle visibility
-  // without blocking the main thread during render loops.
-  const animatedText = useMemo(() => {
+  const textSpans = useMemo(() => {
     return ABOUT_TEXT.split('').map((char, index) => (
       <span
         key={index}
@@ -56,7 +52,7 @@ const About = () => {
           >
             <span className="sr-only">{ABOUT_TEXT}</span>
             <span aria-hidden="true">
-              {animatedText}
+              {textSpans}
             </span>
           </p>
         </div>
