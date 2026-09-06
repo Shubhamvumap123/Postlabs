@@ -5,9 +5,7 @@ import { Loader2 } from "lucide-react";
 
 export default function Footer() {
   const sentinelRef = useRef<HTMLDivElement>(null);
-
-  // PERFORMANCE: Replaced raw scroll listener and synchronous layout queries (offsetHeight)
-  // with an IntersectionObserver sentinel to eliminate layout thrashing.
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const atBottom = useInView(sentinelRef, { margin: "0px 0px 50px 0px" });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -36,7 +34,9 @@ export default function Footer() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setIsLoading(true);
+    if (isSubmitting) return;
+
+    setIsSubmitting(true);
     const formData = new FormData(e.currentTarget);
     const email = formData.get("email") as string;
 
@@ -169,9 +169,13 @@ export default function Footer() {
               type="submit"
               disabled={isSubmitting}
               aria-label="Subscribe to newsletter"
-              className="px-5 bg-white text-black rounded-md font-medium outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="min-w-[56px] flex items-center justify-center bg-white text-black rounded-md font-medium outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-opacity"
             >
-              {isSubmitting ? <Loader2 className="w-5 h-5 animate-spin mx-auto" /> : "→"}
+              {isSubmitting ? (
+                <Loader2 className="w-5 h-5 animate-spin" aria-hidden="true" />
+              ) : (
+                "→"
+              )}
             </button>
           </form>
         </div>

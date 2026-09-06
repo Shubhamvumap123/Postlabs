@@ -12,6 +12,6 @@
 **Learning:** When using list actions (like complete, archive, delete) for specific items in a list, generic `aria-label`s like 'Mark as complete' or 'Archive' create ambiguity for screen reader users as they do not indicate *which* item is being affected. Using action verbs with checkboxes can also be confusing.
 **Action:** When implementing item-specific actions in a list, always include the item's title in the `aria-label` (e.g., `Archive task: ${task.title}`). For completion toggles, use `role="checkbox"`, `aria-checked`, and an `aria-label` that concisely describes the item (e.g., `Complete task: ${task.title}`) instead of action-oriented verbs.
 
-## 2026-06-14 - Contextual Empty States
-**Learning:** Empty states are a key UX opportunity. Presenting a generic message across different tabs is unhelpful, and missing a Call to Action (CTA) leaves users unsure of next steps.
-**Action:** When implementing empty states, ensure the messaging is contextually aware of the current state (e.g., active tab) and always provide a relevant, accessible CTA (like an inline 'Create Task' button) to guide the user when appropriate.
+## 2026-06-17 - Prevent Layout Jank During Button Loading States
+**Learning:** When adding loading states to symbol-based submit buttons (like the '→' in the newsletter footer), swapping the symbol for a spinner often causes layout jank due to size differences. To prevent this, always set an explicit minimum width (e.g., `min-w-[56px]`) and `flex items-center justify-center` on the button to ensure the dimensions remain stable during the async operation, providing a seamless micro-interaction.
+**Action:** Always verify the computed dimensions of a button before and during its loading state, and apply appropriate `min-w-[...]` classes to prevent the button from changing size when swapping its content for a loader.
