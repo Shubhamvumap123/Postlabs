@@ -20,8 +20,8 @@ const Navigation = () => {
   const location = useLocation();
   const { scrollY } = useScroll();
 
-  // ⚡ Bolt: Replaced independent DOM scroll event listener with framer-motion's useScroll and useMotionValueEvent for centralized read/write batching
-  useMotionValueEvent(scrollY, 'change', (latest) => {
+  useMotionValueEvent(scrollY, "change", (latest) => {
+    // ⚡ Bolt: Centralized read/write batching with framer-motion to prevent layout thrashing and unnecessary re-renders
     setIsVisible(latest > 100);
   });
 
