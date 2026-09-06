@@ -4,7 +4,7 @@ import { Loader2 } from "lucide-react";
 
 export default function Footer() {
     const [atBottom, setAtBottom] = useState(false);
-    const [loading, setLoading] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     let ticking = false;
@@ -67,6 +67,7 @@ export default function Footer() {
 
     setIsSubmitting(true);
     try {
+      setIsSubmitting(true);
       // SECURITY: In a real production app, never call the Mailchimp API directly from the client.
       // It exposes your API key. Always proxy these requests through your own backend.
       // This is a simulated "Demo Mode" for the UI.
@@ -81,7 +82,7 @@ export default function Footer() {
       console.error(error);
       toast.error("Error signing up. Please try again later.");
     } finally {
-      setLoading(false);
+      setIsSubmitting(false);
     }
   };
 
@@ -178,19 +179,18 @@ export default function Footer() {
               name="email"
               maxLength={254}
               required
-              maxLength={100}
+              disabled={isSubmitting}
+              maxLength={255}
               placeholder="Email Address"
-              disabled={loading}
               className="flex-1 px-3 py-2 text-black rounded-md outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
             />
             <button
               type="submit"
               disabled={isSubmitting}
               aria-label="Subscribe to newsletter"
-              disabled={loading}
-              className="flex items-center justify-center min-w-[3.5rem] px-5 bg-white text-black rounded-md font-medium outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex items-center justify-center min-w-[56px] px-5 bg-white text-black rounded-md font-medium outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "→"}
+              {isSubmitting ? <Loader2 className="w-5 h-5 animate-spin" /> : "→"}
             </button>
           </form>
         </div>
