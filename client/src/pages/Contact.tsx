@@ -119,8 +119,8 @@ const Contact = () => {
                 <label htmlFor="email" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
                   Email
                 </label>
-                {/* SECURITY: Added maxLength limit to prevent excessively long input which could cause DoS or layout issues */}
-                <Input id="email" type="email" required maxLength={100} placeholder="john@example.com" />
+                {/* SECURITY: Added input length limits to prevent resource exhaustion / DoS */}
+                <Input id="email" type="email" required placeholder="john@example.com" maxLength={100} />
               </div>
 
               <div className="space-y-2">

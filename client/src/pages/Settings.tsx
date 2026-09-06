@@ -62,7 +62,7 @@ const Settings = () => {
                   <label htmlFor="name" className="text-sm font-medium text-foreground">
                     Display Name
                   </label>
-                  {/* SECURITY: Added maxLength limit to prevent excessively long input which could cause DoS or layout issues */}
+                  {/* SECURITY: Added input length limits to prevent localStorage DoS */}
                   <Input
                     id="name"
                     name="name"

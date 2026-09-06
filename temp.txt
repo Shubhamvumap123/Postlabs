@@ -277,7 +277,7 @@ export default function TaskDashboard() {
             <label htmlFor="title" className="text-sm font-medium text-zinc-300">
               Task Title
             </label>
-            {/* SECURITY: Added maxLength limit to prevent excessively long input which could cause DoS or layout issues */}
+            {/* SECURITY: Added input length limits to prevent localStorage DoS */}
             <Input
               id="title"
               value={newTaskTitle}
@@ -286,7 +286,7 @@ export default function TaskDashboard() {
               className="bg-zinc-900 border-zinc-700 text-zinc-100 focus:ring-purple-500"
               maxLength={100}
               autoFocus
-              maxLength={200}
+              maxLength={100}
             />
           </div>
           <div className="space-y-2">
