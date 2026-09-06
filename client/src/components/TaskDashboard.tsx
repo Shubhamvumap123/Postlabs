@@ -276,6 +276,8 @@ export default function TaskDashboard() {
                     aria-checked={task.status === 'Completed'}
                     onClick={() => toggleTaskStatus(task.id)}
                     className="flex-shrink-0 text-zinc-400 hover:text-purple-400 transition-colors rounded-full outline-none focus-visible:ring-2 focus-visible:ring-purple-500"
+                    role="checkbox"
+                    aria-checked={task.status === 'Completed'}
                     aria-label={`Complete task: ${task.title}`}
                   >
                     {task.status === 'Completed' ? (
@@ -302,8 +304,8 @@ export default function TaskDashboard() {
                       <button
                         type="button"
                         onClick={() => archiveTask(task.id)}
-                        className="p-1.5 text-zinc-400 hover:text-zinc-300 rounded hover:bg-zinc-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-                        title="Archive"
+                        className="p-1.5 text-zinc-400 hover:text-zinc-300 rounded hover:bg-zinc-800 outline-none focus-visible:ring-2 focus-visible:ring-purple-500"
+                        title={`Archive task: ${task.title}`}
                         aria-label={`Archive task: ${task.title}`}
                       >
                         <Archive className="w-4 h-4" />
@@ -312,8 +314,8 @@ export default function TaskDashboard() {
                     <button
                       type="button"
                       onClick={() => deleteTask(task.id)}
-                      className="p-1.5 text-zinc-400 hover:text-red-400 rounded hover:bg-zinc-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-                      title="Delete"
+                      className="p-1.5 text-zinc-400 hover:text-red-400 rounded hover:bg-zinc-800 outline-none focus-visible:ring-2 focus-visible:ring-purple-500"
+                      title={`Delete task: ${task.title}`}
                       aria-label={`Delete task: ${task.title}`}
                     >
                       <Trash2 className="w-4 h-4" />
