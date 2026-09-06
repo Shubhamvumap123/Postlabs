@@ -106,21 +106,12 @@ export default function TaskDashboard() {
 
   const addTask = (e: React.FormEvent) => {
     e.preventDefault();
+    // SECURITY: Limit input length to prevent potential local storage exhaustion (DoS)
+    if (!newTaskTitle.trim() || newTaskTitle.length > 100) return;
 
-    // SECURITY: Prevent DoS via LocalStorage exhaustion by enforcing length and collection limits
-    if (!newTaskTitle.trim()) return;
-    if (newTaskTitle.length > 100) {
-      toast.error("Task title must be 100 characters or less");
-      return;
-    }
+    // SECURITY: Limit the maximum number of tasks to prevent storage overflow
     if (tasks.length >= 100) {
-      toast.error("Maximum of 100 tasks allowed. Please delete or archive old tasks.");
-      return;
-    }
-
-    // SECURITY: Prevent localStorage exhaustion (client-side DoS)
-    if (tasks.length >= 100) {
-      toast.error("Maximum limit of 100 tasks reached.");
+      toast.error("Maximum limit of 100 tasks reached. Please delete some tasks to add more.");
       return;
     }
 
