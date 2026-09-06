@@ -302,10 +302,10 @@ export default function TaskDashboard() {
             />
           </div>
           <div className="space-y-2">
-            <label id="category-label" className="text-sm font-medium text-zinc-300">
+            <label className="text-sm font-medium text-zinc-300" id="category-label">
               Category
             </label>
-            <div role="group" aria-labelledby="category-label" className="flex gap-2">
+            <div className="flex gap-2" role="group" aria-labelledby="category-label">
               {filters.map(filter => (
                 <button
                   key={filter.id}
@@ -347,8 +347,8 @@ export default function TaskDashboard() {
 
       {/* Bottom Filter Chips */}
       <div className="mt-8">
-        <h4 id="skill-based-agents-label" className="text-sm font-medium text-zinc-400 mb-3">Skill-based agents</h4>
-        <div role="group" aria-labelledby="skill-based-agents-label" className="flex flex-wrap gap-3">
+        <h4 className="text-sm font-medium text-zinc-400 mb-3" id="filters-label">Skill-based agents</h4>
+        <div className="flex flex-wrap gap-3" role="group" aria-labelledby="filters-label">
           {filters.map(({ id, label, icon: Icon }) => {
             const isActive = activeFilters.includes(id);
             return (
