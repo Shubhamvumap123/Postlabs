@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, KeyboardEvent, useRef } from 'react';
+import { useState, useEffect, useMemo, useRef, KeyboardEvent } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Clock, Plus, Zap, Palette, Shield, Trash2, CheckCircle2, Circle, Archive } from 'lucide-react';
 import { cn } from '../lib/utils';
@@ -43,6 +43,7 @@ type FilterId = typeof filters[number]['id'];
 export default function TaskDashboard() {
   const [activeTab, setActiveTab] = useState<Tab>("Scheduled");
   const [activeFilters, setActiveFilters] = useState<string[]>([]);
+  const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const [tasks, setTasks] = useState<Task[]>(() => {
     try {
       const savedTasks = globalThis.localStorage.getItem('tasks');
@@ -130,38 +131,39 @@ export default function TaskDashboard() {
     toast.success("Task archived");
   };
 
-  const filteredTasks = useMemo(() => tasks.filter(task => {
-    if (activeFilters.length > 0 && !activeFilters.includes(task.category)) return false;
+  const filteredTasks = useMemo(() => {
+    return tasks.filter(task => {
+      if (activeFilters.length > 0 && !activeFilters.includes(task.category)) return false;
 
-    if (activeTab === 'All') return true;
-    if (activeTab === 'Scheduled' && (task.status === 'Scheduled')) return true;
-    if (activeTab === 'Completed' && task.status === 'Completed') return true;
-    if (activeTab === 'Archived' && task.status === 'Archived') return true;
-    return false;
-  }), [tasks, activeFilters, activeTab]);
-
-  const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
-
-  const handleTabKeyDown = (e: KeyboardEvent<HTMLButtonElement>, index: number) => {
-    let nextIndex = index;
-    if (e.key === 'ArrowRight') {
-      nextIndex = (index + 1) % tabs.length;
-    } else if (e.key === 'ArrowLeft') {
-      nextIndex = (index - 1 + tabs.length) % tabs.length;
-    } else {
-      return;
-    }
-
-    e.preventDefault();
-    setActiveTab(tabs[nextIndex]);
-    tabRefs.current[nextIndex]?.focus();
-  };
+      if (activeTab === 'All') return true;
+      if (activeTab === 'Scheduled' && (task.status === 'Scheduled')) return true;
+      if (activeTab === 'Completed' && task.status === 'Completed') return true;
+      if (activeTab === 'Archived' && task.status === 'Archived') return true;
+      return false;
+    });
+  }, [tasks, activeFilters, activeTab]);
 
   return (
     <div className="w-full max-w-2xl mx-auto p-4 sm:p-6 bg-zinc-900 rounded-xl border border-zinc-800 text-zinc-100 shadow-xl">
       {/* Top Navigation */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
-        <div role="tablist" aria-label="Task filters" className="flex p-1 bg-zinc-800/50 rounded-full overflow-x-auto no-scrollbar">
+        <div role="tablist" aria-label="Task filters" className="flex p-1 bg-zinc-800/50 rounded-full overflow-x-auto no-scrollbar"
+          onKeyDown={(e: KeyboardEvent<HTMLDivElement>) => {
+            const currentIndex = tabs.indexOf(activeTab);
+            let nextIndex = currentIndex;
+            if (e.key === 'ArrowRight') {
+              nextIndex = (currentIndex + 1) % tabs.length;
+            } else if (e.key === 'ArrowLeft') {
+              nextIndex = (currentIndex - 1 + tabs.length) % tabs.length;
+            }
+
+            if (nextIndex !== currentIndex) {
+              const nextTab = tabs[nextIndex];
+              setActiveTab(nextTab);
+              tabRefs.current[nextIndex]?.focus();
+            }
+          }}
+        >
           {tabs.map((tab, index) => (
             <button
               ref={el => tabsRef.current[index] = el}
@@ -170,11 +172,10 @@ export default function TaskDashboard() {
               id={`${tab}-tab`}
               aria-selected={activeTab === tab}
               aria-controls="task-panel"
+              id={`tab-${tab}`}
               tabIndex={activeTab === tab ? 0 : -1}
-              ref={(el) => tabRefs.current[index] = el}
-              onKeyDown={(e) => handleTabKeyDown(e, index)}
               key={tab}
-              type="button"
+              ref={(el) => (tabRefs.current[index] = el)}
               onClick={() => setActiveTab(tab)}
               onKeyDown={(e) => handleKeyDown(e, index)}
               className={cn(
@@ -204,7 +205,7 @@ export default function TaskDashboard() {
       </div>
 
       {/* Content Area */}
-      <div id="task-panel" role="tabpanel" aria-labelledby={`${activeTab}-tab`} className="min-h-[300px] bg-zinc-900/50 rounded-xl border border-zinc-800/50 overflow-hidden">
+      <div id="task-panel" role="tabpanel" aria-labelledby={`tab-${activeTab}`} className="min-h-[300px] bg-zinc-900/50 rounded-xl border border-zinc-800/50 overflow-hidden">
         {filteredTasks.length === 0 ? (
           <div className="flex flex-col items-center justify-center text-center p-8 h-[300px]">
             <div className="w-16 h-16 mb-4 rounded-full bg-zinc-800/50 flex items-center justify-center">
@@ -254,7 +255,7 @@ export default function TaskDashboard() {
                     {task.status !== 'Archived' && (
                       <button
                         onClick={() => archiveTask(task.id)}
-                        className="p-1.5 text-zinc-400 hover:text-zinc-300 rounded hover:bg-zinc-800 focus-visible:ring-2 focus-visible:ring-purple-500 outline-none"
+                        className="p-1.5 text-zinc-400 hover:text-zinc-300 rounded hover:bg-zinc-800 outline-none focus-visible:ring-2 focus-visible:ring-purple-500"
                         title="Archive"
                         aria-label={`Archive task: ${task.title}`}
                       >
@@ -263,7 +264,7 @@ export default function TaskDashboard() {
                     )}
                     <button
                       onClick={() => deleteTask(task.id)}
-                      className="p-1.5 text-zinc-400 hover:text-red-400 rounded hover:bg-zinc-800 focus-visible:ring-2 focus-visible:ring-purple-500 outline-none"
+                      className="p-1.5 text-zinc-400 hover:text-red-400 rounded hover:bg-zinc-800 outline-none focus-visible:ring-2 focus-visible:ring-red-500"
                       title="Delete"
                       aria-label={`Delete task: ${task.title}`}
                     >
