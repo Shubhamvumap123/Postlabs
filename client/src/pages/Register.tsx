@@ -1,77 +1,78 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { useAuth } from '../hooks/useAuth';
+import { useAuth } from '../context/AuthContext';
+import api from '../lib/api/axios';
+import { toast } from 'sonner';
+import { Loader2 } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
-import { toast } from 'sonner';
 
 const Register = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const { register } = useAuth();
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     try {
-      await register({ name, email, password });
-      toast.success('Registered successfully');
+      const res = await api.post('/api/auth/register', { name, email, password });
+      login(res.data.token, res.data.user);
+      toast.success('Account created successfully');
       navigate('/dashboard');
-    } catch (error: unknown) {
-      const err = error as { response?: { data?: { message?: string } } };
-      toast.error(err.response?.data?.message || 'Failed to register');
+    } catch (error: any) {
+      toast.error(error?.response?.data?.message || 'Registration failed');
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-background">
-      <div className="w-full max-w-md p-8 space-y-6 bg-card rounded-lg shadow-lg border border-border">
-        <h1 className="text-2xl font-bold text-center text-foreground">Create an Account</h1>
+    <div className="min-h-screen flex items-center justify-center bg-zinc-950 p-4">
+      <div className="w-full max-w-md p-8 bg-zinc-900 rounded-xl border border-zinc-800 shadow-xl">
+        <h2 className="text-2xl font-bold text-white mb-6 text-center">Create an Account</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <label className="text-sm font-medium text-foreground">Name</label>
+            <label className="text-sm font-medium text-zinc-300">Name</label>
             <Input
               type="text"
-              required
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="Enter your name"
+              className="bg-zinc-800 border-zinc-700 text-white"
+              required
             />
           </div>
           <div className="space-y-2">
-            <label className="text-sm font-medium text-foreground">Email</label>
+            <label className="text-sm font-medium text-zinc-300">Email</label>
             <Input
               type="email"
-              required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="Enter your email"
+              className="bg-zinc-800 border-zinc-700 text-white"
+              required
             />
           </div>
           <div className="space-y-2">
-            <label className="text-sm font-medium text-foreground">Password</label>
+            <label className="text-sm font-medium text-zinc-300">Password</label>
             <Input
               type="password"
-              required
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="Create a password"
+              className="bg-zinc-800 border-zinc-700 text-white"
+              required
             />
           </div>
-          <Button type="submit" className="w-full" disabled={isLoading}>
-            {isLoading ? 'Registering...' : 'Register'}
+          <Button type="submit" className="w-full bg-purple-600 hover:bg-purple-700 text-white" disabled={isLoading}>
+            {isLoading ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : null}
+            Sign Up
           </Button>
         </form>
-        <p className="text-center text-sm text-muted-foreground">
-          Already have an account?{' '}
-          <Link to="/login" className="text-primary hover:underline">
-            Login here
-          </Link>
+        <p className="mt-4 text-center text-sm text-zinc-400">
+          Already have an account? <Link to="/login" className="text-purple-400 hover:text-purple-300">Log in</Link>
         </p>
       </div>
     </div>

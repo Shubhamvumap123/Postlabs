@@ -1,63 +1,100 @@
 import { Request, Response } from 'express';
-import Job from '../models/Job.js';
+import Job from '../models/Job';
 
-export const getJobs = async (req: any, res: Response) => {
+export const getJobs = async (req: Request, res: Response): Promise<void> => {
   try {
-    const jobs = await Job.find({ user: req.user._id }).sort({ createdAt: -1 });
-    res.status(200).json(jobs);
+    const jobs = await Job.find({ user: (req as any).user.id }).sort({ createdAt: -1 });
+    res.json(jobs);
   } catch (error) {
-    res.status(500).json({ message: 'Error fetching jobs' });
+    res.status(500).json({ message: 'Server error', error });
   }
 };
 
-export const getJob = async (req: any, res: Response) => {
+export const getJob = async (req: Request, res: Response): Promise<void> => {
   try {
-    const job = await Job.findOne({ _id: req.params.id, user: req.user._id });
-    if (!job) return res.status(404).json({ message: 'Job not found' });
-    res.status(200).json(job);
+    const job = await Job.findById(req.params.id);
+
+    if (!job) {
+      res.status(404).json({ message: 'Job not found' });
+      return;
+    }
+
+    if (job.user.toString() !== (req as any).user.id) {
+      res.status(401).json({ message: 'Not authorized' });
+      return;
+    }
+
+    res.json(job);
   } catch (error) {
-    res.status(500).json({ message: 'Error fetching job' });
+    res.status(500).json({ message: 'Server error', error });
   }
 };
 
-export const createJob = async (req: any, res: Response) => {
+export const createJob = async (req: Request, res: Response): Promise<void> => {
   try {
-    const job = new Job({ ...req.body, user: req.user._id });
-    await job.save();
+    const newJob = new Job({
+      ...req.body,
+      user: (req as any).user.id,
+    });
+
+    const job = await newJob.save();
     res.status(201).json(job);
   } catch (error) {
-    res.status(500).json({ message: 'Error creating job' });
+    res.status(500).json({ message: 'Server error', error });
   }
 };
 
-export const updateJob = async (req: any, res: Response) => {
+export const updateJob = async (req: Request, res: Response): Promise<void> => {
   try {
-    const job = await Job.findOneAndUpdate(
-      { _id: req.params.id, user: req.user._id },
-      req.body,
-      { new: true, runValidators: true }
+    let job = await Job.findById(req.params.id);
+
+    if (!job) {
+      res.status(404).json({ message: 'Job not found' });
+      return;
+    }
+
+    if (job.user.toString() !== (req as any).user.id) {
+      res.status(401).json({ message: 'Not authorized' });
+      return;
+    }
+
+    job = await Job.findByIdAndUpdate(
+      req.params.id,
+      { $set: req.body },
+      { new: true }
     );
-    if (!job) return res.status(404).json({ message: 'Job not found' });
-    res.status(200).json(job);
+
+    res.json(job);
   } catch (error) {
-    res.status(500).json({ message: 'Error updating job' });
+    res.status(500).json({ message: 'Server error', error });
   }
 };
 
-export const deleteJob = async (req: any, res: Response) => {
+export const deleteJob = async (req: Request, res: Response): Promise<void> => {
   try {
-    const job = await Job.findOneAndDelete({ _id: req.params.id, user: req.user._id });
-    if (!job) return res.status(404).json({ message: 'Job not found' });
-    res.status(200).json({ message: 'Job deleted successfully' });
+    const job = await Job.findById(req.params.id);
+
+    if (!job) {
+      res.status(404).json({ message: 'Job not found' });
+      return;
+    }
+
+    if (job.user.toString() !== (req as any).user.id) {
+      res.status(401).json({ message: 'Not authorized' });
+      return;
+    }
+
+    await job.deleteOne();
+    res.json({ message: 'Job removed' });
   } catch (error) {
-    res.status(500).json({ message: 'Error deleting job' });
+    res.status(500).json({ message: 'Server error', error });
   }
 };
 
-export const getJobStats = async (req: any, res: Response) => {
+export const getJobStats = async (req: Request, res: Response): Promise<void> => {
   try {
     const stats = await Job.aggregate([
-      { $match: { user: req.user._id } },
+      { $match: { user: (req as any).user.id } },
       { $group: { _id: '$status', count: { $sum: 1 } } }
     ]);
 
@@ -66,8 +103,8 @@ export const getJobStats = async (req: any, res: Response) => {
       return acc;
     }, { Applied: 0, Interview: 0, Offer: 0, Rejected: 0 });
 
-    res.status(200).json(formattedStats);
+    res.json(formattedStats);
   } catch (error) {
-    res.status(500).json({ message: 'Error fetching stats' });
+    res.status(500).json({ message: 'Server error', error });
   }
 };

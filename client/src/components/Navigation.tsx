@@ -2,35 +2,37 @@ import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useScroll, useMotionValueEvent } from 'framer-motion';
 import { ThemeToggle } from './ThemeToggle';
-import { useScroll, useMotionValueEvent } from 'framer-motion';
-import { Home, LayoutDashboard, Settings, Mail } from 'lucide-react';
-import { useScroll, useMotionValueEvent } from 'framer-motion';
+import { Home, LayoutDashboard, Settings, Mail, LogIn } from 'lucide-react';
 import { cn } from '../lib/utils';
-import { useScroll, useMotionValueEvent } from 'framer-motion';
-
-const navItems = [
-  { name: 'Home', path: '/', icon: Home },
-  { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
-  { name: 'Contact', path: '/contact-us', icon: Mail },
-  { name: 'Settings', path: '/settings', icon: Settings },
-];
+import { useAuth } from '../context/AuthContext';
 
 const Navigation = () => {
   const [isVisible, setIsVisible] = useState(false);
   const location = useLocation();
-  const { scrollY } = useScroll();
+  const { user } = useAuth();
 
   // ⚡ Bolt: Replaced throttled independent DOM scroll event listener with framer-motion hooks to leverage centralized read/write batching to prevent layout thrashing.
   useMotionValueEvent(scrollY, "change", (latest) => {
     setIsVisible(latest > 100);
   });
 
+  const navItems = [
+    { name: 'Home', path: '/', icon: Home },
+    { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
+    { name: 'Contact', path: '/contact-us', icon: Mail },
+    { name: 'Settings', path: '/settings', icon: Settings },
+  ];
+
+  if (!user) {
+    navItems.splice(1, 0, { name: 'Login', path: '/login', icon: LogIn });
+  }
+
   return (
     <>
       {/* Top Banner - Only on Home */}
       {location.pathname === '/' && (
         <div className="bg-zinc-950 dark:bg-zinc-900 text-white py-3 px-6 text-center text-sm font-medium relative z-50 transition-colors">
-          Help shape the future of digital journalism — we're hiring!
+          Welcome to Job Tracker — your career in one place!
         </div>
       )}
 

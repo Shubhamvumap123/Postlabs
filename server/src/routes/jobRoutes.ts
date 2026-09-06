@@ -1,13 +1,28 @@
 import express from 'express';
-import { getJobs, getJob, createJob, updateJob, deleteJob, getJobStats } from '../controllers/jobController.js';
-import { authenticate } from '../middleware/auth.js';
+import {
+  getJobs,
+  getJob,
+  createJob,
+  updateJob,
+  deleteJob,
+  getJobStats
+} from '../controllers/jobController';
+import { protect } from '../middlewares/authMiddleware';
 
 const router = express.Router();
 
-router.use(authenticate);
+router.use(protect);
 
-router.get('/stats', getJobStats);
-router.route('/').get(getJobs).post(createJob);
-router.route('/:id').get(getJob).patch(updateJob).delete(deleteJob);
+router.route('/')
+  .get(getJobs)
+  .post(createJob);
+
+router.route('/stats')
+  .get(getJobStats);
+
+router.route('/:id')
+  .get(getJob)
+  .put(updateJob)
+  .delete(deleteJob);
 
 export default router;

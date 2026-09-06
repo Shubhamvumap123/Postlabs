@@ -1,70 +1,68 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import api from '../lib/axios';
+import api from '../lib/api/axios';
+import { toast } from 'sonner';
+import { Loader2 } from 'lucide-react';
+import { Button } from '../components/ui/button';
+import { Input } from '../components/ui/input';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const { login } = useAuth();
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    setError('');
-
     try {
-      const res = await api.post('/auth/login', { email, password });
+      const res = await api.post('/api/auth/login', { email, password });
       login(res.data.token, res.data.user);
+      toast.success('Logged in successfully');
       navigate('/dashboard');
-    } catch (err) {
-      const error = err as { response?: { data?: { message?: string } } };
-      setError(error.response?.data?.message || 'Login failed');
+    } catch (error: any) {
+      toast.error(error?.response?.data?.message || 'Login failed');
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background">
-      <div className="w-full max-w-md rounded-lg border bg-card p-8 shadow-sm">
-        <h2 className="mb-6 text-2xl font-bold text-center">Login to Job Tracker</h2>
-        {error && <div className="mb-4 text-sm text-red-500 text-center">{error}</div>}
+    <div className="min-h-screen flex items-center justify-center bg-zinc-950 p-4">
+      <div className="w-full max-w-md p-8 bg-zinc-900 rounded-xl border border-zinc-800 shadow-xl">
+        <h2 className="text-2xl font-bold text-white mb-6 text-center">Log in to Job Tracker</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium mb-1">Email</label>
-            <input
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-zinc-300">Email</label>
+            <Input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full rounded-md border bg-background px-3 py-2"
+              className="bg-zinc-800 border-zinc-700 text-white"
               required
             />
           </div>
-          <div>
-            <label className="block text-sm font-medium mb-1">Password</label>
-            <input
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-zinc-300">Password</label>
+            <Input
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full rounded-md border bg-background px-3 py-2"
+              className="bg-zinc-800 border-zinc-700 text-white"
               required
             />
           </div>
-          <button
-            type="submit"
-            disabled={isLoading}
-            className="w-full rounded-md bg-primary px-4 py-2 text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
-          >
-            {isLoading ? 'Loading...' : 'Login'}
-          </button>
+          <Button type="submit" className="w-full bg-purple-600 hover:bg-purple-700 text-white" disabled={isLoading}>
+            {isLoading ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : null}
+            Log In
+          </Button>
         </form>
-        <div className="mt-4 text-center text-sm">
-          Don't have an account? <Link to="/signup" className="text-blue-500 hover:underline">Sign up</Link>
-        </div>
+        <p className="mt-4 text-center text-sm text-zinc-400">
+          Don't have an account? <Link to="/register" className="text-purple-400 hover:text-purple-300">Sign up</Link>
+        </p>
       </div>
     </div>
   );
