@@ -49,7 +49,7 @@ const Navigation = () => {
       {/* Main Navigation */}
       <nav 
         className={cn(
-            "fixed bottom-6 left-1/2 -translate-x-1/2 z-40 transition-all duration-500 ease-out max-w-[90vw]",
+            "fixed bottom-[calc(1.5rem+env(safe-area-inset-bottom))] left-1/2 -translate-x-1/2 z-40 transition-all duration-500 ease-out max-w-[90vw]",
              isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-5 pointer-events-none'
         )}
       >
