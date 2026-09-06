@@ -11,6 +11,7 @@
 ## 2026-06-08 - Contextual ARIA labels and roles for list items
 **Learning:** When using list actions (like complete, archive, delete) for specific items in a list, generic `aria-label`s like 'Mark as complete' or 'Archive' create ambiguity for screen reader users as they do not indicate *which* item is being affected. Using action verbs with checkboxes can also be confusing.
 **Action:** When implementing item-specific actions in a list, always include the item's title in the `aria-label` (e.g., `Archive task: ${task.title}`). For completion toggles, use `role="checkbox"`, `aria-checked`, and an `aria-label` that concisely describes the item (e.g., `Complete task: ${task.title}`) instead of action-oriented verbs.
-## 2026-07-23 - Adding loading states to inline form buttons
-**Learning:** When adding loading states to symbol-based, icon-only, or inline form buttons, swap horizontal padding for an explicit minimum width (e.g., `min-w-[56px]`) and add centering properties (`inline-flex items-center justify-center`). Strictly use `inline-flex` rather than standard `flex` to prevent layout jank and avoid breaking horizontal form layouts.
-**Action:** Always use this approach for inline form buttons to ensure smooth UX.
+
+## 2026-07-25 - Prevent Layout Jank on Inline Form Buttons
+**Learning:** When adding loading states (like spinners) to symbol-based or icon-only buttons in horizontal layouts (like newsletter inputs), the changing content can alter the button's natural width, causing the adjacent input field to jitter or resize abruptly. Furthermore, simply applying `flex` can break horizontal form layouts and drop elements to new lines.
+**Action:** When implementing loading states on inline form buttons, swap horizontal padding for an explicit minimum width (e.g., `min-w-[56px]`) to reserve space, and add centering properties (`inline-flex items-center justify-center`). Strictly use `inline-flex` rather than standard `flex` to ensure the button maintains its intended inline flow alongside inputs.
