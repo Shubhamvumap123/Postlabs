@@ -62,13 +62,13 @@ const Navigation = () => {
                      to={item.path}
                      aria-label={item.name}
                      className={cn(
-                       "flex items-center gap-2 px-3 sm:px-4 py-2 rounded-full transition-all duration-300 text-sm font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400",
+                       "flex items-center gap-2 px-3 sm:px-4 py-2 rounded-full transition-all duration-300 text-sm font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background",
                        isActive
                          ? "bg-zinc-800 text-zinc-100 shadow-sm"
                          : "text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800/50"
                      )}
                    >
-                     <item.icon className="w-4 h-4" />
+                     <item.icon className="w-4 h-4" aria-hidden="true" />
                      <span className="sr-only sm:not-sr-only sm:inline">{item.name}</span>
                    </Link>
                )
