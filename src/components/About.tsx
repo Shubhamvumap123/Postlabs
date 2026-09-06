@@ -12,9 +12,7 @@ const About = () => {
     return () => clearTimeout(timer);
   }, []);
 
-  // PERFORMANCE: Memoize generation of 100+ DOM spans to prevent main thread blocking on re-render.
-  // Decouple dynamic state by moving visibility toggle to CSS using group-data-[visible].
-  const splitText = useMemo(() => {
+  const memoizedSpans = useMemo(() => {
     return text.split('').map((char, index) => (
       <span
         key={index}
@@ -55,7 +53,7 @@ const About = () => {
           >
             <span className="sr-only">{text}</span>
             <span aria-hidden="true">
-              {splitText}
+              {memoizedSpans}
             </span>
           </p>
         </div>
