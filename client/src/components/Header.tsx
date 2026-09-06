@@ -20,7 +20,7 @@ const Header = () => {
             aria-label="Post Labs Home"
             className="logo-link inline-block"
           >
-            {/* PERFORMANCE: Eagerly load critical LCP image to improve initial render time */}
+            {/* PERFORMANCE: Eagerly load above-the-fold critical images to improve LCP */}
             <img
               src="https://cdn.prod.website-files.com/681dfdff4444ca819f7050a2/68227dfdc407523fbe5b56e7_post-labs-logo.svg"
               loading="eager"
