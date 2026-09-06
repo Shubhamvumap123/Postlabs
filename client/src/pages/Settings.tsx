@@ -66,6 +66,7 @@ const Settings = () => {
                   {/* SECURITY: Added maxLength to prevent DoS via excessively large input */}
                   <Input
                     id="name"
+                    name="name"
                     autoComplete="name"
                     value={name}
                     maxLength={100}

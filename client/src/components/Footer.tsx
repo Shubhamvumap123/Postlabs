@@ -179,7 +179,7 @@ export default function Footer() {
               id="newsletter-email"
               type="email"
               name="email"
-              maxLength={254}
+              autoComplete="email"
               required
               maxLength={255}
               placeholder="Email Address"
