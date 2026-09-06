@@ -136,6 +136,7 @@ const Settings = () => {
                 {['light', 'dark', 'system'].map((t) => (
                   <button
                     key={t}
+                    type="button"
                     aria-pressed={theme === t}
                     onClick={() => setTheme(t)}
                     aria-pressed={theme === t}
