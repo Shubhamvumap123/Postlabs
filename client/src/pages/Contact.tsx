@@ -6,6 +6,7 @@ import Footer from "../components/Footer";
 import { Input } from "../components/ui/input";
 import { Button } from "../components/ui/button";
 import { Send, Mail, MapPin, Phone, Loader2 } from "lucide-react";
+import { cn } from "../lib/utils";
 
 const Contact = () => {
   const [loading, setLoading] = useState(false);
@@ -127,7 +128,7 @@ const Contact = () => {
                 <textarea
                   id="message"
                   required
-                  maxLength={1000}
+                  disabled={loading}
                   placeholder="How can we help you?"
                   disabled={loading}
                   className="flex min-h-[120px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 resize-none"
@@ -136,13 +137,12 @@ const Contact = () => {
               </div>
 
               <Button type="submit" className="w-full relative" disabled={loading}>
-                <span className={`flex items-center justify-center transition-opacity ${loading ? 'opacity-0' : 'opacity-100'}`}>
-                  Send Message <Send className="w-4 h-4 ml-2" />
+                <span className={cn("flex items-center gap-2", loading && "opacity-0")}>
+                  Send Message <Send className="w-4 h-4" />
                 </span>
                 {loading && (
                   <div className="absolute inset-0 flex items-center justify-center">
-                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                    Sending...
+                    <Loader2 className="h-5 w-5 animate-spin" />
                   </div>
                 )}
                 <span className={`flex items-center justify-center ${loading ? "opacity-0" : ""}`}>
