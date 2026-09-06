@@ -12,6 +12,6 @@
 **Learning:** When using list actions (like complete, archive, delete) for specific items in a list, generic `aria-label`s like 'Mark as complete' or 'Archive' create ambiguity for screen reader users as they do not indicate *which* item is being affected. Using action verbs with checkboxes can also be confusing.
 **Action:** When implementing item-specific actions in a list, always include the item's title in the `aria-label` (e.g., `Archive task: ${task.title}`). For completion toggles, use `role="checkbox"`, `aria-checked`, and an `aria-label` that concisely describes the item (e.g., `Complete task: ${task.title}`) instead of action-oriented verbs.
 
-## 2026-06-17 - Prevent Layout Jank During Button Loading States
-**Learning:** When adding loading states to symbol-based submit buttons (like the '→' in the newsletter footer), swapping the symbol for a spinner often causes layout jank due to size differences. To prevent this, always set an explicit minimum width (e.g., `min-w-[56px]`) and `flex items-center justify-center` on the button to ensure the dimensions remain stable during the async operation, providing a seamless micro-interaction.
-**Action:** Always verify the computed dimensions of a button before and during its loading state, and apply appropriate `min-w-[...]` classes to prevent the button from changing size when swapping its content for a loader.
+## 2025-06-18 - Responsive Hidden Text Accessibility
+**Learning:** Using Tailwind's 'hidden sm:inline' to hide text on mobile removes it from the accessibility tree, leaving icon-based links without an accessible name for screen reader users on small viewports.
+**Action:** When hiding link or button text responsively, always provide an 'aria-label' attribute on the parent interactive element so that it retains an accessible name regardless of viewport size.
