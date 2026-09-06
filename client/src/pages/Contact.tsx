@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
-import Navigation from "../components/Navigation.tsx";
-import Footer from "../components/Footer.tsx";
-import { Input } from "../components/ui/input.tsx";
-import { Button } from "../components/ui/button.tsx";
-import { Send, Mail, MapPin, Phone } from "lucide-react";
+import Navigation from "../components/Navigation";
+import Footer from "../components/Footer";
+import { Input } from "../components/ui/input";
+import { Button } from "../components/ui/button";
+import { Send, Mail, MapPin, Phone, Loader2 } from "lucide-react";
 
 const Contact = () => {
   const [loading, setLoading] = useState(false);
@@ -103,13 +103,13 @@ const Contact = () => {
                   <label htmlFor="firstName" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
                     First Name
                   </label>
-                  <Input id="firstName" required placeholder="John" autoComplete="given-name" />
+                  <Input id="firstName" autoComplete="given-name" required placeholder="John" />
                 </div>
                 <div className="space-y-2">
                   <label htmlFor="lastName" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
                     Last Name
                   </label>
-                  <Input id="lastName" required placeholder="Doe" autoComplete="family-name" />
+                  <Input id="lastName" autoComplete="family-name" required placeholder="Doe" />
                 </div>
               </div>
 
@@ -117,7 +117,7 @@ const Contact = () => {
                 <label htmlFor="email" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
                   Email
                 </label>
-                <Input id="email" type="email" required placeholder="john@example.com" autoComplete="email" />
+                <Input id="email" type="email" autoComplete="email" required placeholder="john@example.com" />
               </div>
 
               <div className="space-y-2">
@@ -135,11 +135,16 @@ const Contact = () => {
                 />
               </div>
 
-              <Button type="submit" className="w-full relative" disabled={loading}>
-                {loading && (
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <Loader2 className="w-5 h-5 animate-spin" />
-                  </div>
+              <Button type="submit" className="w-full" disabled={loading}>
+                {loading ? (
+                  <>
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    Sending...
+                  </>
+                ) : (
+                  <>
+                    Send Message <Send className="w-4 h-4 ml-2" />
+                  </>
                 )}
                 <span className={`flex items-center ${loading ? 'opacity-0' : 'opacity-100'} transition-opacity`}>
                   Send Message <Send className="w-4 h-4 ml-2" />
