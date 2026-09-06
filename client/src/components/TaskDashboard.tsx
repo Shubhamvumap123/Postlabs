@@ -51,8 +51,8 @@ export default function TaskDashboard() {
         return Array.isArray(parsed) ? parsed : [];
       }
       return [];
-    } catch (e) {
-      console.error('Failed to parse tasks', e);
+    } catch (error) {
+      console.error('Failed to parse tasks', error);
       return [];
     }
   });
