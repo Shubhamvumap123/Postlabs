@@ -37,6 +37,7 @@ const Navigation = () => {
 
       {/* Main Navigation */}
       <nav 
+        aria-label="Main"
         className={cn(
             "fixed bottom-[max(1.5rem,env(safe-area-inset-bottom))] left-1/2 -translate-x-1/2 z-40 transition-all duration-500 ease-out max-w-[90vw]",
              isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-5 pointer-events-none'
@@ -50,16 +51,16 @@ const Navigation = () => {
                      key={item.path}
                      to={item.path}
                      aria-label={item.name}
-                     aria-current={isActive ? 'page' : undefined}
+                     aria-current={isActive ? "page" : undefined}
                      className={cn(
-                       "flex items-center gap-2 px-3 sm:px-4 py-2 rounded-full transition-all duration-300 text-sm font-medium outline-none focus-visible:ring-2 focus-visible:ring-zinc-400",
+                       "flex items-center gap-2 px-3 sm:px-4 py-2 rounded-full transition-all duration-300 text-sm font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400",
                        isActive
                          ? "bg-zinc-800 text-zinc-100 shadow-sm"
                          : "text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800/50"
                      )}
                    >
-                     <item.icon className="w-4 h-4" />
-                     <span className="sr-only sm:not-sr-only sm:inline">{item.name}</span>
+                     <item.icon className="w-4 h-4" aria-hidden="true" />
+                     <span className="hidden sm:inline">{item.name}</span>
                    </Link>
                )
            })}
