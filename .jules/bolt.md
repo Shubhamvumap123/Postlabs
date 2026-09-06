@@ -20,3 +20,6 @@
 ## 2026-06-08 - Layout Thrashing in Throttled Scroll Listeners
 **Learning:** Querying layout properties like `document.body.offsetHeight` inside a scroll listener still triggers continuous synchronous layout thrashing (forced reflow), severely impacting performance even when throttled with `requestAnimationFrame`.
 **Action:** Replace layout-thrashing scroll listeners with `framer-motion`'s `useInView` combined with a sentinel element naturally placed at the end of the document flow.
+## 2024-05-24 - Lazy Loading Images
+**Learning:** Added `loading="lazy"` to off-screen images to improve LCP and initial load time without side effects.
+**Action:** Continue to evaluate above- and below-the-fold assets to set correct loading strategies.
