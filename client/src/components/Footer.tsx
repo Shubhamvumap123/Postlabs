@@ -1,6 +1,7 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { useInView } from "framer-motion";
+import { Loader2 } from "lucide-react";
 
 export default function Footer() {
   const sentinelRef = useRef<HTMLDivElement>(null);
@@ -8,6 +9,7 @@ export default function Footer() {
   // PERFORMANCE: Replaced raw scroll listener and synchronous layout queries (offsetHeight)
   // with an IntersectionObserver sentinel to eliminate layout thrashing.
   const atBottom = useInView(sentinelRef, { margin: "0px 0px 50px 0px" });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
    
@@ -40,8 +42,6 @@ export default function Footer() {
 
     // Capture the form element before the await
     const form = e.currentTarget;
-    setIsSubmitting(true);
-
     setIsSubmitting(true);
 
     try {
@@ -168,13 +168,10 @@ export default function Footer() {
               type="submit"
               disabled={isSubmitting}
               aria-label="Subscribe to newsletter"
-              className="px-5 flex items-center justify-center bg-white text-black rounded-md font-medium outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 disabled:opacity-70 min-w-[3.5rem]"
+              disabled={isSubmitting}
+              className="px-5 bg-white text-black rounded-md font-medium outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center min-w-[56px]"
             >
-              {isSubmitting ? (
-                <Loader2 className="w-4 h-4 animate-spin" aria-hidden="true" />
-              ) : (
-                "→"
-              )}
+              {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : '→'}
             </button>
           </form>
         </div>
