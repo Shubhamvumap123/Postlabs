@@ -1,61 +1,59 @@
-import Job from '../models/Job.js';
+const Job = require('../models/Job');
 
-export const getJobs = async (req, res) => {
+// @desc    Get jobs for the logged in user
+// @route   GET /api/jobs
+// @access  Private
+const getJobs = async (req, res) => {
   try {
-    const jobs = await Job.find({ userId: req.user._id }).sort({ dateApplied: -1 });
-    res.json(jobs);
+    const { search, status } = req.query;
+    let query = { user: req.user.id };
+
+    if (status && status !== 'All') {
+      query.status = status;
+    }
+
+    if (search) {
+      query.$or = [
+        { company: { $regex: search, $options: 'i' } },
+        { position: { $regex: search, $options: 'i' } },
+      ];
+    }
+
+    const jobs = await Job.find(query).sort({ createdAt: -1 });
+    res.status(200).json(jobs);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
-export const createJob = async (req, res) => {
+// @desc    Set a job
+// @route   POST /api/jobs
+// @access  Private
+const setJob = async (req, res) => {
   try {
-    const { company, position, status, notes, dateApplied } = req.body;
+    const { company, position, status } = req.body;
 
-    const job = new Job({
-      userId: req.user._id,
+    if (!company || !position) {
+      return res.status(400).json({ message: 'Please add company and position' });
+    }
+
+    const job = await Job.create({
       company,
       position,
       status: status || 'Applied',
-      notes,
-      dateApplied: dateApplied || Date.now()
+      user: req.user.id,
     });
 
-    const createdJob = await job.save();
-    res.status(201).json(createdJob);
+    res.status(201).json(job);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
-export const updateJob = async (req, res) => {
-  try {
-    const { company, position, status, notes, dateApplied } = req.body;
-    const job = await Job.findById(req.params.id);
-
-    if (!job) {
-      return res.status(404).json({ message: 'Job not found' });
-    }
-
-    if (job.userId.toString() !== req.user._id.toString()) {
-      return res.status(401).json({ message: 'Not authorized' });
-    }
-
-    job.company = company || job.company;
-    job.position = position || job.position;
-    job.status = status || job.status;
-    job.notes = notes !== undefined ? notes : job.notes;
-    job.dateApplied = dateApplied || job.dateApplied;
-
-    const updatedJob = await job.save();
-    res.json(updatedJob);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
-
-export const deleteJob = async (req, res) => {
+// @desc    Update a job
+// @route   PUT /api/jobs/:id
+// @access  Private
+const updateJob = async (req, res) => {
   try {
     const job = await Job.findById(req.params.id);
 
@@ -63,13 +61,94 @@ export const deleteJob = async (req, res) => {
       return res.status(404).json({ message: 'Job not found' });
     }
 
-    if (job.userId.toString() !== req.user._id.toString()) {
-      return res.status(401).json({ message: 'Not authorized' });
+    // Check for user
+    if (!req.user) {
+      return res.status(401).json({ message: 'User not found' });
+    }
+
+    // Make sure the logged in user matches the job user
+    if (job.user.toString() !== req.user.id) {
+      return res.status(401).json({ message: 'User not authorized' });
+    }
+
+    // Safely construct update payload
+    const { company, position, status } = req.body;
+    const updatePayload = {};
+    if (company) updatePayload.company = company;
+    if (position) updatePayload.position = position;
+    if (status) updatePayload.status = status;
+
+    const updatedJob = await Job.findByIdAndUpdate(req.params.id, updatePayload, {
+      new: true,
+    });
+
+    res.status(200).json(updatedJob);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// @desc    Delete a job
+// @route   DELETE /api/jobs/:id
+// @access  Private
+const deleteJob = async (req, res) => {
+  try {
+    const job = await Job.findById(req.params.id);
+
+    if (!job) {
+      return res.status(404).json({ message: 'Job not found' });
+    }
+
+    // Check for user
+    if (!req.user) {
+      return res.status(401).json({ message: 'User not found' });
+    }
+
+    // Make sure the logged in user matches the job user
+    if (job.user.toString() !== req.user.id) {
+      return res.status(401).json({ message: 'User not authorized' });
     }
 
     await job.deleteOne();
-    res.json({ message: 'Job removed' });
+
+    res.status(200).json({ id: req.params.id });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
+};
+
+// @desc    Get job stats
+// @route   GET /api/jobs/stats
+// @access  Private
+const getJobStats = async (req, res) => {
+  try {
+    const stats = await Job.aggregate([
+      { $match: { user: req.user._id } },
+      { $group: { _id: '$status', count: { $sum: 1 } } }
+    ]);
+
+    // Format stats into a readable object
+    const formattedStats = {
+      Applied: 0,
+      Interview: 0,
+      Offer: 0,
+      Rejected: 0
+    };
+
+    stats.forEach(stat => {
+      formattedStats[stat._id] = stat.count;
+    });
+
+    res.status(200).json(formattedStats);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+module.exports = {
+  getJobs,
+  setJob,
+  updateJob,
+  deleteJob,
+  getJobStats
 };
