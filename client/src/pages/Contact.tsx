@@ -117,7 +117,7 @@ const Contact = () => {
                 <label htmlFor="email" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
                   Email
                 </label>
-                <Input id="email" name="email" autoComplete="email" type="email" required placeholder="john@example.com" />
+                <Input id="email" name="email" type="email" autoComplete="email" required placeholder="john@example.com" />
               </div>
 
               <div className="space-y-2">
