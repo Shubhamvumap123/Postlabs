@@ -12,9 +12,9 @@ const About = () => {
     return () => clearTimeout(timer);
   }, []);
 
-  // PERFORMANCE: Memoize the generation of the animated character spans to prevent
-  // O(N) recalculation (and resulting animation jank/main thread blocking) on every re-render.
-  const animatedText = useMemo(() => {
+  // PERFORMANCE: Memoize the split text generation to prevent recreating hundreds of
+  // inline-block <span> elements on every render.
+  const animatedTextSpans = useMemo(() => {
     return text.split('').map((char, index) => (
       <span
         key={index}
@@ -30,7 +30,7 @@ const About = () => {
         {char}
       </span>
     ));
-  }, [text, isVisible]);
+  }, [isVisible, text]);
 
   return (
     <section className="relative z-10 bg-cream-50 min-h-screen">
@@ -51,7 +51,7 @@ const About = () => {
           >
             <span className="sr-only">{text}</span>
             <span aria-hidden="true">
-              {animatedText}
+              {animatedTextSpans}
             </span>
           </p>
         </div>
