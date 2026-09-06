@@ -11,7 +11,6 @@
 ## 2026-06-08 - Contextual ARIA labels and roles for list items
 **Learning:** When using list actions (like complete, archive, delete) for specific items in a list, generic `aria-label`s like 'Mark as complete' or 'Archive' create ambiguity for screen reader users as they do not indicate *which* item is being affected. Using action verbs with checkboxes can also be confusing.
 **Action:** When implementing item-specific actions in a list, always include the item's title in the `aria-label` (e.g., `Archive task: ${task.title}`). For completion toggles, use `role="checkbox"`, `aria-checked`, and an `aria-label` that concisely describes the item (e.g., `Complete task: ${task.title}`) instead of action-oriented verbs.
-
-## 2025-07-31 - Add loading state to async newsletter subscription
-**Learning:** For asynchronous form submissions (like newsletter signups simulating network requests), a hardcoded missing loading state causes poor UX because users lack feedback that their request is processing and may double-click the submit button.
-**Action:** Always implement a loading state (`isSubmitting` flag) that disables both the form inputs and the submit button, and provide visual feedback (like replacing the submit icon with a spinning `Loader2` from `lucide-react`) to prevent multiple submissions and improve accessibility.
+## 2025-08-02 - Added Loading State to Newsletter Form
+**Learning:** Found an async operation (newsletter subscription) in the Footer component that didn't provide visual feedback during its simulated 800ms network delay. The submit button lacked a loading state, leaving users unsure if their submission was being processed. Adding a loading spinner and disabled state to the button prevents duplicate submissions and improves confidence.
+**Action:** Always include a visual loading indicator (like a spinner or changing button text to 'Sending...') and disable the submit button and input fields during async operations to prevent duplicate submissions and provide immediate feedback to the user.
