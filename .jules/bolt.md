@@ -20,7 +20,6 @@
 ## 2026-06-08 - Layout Thrashing in Throttled Scroll Listeners
 **Learning:** Querying layout properties like `document.body.offsetHeight` inside a scroll listener still triggers continuous synchronous layout thrashing (forced reflow), severely impacting performance even when throttled with `requestAnimationFrame`.
 **Action:** Replace layout-thrashing scroll listeners with `framer-motion`'s `useInView` combined with a sentinel element naturally placed at the end of the document flow.
-
-## 2024-06-26 - Centralized Scroll Tracking Bottleneck
-**Learning:** Using independent, component-level `scroll` event listeners (even when throttled via `requestAnimationFrame`) fragments scroll tracking and increases layout thrashing across the application.
-**Action:** Always prefer `framer-motion`'s `useScroll` and `useMotionValueEvent` for scroll tracking to leverage its centralized, batched read/write architecture.
+## 2024-05-20 - Optimizing Scroll Tracking
+**Learning:** Querying layout properties or attaching independent DOM scroll event listeners (even if throttled) triggers layout thrashing.
+**Action:** Use framer-motion's useScroll and useMotionValueEvent hooks for centralized read/write batching.
