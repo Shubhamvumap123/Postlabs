@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { useScroll, useMotionValueEvent } from 'framer-motion';
 import { Link, useLocation } from 'react-router-dom';
 import { useScroll, useMotionValueEvent } from 'framer-motion';
 import { ThemeToggle } from './ThemeToggle';
@@ -19,9 +18,8 @@ const Navigation = () => {
   const location = useLocation();
   const { scrollY } = useScroll();
 
-  // PERFORMANCE: Use framer-motion's optimized scroll tracking
-  // instead of a raw DOM scroll listener. This prevents main thread
-  // stalls by batching and offloading scroll reads from React's render loop.
+  // PERFORMANCE: Use framer-motion's optimized scroll tracking instead of raw DOM event listeners
+  // to leverage centralized scroll updates and avoid manual RAF state management.
   useMotionValueEvent(scrollY, "change", (latest) => {
     setIsVisible(latest > 100);
   });
