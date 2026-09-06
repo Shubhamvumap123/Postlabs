@@ -17,7 +17,6 @@
 ## 2024-05-18 - Inverted Image Loading Strategies Anti-Pattern
 **Learning:** Found a systemic anti-pattern where critical above-the-fold images (Header logo, Hero down arrow) were intentionally deferred using `loading="lazy"`, actively delaying the Largest Contentful Paint (LCP) and worsening initial render times. Conversely, deeply nested below-the-fold images (e.g., in the Footer) were missing lazy loading entirely, bloating the initial payload.
 **Action:** Always eagerly load above-the-fold critical images (use `fetchPriority="high"` where appropriate) and explicitly apply `loading="lazy"` to all below-the-fold images. Never apply `loading="lazy"` to LCP elements.
-
-## 2026-05-31 - Settings State Initialization Flash Bottleneck
-**Learning:** Initializing React state with an empty value and then updating it in a `useEffect` by reading from `localStorage` causes an unnecessary extra render cycle and a flash of incorrect state on mount.
-**Action:** Use synchronous lazy initialization (e.g., `useState(() => localStorage.getItem(...))`) to read from `localStorage` once during the initial render, preventing the extra re-render and layout flash.
+## 2024-05-18 - Footer Scroll Event Listener Bottleneck
+**Learning:** Attaching continuous scroll event listeners that synchronously query layout properties (like `document.body.offsetHeight`) causes layout thrashing and blocks the main thread, leading to severe scrolling jank.
+**Action:** Use an `IntersectionObserver` (or a hook like `framer-motion`'s `useInView`) attached to a sentinel element to efficiently detect when the user has scrolled to a specific point, offloading the check from the main thread.

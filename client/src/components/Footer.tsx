@@ -4,7 +4,7 @@ import { useInView } from "framer-motion";
 
 export default function Footer() {
   const sentinelRef = useRef<HTMLDivElement>(null);
-  const atBottom = useInView(sentinelRef, { margin: "50px 0px 0px 0px" });
+  const atBottom = useInView(sentinelRef, { margin: "0px 0px 50px 0px" });
 
   useEffect(() => {
    
@@ -188,8 +188,8 @@ export default function Footer() {
         </div>
       </div>
     </footer>
-    {/* PERFORMANCE: Replaced expensive scroll event listener querying document.body.offsetHeight with IntersectionObserver sentinel. Placing sentinel strictly after the transformed container prevents layout thrashing. */}
-    <div ref={sentinelRef} className="h-px w-full" aria-hidden="true" />
+      {/* PERFORMANCE: Sentinel element for IntersectionObserver to prevent scroll layout thrashing */}
+      <div ref={sentinelRef} className="h-px w-full" aria-hidden="true" />
     </>
   );
 }
