@@ -1,11 +1,10 @@
 import { useEffect, useRef } from "react";
-import { useInView } from "framer-motion";
 import { toast } from "sonner";
 import { useInView } from "framer-motion";
 
 export default function Footer() {
-  const sentinelRef = useRef<HTMLDivElement>(null);
-  const atBottom = useInView(sentinelRef, { margin: "0px 0px 50px 0px" });
+  const ref = useRef(null);
+  const isInView = useInView(ref, { margin: "0px 0px 50px 0px" });
 
   useEffect(() => {
    
@@ -65,10 +64,10 @@ export default function Footer() {
 
   return (
     <>
-      <footer    className={ `bg-black text-white transition-all duration-700 ease-in-out z-50
-          ${atBottom ? "opacity-100 translate-y-0" : "opacity-0 translate-y-full"}
-        `}>
-        {/* Marquee */}
+    <footer    className={ `bg-black text-white transition-all duration-700 ease-in-out z-50 
+        ${isInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-full"}
+      `}>
+      {/* Marquee */}
       <div className="relative flex w-full overflow-hidden justify-start items-center py-16 md:py-10">
         <div className="marquee-inner absolute flex items-center gap-5">
           <div className="flex items-center gap-5">
@@ -187,11 +186,10 @@ export default function Footer() {
             HRVST
           </a>
         </div>
-        </div>
-
-      </footer>
-      {/* PERFORMANCE: Replace scroll event listener with an IntersectionObserver sentinel to eliminate layout thrashing and continuous main thread blocking */}
-      <div ref={sentinelRef} aria-hidden="true" />
+      </div>
+      
+    </footer>
+    <div ref={ref} className="w-full h-px" />
     </>
   );
 }
