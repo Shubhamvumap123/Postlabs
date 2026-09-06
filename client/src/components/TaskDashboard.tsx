@@ -340,7 +340,7 @@ export default function TaskDashboard() {
             <label htmlFor="title" className="text-sm font-medium text-zinc-300">
               Task Title
             </label>
-            {/* SECURITY: Added maxLength to prevent DoS via excessively large input */}
+            {/* SECURITY: Added maxLength to prevent DoS */}
             <Input
               id="title"
               maxLength={100}
