@@ -1,10 +1,11 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
+import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { useInView } from "framer-motion";
 
 export default function Footer() {
-  const [atBottom, setAtBottom] = useState(false);
-  const footerSentinelRef = useRef<HTMLDivElement>(null);
+    const [atBottom, setAtBottom] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -64,6 +65,7 @@ export default function Footer() {
     setIsSubmitting(true);
 
     setIsSubmitting(true);
+
     try {
       setIsSubmitting(true);
       // SECURITY: In a real production app, never call the Mailchimp API directly from the client.
@@ -188,12 +190,15 @@ export default function Footer() {
             />
             <button
               type="submit"
-              disabled={isLoading}
-              aria-label="Subscribe to newsletter"
               disabled={isSubmitting}
-              className="px-5 bg-white text-black rounded-md font-medium outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              aria-label="Subscribe to newsletter"
+              className="px-5 flex items-center justify-center bg-white text-black rounded-md font-medium outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 disabled:opacity-70 min-w-[3.5rem]"
             >
-              {isSubmitting ? "..." : "→"}
+              {isSubmitting ? (
+                <Loader2 className="w-4 h-4 animate-spin" aria-hidden="true" />
+              ) : (
+                "→"
+              )}
             </button>
           </form>
         </div>
