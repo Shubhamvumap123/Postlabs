@@ -1,7 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
-import { useAuth } from '../lib/AuthContext';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Clock, Plus, Trash2, CheckCircle2, Circle, Search, Edit2, BarChart2 } from 'lucide-react';
+import { Clock, Plus, Zap, Palette, Shield, Trash2, CheckCircle2, Circle, Archive } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { toast } from 'sonner';
 import { Dialog } from './ui/dialog';
@@ -9,163 +8,126 @@ import { Input } from './ui/input';
 import { Button } from './ui/button';
 
 interface Task {
-  _id: string;
-  position: string;
-  company: string;
-  status: 'Applied' | 'Interview' | 'Offer' | 'Rejected';
-  createdAt: string;
+  id: string;
+  title: string;
+  status: 'Scheduled' | 'Completed' | 'Archived';
+  category: string;
+  createdAt: number;
 }
 
-const tabs = ["All", "Applied", "Interview", "Offer", "Rejected"] as const;
+/**
+ * TaskDashboard Component
+ *
+ * A modern, responsive dashboard card component for managing tasks.
+ *
+ * Implements the following requirements:
+ * - Layout: Dark-mode card container with rounded corners (xl) and a subtle border.
+ * - Navigation: Segmented control with tabs: "All", "Scheduled", "Completed", "Archived".
+ * - Interactions: "Pill" shape background animation for the active tab state.
+ * - Primary Action: Highly visible "+ New" button with purple accent color (bg-purple-600) and hover effect.
+ * - Empty State: Centered clock icon with "Scheduled tasks will show up here" text in muted gray when no tasks are present.
+ * - Bottom Filter Chips: "Skill-based agents" section with toggleable filters for "Performance" (lightning), "Design" (palette), and "Security" (shield).
+ * - Tech Stack: React, Tailwind CSS, Framer Motion, Lucide-React.
+ */
+const tabs = ["All", "Scheduled", "Completed", "Archived"] as const;
 type Tab = typeof tabs[number];
 
+const filters = [
+  { id: 'performance', label: 'Performance', icon: Zap },
+  { id: 'design', label: 'Design', icon: Palette },
+  { id: 'security', label: 'Security', icon: Shield },
+] as const;
 
+type FilterId = typeof filters[number]['id'];
 
 export default function TaskDashboard() {
-  const [activeTab, setActiveTab] = useState<Tab>("Applied");
-  const [searchQuery, setSearchQuery] = useState("");
-
-  const [tasks, setTasks] = useState<Task[]>([]);
-
-  const { token, logout } = useAuth();
-
+  const [activeTab, setActiveTab] = useState<Tab>("Scheduled");
+  const [activeFilters, setActiveFilters] = useState<string[]>([]);
+  const [tasks, setTasks] = useState<Task[]>(() => {
+    try {
+      const savedTasks = globalThis.localStorage.getItem('tasks');
+      const parsedTasks = savedTasks ? JSON.parse(savedTasks) : [];
+      return Array.isArray(parsedTasks) ? parsedTasks : [];
+    } catch (e) {
+      console.error('Failed to parse tasks', e);
+      return [];
+    }
+  });
   const [isNewTaskOpen, setIsNewTaskOpen] = useState(false);
   const [newTaskTitle, setNewTaskTitle] = useState("");
-  const [newTaskCompany, setNewTaskCompany] = useState("");
-  const [editingJobId, setEditingJobId] = useState<string | null>(null);
+  const [newTaskCategory, setNewTaskCategory] = useState<FilterId>("performance");
 
+  // Save tasks to localStorage
   useEffect(() => {
-    const fetchJobs = async () => {
-      try {
-        const res = await fetch(`${import.meta.env.VITE_API_URL || "http://localhost:5000/api"}/jobs`, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
-        if (res.status === 401) {
-          logout();
-          return;
-        }
-        const data = await res.json();
-        setTasks(data);
-      } catch {
-        toast.error('Failed to fetch jobs');
-      }
-    };
-    if (token) fetchJobs();
-  }, [token, logout]);
+    globalThis.localStorage.setItem('tasks', JSON.stringify(tasks));
+  }, [tasks]);
 
+  const toggleFilter = (id: string) => {
+    setActiveFilters(prev =>
+      prev.includes(id) ? prev.filter(f => f !== id) : [...prev, id]
+    );
+  };
 
-
-  const addTask = async (e: React.FormEvent) => {
+  const addTask = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newTaskTitle.trim() || !newTaskCompany.trim()) return;
+    if (!newTaskTitle.trim() || newTaskTitle.length > 150) return;
 
-    try {
-      if (editingJobId) {
-        const res = await fetch(`${import.meta.env.VITE_API_URL || "http://localhost:5000/api"}/jobs/${editingJobId}`, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`
-          },
-          body: JSON.stringify({ position: newTaskTitle, company: newTaskCompany })
-        });
-        const updatedJob = await res.json();
-        setTasks(prev => prev.map(t => t._id === editingJobId ? updatedJob : t));
-        toast.success("Job application updated");
-      } else {
-        const res = await fetch(`${import.meta.env.VITE_API_URL || "http://localhost:5000/api"}/jobs`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`
-          },
-          body: JSON.stringify({ position: newTaskTitle, company: newTaskCompany, status: 'Applied' })
-        });
+    const newTask: Task = {
+      id: crypto.randomUUID(),
+      title: safeTitle,
+      status: 'Scheduled',
+      category: newTaskCategory,
+      createdAt: Date.now(),
+    };
+    setTasks(prev => [newTask, ...prev]);
+    toast.success("Task created successfully");
+    setIsNewTaskOpen(false);
+    setNewTaskTitle("");
+    setNewTaskCategory("performance");
+  };
 
-        const newJob = await res.json();
-        setTasks(prev => [newJob, ...prev]);
-        toast.success("Job application created");
+  const deleteTask = (id: string) => {
+    setTasks(prev => prev.filter(t => t.id !== id));
+    toast.info("Task deleted");
+  };
+
+  const toggleTaskStatus = (id: string) => {
+    setTasks(prev => prev.map(t => {
+      if (t.id === id) {
+        const newStatus = t.status === 'Completed' ? 'Scheduled' : 'Completed';
+        return { ...t, status: newStatus };
       }
-      setIsNewTaskOpen(false);
-      setNewTaskTitle("");
-      setNewTaskCompany("");
-      setEditingJobId(null);
-    } catch {
-      toast.error(editingJobId ? 'Failed to update job' : 'Failed to create job');
-    }
+      return t;
+    }));
   };
 
-  const deleteTask = async (id: string) => {
-    try {
-      await fetch(`${import.meta.env.VITE_API_URL || "http://localhost:5000/api"}/jobs/${id}`, {
-        method: 'DELETE',
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      setTasks(prev => prev.filter(t => t._id !== id));
-      toast.info("Job application deleted");
-    } catch {
-      toast.error("Failed to delete job");
-    }
+  const archiveTask = (id: string) => {
+     setTasks(prev => prev.map(t => {
+      if (t.id === id) {
+        return { ...t, status: 'Archived' };
+      }
+      return t;
+    }));
+    toast.success("Task archived");
   };
 
-  const startEdit = (task: Task) => {
-    setEditingJobId(task._id);
-    setNewTaskTitle(task.position);
-    setNewTaskCompany(task.company);
-    setIsNewTaskOpen(true);
-  };
-
-  const toggleTaskStatus = async (id: string, currentStatus: string) => {
-    const nextStatus = currentStatus === 'Applied' ? 'Interview' :
-                       currentStatus === 'Interview' ? 'Offer' :
-                       currentStatus === 'Offer' ? 'Rejected' : 'Applied';
-    try {
-      await fetch(`${import.meta.env.VITE_API_URL || "http://localhost:5000/api"}/jobs/${id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`
-        },
-        body: JSON.stringify({ status: nextStatus })
-      });
-      setTasks(prev => prev.map(t => {
-        if (t._id === id) return { ...t, status: nextStatus as Task['status'] };
-        return t;
-      }));
-    } catch {
-      toast.error("Failed to update status");
-    }
-  };
-
+  // PERFORMANCE: Memoize filtered tasks to prevent O(N) recalculation
+  // on every keystroke when typing in the new task form.
   const filteredTasks = useMemo(() => {
     return tasks.filter(task => {
+      if (activeFilters.length > 0 && !activeFilters.includes(task.category)) return false;
+
       if (activeTab === 'All') return true;
-      return task.status === activeTab;
+      if (activeTab === 'Scheduled' && (task.status === 'Scheduled')) return true;
+      if (activeTab === 'Completed' && task.status === 'Completed') return true;
+      if (activeTab === 'Archived' && task.status === 'Archived') return true;
+      return false;
     });
-  }, [tasks, activeTab]);
+  }, [tasks, activeFilters, activeTab]);
 
   return (
     <div className="w-full max-w-2xl mx-auto p-4 sm:p-6 bg-zinc-900 rounded-xl border border-zinc-800 text-zinc-100 shadow-xl">
-      {/* Analytics Summary */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
-        <div className="bg-zinc-800/50 p-4 rounded-xl border border-zinc-700/50 flex flex-col items-center justify-center">
-          <span className="text-2xl font-bold text-zinc-100">{tasks.length}</span>
-          <span className="text-xs text-zinc-400 mt-1 flex items-center gap-1"><BarChart2 className="w-3 h-3"/> Total</span>
-        </div>
-        <div className="bg-zinc-800/50 p-4 rounded-xl border border-zinc-700/50 flex flex-col items-center justify-center">
-          <span className="text-2xl font-bold text-purple-400">{tasks.filter(t => t.status === 'Applied').length}</span>
-          <span className="text-xs text-zinc-400 mt-1">Applied</span>
-        </div>
-        <div className="bg-zinc-800/50 p-4 rounded-xl border border-zinc-700/50 flex flex-col items-center justify-center">
-          <span className="text-2xl font-bold text-blue-400">{tasks.filter(t => t.status === 'Interview').length}</span>
-          <span className="text-xs text-zinc-400 mt-1">Interviewing</span>
-        </div>
-         <div className="bg-zinc-800/50 p-4 rounded-xl border border-zinc-700/50 flex flex-col items-center justify-center">
-          <span className="text-2xl font-bold text-green-400">{tasks.filter(t => t.status === 'Offer').length}</span>
-          <span className="text-xs text-zinc-400 mt-1">Offers</span>
-        </div>
-      </div>
-
+      {/* Top Navigation */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
         <div role="tablist" aria-label="Task filters" className="flex p-1 bg-zinc-800/50 rounded-full overflow-x-auto no-scrollbar">
           {tabs.map((tab, index) => (
@@ -209,24 +171,8 @@ export default function TaskDashboard() {
           ))}
         </div>
 
-        <div className="relative flex-1 max-w-sm">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400" />
-          <Input
-            type="text"
-            placeholder="Search jobs..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-9 bg-zinc-800/50 border-zinc-700 text-sm h-9"
-          />
-        </div>
-
         <Button
-          onClick={() => {
-            setEditingJobId(null);
-            setNewTaskTitle("");
-            setNewTaskCompany("");
-            setIsNewTaskOpen(true);
-          }}
+          onClick={() => setIsNewTaskOpen(true)}
           className="flex items-center justify-center gap-2 px-4 py-2 bg-purple-600 hover:bg-purple-500 text-white text-sm font-medium rounded-lg transition-colors shadow-lg shadow-purple-900/20 cursor-pointer"
         >
           <Plus className="w-4 h-4" />
@@ -234,6 +180,7 @@ export default function TaskDashboard() {
         </Button>
       </div>
 
+      {/* Content Area */}
       <div
         id={`tabpanel-${activeTab}`}
         role="tabpanel"
@@ -246,14 +193,29 @@ export default function TaskDashboard() {
             <div className="w-16 h-16 mb-4 rounded-full bg-zinc-800/50 flex items-center justify-center">
               <Clock className="w-8 h-8 text-zinc-400" aria-hidden="true" />
             </div>
-            <p className="text-zinc-400 font-medium">No job applications found</p>
+            <p className="text-zinc-400 font-medium">
+              {activeTab === 'Scheduled' && "Scheduled tasks will show up here"}
+              {activeTab === 'Completed' && "No completed tasks yet"}
+              {activeTab === 'Archived' && "No archived tasks"}
+              {activeTab === 'All' && "No tasks found"}
+            </p>
+            {(activeTab === 'Scheduled' || activeTab === 'All') && (
+              <Button
+                onClick={() => setIsNewTaskOpen(true)}
+                variant="outline"
+                className="mt-4 text-zinc-300 border-zinc-700 hover:bg-zinc-800 hover:text-white cursor-pointer"
+              >
+                <Plus className="w-4 h-4 mr-2" />
+                Create your first task
+              </Button>
+            )}
           </div>
         ) : (
           <div className="divide-y divide-zinc-800">
-            <AnimatePresence mode="popLayout">
+            <AnimatePresence mode='popLayout'>
               {filteredTasks.map((task) => (
                 <motion.div
-                  key={task._id}
+                  key={task.id}
                   layout
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -262,12 +224,12 @@ export default function TaskDashboard() {
                 >
                   <button
                     role="checkbox"
-                    aria-checked={(task.status === 'Offer' || task.status === 'Rejected')}
-                    onClick={() => toggleTaskStatus(task._id, task.status)}
+                    aria-checked={task.status === 'Completed'}
+                    onClick={() => toggleTaskStatus(task.id)}
                     className="flex-shrink-0 text-zinc-400 hover:text-purple-400 transition-colors rounded-full outline-none focus-visible:ring-2 focus-visible:ring-purple-500"
-                    aria-label={`Complete task: ${task.position}`}
+                    aria-label={`Complete task: ${task.title}`}
                   >
-                    {(task.status === 'Offer' || task.status === 'Rejected') ? (
+                    {task.status === 'Completed' ? (
                       <CheckCircle2 className="w-5 h-5 text-purple-500" />
                     ) : (
                       <Circle className="w-5 h-5" />
@@ -276,30 +238,32 @@ export default function TaskDashboard() {
                   <div className="flex-1 min-w-0">
                     <p className={cn(
                       "text-sm font-medium text-zinc-200 truncate",
-                      (task.status === 'Offer' || task.status === 'Rejected') && "text-zinc-400 line-through"
+                      task.status === 'Completed' && "text-zinc-400 line-through"
                     )}>
-                      {task.position}
+                      {task.title}
                     </p>
                     <div className="flex items-center gap-2 text-xs text-zinc-400 mt-0.5">
-                      <span className="capitalize">{task.company}</span>
+                      <span className="capitalize">{task.category}</span>
                       <span>•</span>
                       <span>{new Date(task.createdAt).toLocaleDateString()}</span>
                     </div>
                   </div>
                   <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 focus-within:opacity-100 transition-opacity">
+                    {task.status !== 'Archived' && (
+                      <button
+                        onClick={() => archiveTask(task.id)}
+                        className="p-1.5 text-zinc-400 hover:text-zinc-300 rounded hover:bg-zinc-800 outline-none focus-visible:ring-2 focus-visible:ring-purple-500"
+                        title="Archive"
+                        aria-label={`Archive task: ${task.title}`}
+                      >
+                        <Archive className="w-4 h-4" />
+                      </button>
+                    )}
                     <button
-                      onClick={() => startEdit(task)}
-                      className="p-1.5 text-zinc-400 hover:text-blue-400 rounded hover:bg-zinc-800 outline-none focus-visible:ring-2 focus-visible:ring-purple-500"
-                      title="Edit"
-                      aria-label={`Edit task: ${task.position}`}
-                    >
-                      <Edit2 className="w-4 h-4" />
-                    </button>
-                    <button
-                      onClick={() => deleteTask(task._id)}
+                      onClick={() => deleteTask(task.id)}
                       className="p-1.5 text-zinc-400 hover:text-red-400 rounded hover:bg-zinc-800 outline-none focus-visible:ring-2 focus-visible:ring-purple-500"
                       title="Delete"
-                      aria-label={`Delete task: ${task.position}`}
+                      aria-label={`Delete task: ${task.title}`}
                     >
                       <Trash2 className="w-4 h-4" />
                     </button>
@@ -311,37 +275,56 @@ export default function TaskDashboard() {
         )}
       </div>
 
+      {/* New Task Dialog */}
       <Dialog
         isOpen={isNewTaskOpen}
         onClose={() => setIsNewTaskOpen(false)}
-        title={editingJobId ? "Edit Job Application" : "Create New Job"}
+        title="Create New Task"
         description="Add a new task to your dashboard."
       >
         <form onSubmit={addTask} className="space-y-4">
           <div className="space-y-2">
             <label htmlFor="title" className="text-sm font-medium text-zinc-300">
-              Position Title
+              Task Title
             </label>
+            {/* SECURITY: Added input length limit to prevent excessively large storage allocation and potential DoS */}
             <Input
               id="title"
               value={newTaskTitle}
+              // SECURITY: Add input length limits to prevent client-side DoS/memory exhaustion
+              maxLength={100}
               onChange={(e) => setNewTaskTitle(e.target.value)}
-              placeholder="e.g. Frontend Engineer"
+              placeholder="e.g. Review system performance"
               className="bg-zinc-900 border-zinc-700 text-zinc-100 focus:ring-purple-500"
+              maxLength={200}
               autoFocus
+              maxLength={150}
             />
           </div>
           <div className="space-y-2">
-            <label htmlFor="company" className="text-sm font-medium text-zinc-300">
-              Company Name
+            <label id="category-label" className="text-sm font-medium text-zinc-300">
+              Category
             </label>
-            <Input
-              id="company"
-              value={newTaskCompany}
-              onChange={(e) => setNewTaskCompany(e.target.value)}
-              placeholder="e.g. Acme Corp"
-              className="bg-zinc-900 border-zinc-700 text-zinc-100 focus:ring-purple-500"
-            />
+            <div role="group" aria-labelledby="category-label" className="flex gap-2">
+              {filters.map(filter => (
+                <button
+                  key={filter.id}
+                  type="button"
+                  role="radio"
+                  aria-checked={newTaskCategory === filter.id}
+                  onClick={() => setNewTaskCategory(filter.id)}
+                  className={cn(
+                    "flex-1 flex flex-col items-center justify-center p-3 rounded-lg border text-xs gap-1 transition-all outline-none focus-visible:ring-2 focus-visible:ring-purple-500",
+                    newTaskCategory === filter.id
+                      ? "bg-purple-900/20 border-purple-500 text-purple-200"
+                      : "bg-zinc-900 border-zinc-800 text-zinc-400 hover:border-zinc-700"
+                  )}
+                >
+                  <filter.icon className="w-4 h-4" />
+                  {filter.label}
+                </button>
+              ))}
+            </div>
           </div>
           <div className="flex justify-end gap-3 mt-6">
             <Button
@@ -356,11 +339,38 @@ export default function TaskDashboard() {
               type="submit"
               className="bg-purple-600 hover:bg-purple-500 text-white"
             >
-              {editingJobId ? "Save Changes" : "Create Job"}
+              Create Task
             </Button>
           </div>
         </form>
       </Dialog>
+
+      {/* Bottom Filter Chips */}
+      <div className="mt-8">
+        <h4 id="skill-based-agents-label" className="text-sm font-medium text-zinc-400 mb-3">Skill-based agents</h4>
+        <div role="group" aria-labelledby="skill-based-agents-label" className="flex flex-wrap gap-3">
+          {filters.map(({ id, label, icon: Icon }) => {
+            const isActive = activeFilters.includes(id);
+            return (
+              <button
+                type="button"
+                aria-pressed={isActive}
+                key={id}
+                onClick={() => toggleFilter(id)}
+                className={cn(
+                  "flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium border transition-all duration-200 cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-purple-500",
+                  isActive
+                    ? "bg-zinc-800 border-zinc-700 text-white shadow-sm"
+                    : "bg-transparent border-zinc-800 text-zinc-400 hover:border-zinc-700 hover:text-zinc-300"
+                )}
+              >
+                <Icon className={cn("w-4 h-4", isActive ? "text-purple-400" : "text-current")} />
+                {label}
+              </button>
+            );
+          })}
+        </div>
+      </div>
     </div>
   );
 }
