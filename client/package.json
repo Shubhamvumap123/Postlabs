@@ -48,6 +48,8 @@
     "vite": "^6.3.5"
   },
   "pnpm": {
-    "onlyBuiltDependencies": "[\"*\"]"
+    "onlyBuiltDependencies": [
+      "esbuild"
+    ]
   }
 }
