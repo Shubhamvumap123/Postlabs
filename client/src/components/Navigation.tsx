@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { ThemeToggle } from './ThemeToggle';
+import { ThemeToggle } from './ThemeToggle.tsx';
 import { Home, LayoutDashboard, Settings, Mail } from 'lucide-react';
-import { cn } from '../lib/utils';
+import { cn } from '../lib/utils.ts';
 
 const navItems = [
   { name: 'Home', path: '/', icon: Home },

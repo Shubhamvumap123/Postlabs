@@ -1,11 +1,11 @@
 import { useState, useEffect, useMemo, useRef, KeyboardEvent } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Clock, Plus, Zap, Palette, Shield, Trash2, CheckCircle2, Circle, Archive } from 'lucide-react';
-import { cn } from '../lib/utils';
+import { cn } from '../lib/utils.ts';
 import { toast } from 'sonner';
-import { Dialog } from './ui/dialog';
-import { Input } from './ui/input';
-import { Button } from './ui/button';
+import { Dialog } from './ui/dialog.tsx';
+import { Input } from './ui/input.tsx';
+import { Button } from './ui/button.tsx';
 
 interface Task {
   id: string;
@@ -245,8 +245,7 @@ export default function TaskDashboard() {
                   className="flex items-center gap-4 p-4 hover:bg-zinc-800/30 transition-colors group"
                 >
                   <button
-                    role="checkbox"
-                    aria-checked={task.status === 'Completed'}
+                    type="button"
                     onClick={() => toggleTaskStatus(task.id)}
                     className="flex-shrink-0 text-zinc-400 hover:text-purple-400 transition-colors rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                     aria-label={task.status === 'Completed' ? "Mark as incomplete" : "Mark as complete"}
@@ -273,6 +272,7 @@ export default function TaskDashboard() {
                   <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 focus-within:opacity-100 transition-opacity">
                     {task.status !== 'Archived' && (
                       <button
+                        type="button"
                         onClick={() => archiveTask(task.id)}
                         className="p-1.5 text-zinc-400 hover:text-zinc-300 rounded hover:bg-zinc-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                         title="Archive"
@@ -282,6 +282,7 @@ export default function TaskDashboard() {
                       </button>
                     )}
                     <button
+                      type="button"
                       onClick={() => deleteTask(task.id)}
                       className="p-1.5 text-zinc-400 hover:text-red-400 rounded hover:bg-zinc-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                       title="Delete"

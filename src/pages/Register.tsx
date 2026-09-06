@@ -5,7 +5,8 @@ import { Button } from '../components/ui/button.tsx';
 import { Input } from '../components/ui/input.tsx';
 import { toast } from 'sonner';
 
-export default function Login() {
+export default function Register() {
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -17,25 +18,25 @@ export default function Login() {
     setIsLoading(true);
 
     try {
-      const response = await fetch('http://localhost:5000/api/auth/login', {
+      const response = await fetch('http://localhost:5000/api/auth/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ name, email, password }),
       });
 
       const data = await response.json();
 
       if (response.ok) {
         login(data);
-        toast.success('Logged in successfully');
+        toast.success('Registration successful');
         navigate('/dashboard');
       } else {
-        toast.error(data.message || 'Login failed');
+        toast.error(data.message || 'Registration failed');
       }
     } catch (error) {
-      toast.error('An error occurred during login');
+      toast.error('An error occurred during registration');
       console.error(error);
     } finally {
       setIsLoading(false);
@@ -45,8 +46,19 @@ export default function Login() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-zinc-950 p-4">
       <div className="w-full max-w-md p-8 bg-zinc-900 border border-zinc-800 rounded-xl">
-        <h2 className="text-2xl font-bold text-white mb-6 text-center">Login to Job Tracker</h2>
+        <h2 className="text-2xl font-bold text-white mb-6 text-center">Create an Account</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-zinc-400 mb-1">Name</label>
+            <Input
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              required
+              className="w-full"
+              autoComplete="name"
+            />
+          </div>
           <div>
             <label className="block text-sm font-medium text-zinc-400 mb-1">Email</label>
             <Input
@@ -65,18 +77,19 @@ export default function Login() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
+              minLength={6}
               className="w-full"
-              autoComplete="current-password"
+              autoComplete="new-password"
             />
           </div>
           <Button type="submit" className="w-full" disabled={isLoading}>
-            {isLoading ? 'Logging in...' : 'Login'}
+            {isLoading ? 'Registering...' : 'Register'}
           </Button>
         </form>
         <div className="mt-4 text-center text-sm text-zinc-400">
-          Don't have an account?{' '}
-          <Link to="/register" className="text-blue-500 hover:underline">
-            Register here
+          Already have an account?{' '}
+          <Link to="/login" className="text-blue-500 hover:underline">
+            Login here
           </Link>
         </div>
       </div>

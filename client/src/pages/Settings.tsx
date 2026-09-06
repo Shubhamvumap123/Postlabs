@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
-import Navigation from "../components/Navigation";
-import Footer from "../components/Footer";
-import { Input } from "../components/ui/input";
-import { Button } from "../components/ui/button";
+import Navigation from "../components/Navigation.tsx";
+import Footer from "../components/Footer.tsx";
+import { Input } from "../components/ui/input.tsx";
+import { Button } from "../components/ui/button.tsx";
 import { User, Bell, Smartphone } from "lucide-react";
 import { useTheme } from "next-themes";
 
@@ -142,6 +142,7 @@ const Settings = () => {
               <div role="group" aria-label="Theme preference" className="grid grid-cols-3 gap-4">
                 {['light', 'dark', 'system'].map((t) => (
                   <button
+                    type="button"
                     key={t}
                     type="button"
                     aria-pressed={theme === t}

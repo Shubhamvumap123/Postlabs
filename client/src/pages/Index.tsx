@@ -1,15 +1,15 @@
 import { useEffect } from "react";
-import Navigation from "../components/Navigation";
-import Hero from "../components/Hero";
-import FeatureCards from "../components/FeatureCards";
-import About from "../components/About";
-import VideoSection from "../components/VideoSection";
-import BuildingSection from "../components/BuildingSection";
-import Footer from "../components/Footer";
-import { useScrollAnimations, initSmoothScrolling } from "../hooks/useScrollAnimations";
-import FullWidthVideoSection from "../components/FullWidthVideoSection";
-import PrivacySection from "../components/PrivacySection";
-import FloatingGrid from "../components/FloatingGrid";
+import Navigation from "../components/Navigation.tsx";
+import Hero from "../components/Hero.tsx";
+import FeatureCards from "../components/FeatureCards.tsx";
+import About from "../components/About.tsx";
+import VideoSection from "../components/VideoSection.tsx";
+import BuildingSection from "../components/BuildingSection.tsx";
+import Footer from "../components/Footer.tsx";
+import { useScrollAnimations, initSmoothScrolling } from "../hooks/useScrollAnimations.tsx";
+import FullWidthVideoSection from "../components/FullWidthVideoSection.tsx";
+import PrivacySection from "../components/PrivacySection.tsx";
+import FloatingGrid from "../components/FloatingGrid.tsx";
 
 const Index = () => {
   useScrollAnimations();

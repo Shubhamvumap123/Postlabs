@@ -1,6 +1,6 @@
-import Header from './Header';
-import HeroGlow from './HeroGlow';
-import CardSection from './CardSection';
+import Header from './Header.tsx';
+import HeroGlow from './HeroGlow.tsx';
+import CardSection from './CardSection.tsx';
 const Hero = () => {
 
  return (
