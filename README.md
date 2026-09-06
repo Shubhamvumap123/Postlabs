@@ -1,68 +1,103 @@
-# Full Stack Job Tracker SaaS
+# JobTracker Pro - Full Stack SaaS Dashboard
 
-A production-ready Job Tracking application built with the MERN stack (MongoDB, Express, React, Node.js) + TailwindCSS.
+A production-ready Job Tracker application with a modern React frontend and a Node.js/Express backend.
 
-## Features
+## 🚀 Features
 
-- **User Authentication:** Secure signup, login, and logout using JWT.
-- **Job Application Tracking:** Full CRUD operations for job applications.
-- **Status Management:** Track applications through stages (Applied, Interview, Offer, Rejected).
-- **Search & Filter:** Easily find jobs by company or position, and filter by status.
-- **Analytics Dashboard:** Visual representation of application statuses using Recharts.
-- **Protected Routes:** Ensure only authenticated users can access their dashboard.
-- **Responsive UI:** Modern, accessible interface built with Tailwind CSS, Framer Motion, and Radix UI.
+- **User Authentication:** Secure JWT-based signup, login, and logout.
+- **Job Management:** Complete CRUD operations (Add, Edit, Delete) for job applications.
+- **Status Tracking:** Track applications through stages (Applied, Interview, Offer, Rejected).
+- **Search & Filter:** Easily find jobs by company name or filter by application status.
+- **Analytics Dashboard:** Visual charts (using Recharts) to analyze your application success rate.
+- **Responsive UI:** Modern, accessible interface built with Tailwind CSS.
 
-## Tech Stack
+## 💻 Tech Stack
 
-- **Frontend:** React 19, React Router v7, Tailwind CSS, Recharts, Framer Motion, Axios, Vite.
-- **Backend:** Node.js, Express, MongoDB (Mongoose), JWT, Bcryptjs.
+**Frontend:**
+- React.js 19 + TypeScript
+- Vite
+- Tailwind CSS
+- React Router DOM
+- React Query (TanStack Query)
+- Recharts (for Analytics)
+- Lucide React (Icons)
+- Sonner (Toast notifications)
 
-## Setup Instructions
+**Backend:**
+- Node.js + Express.js
+- MongoDB + Mongoose
+- JSON Web Token (JWT)
+- bcryptjs (Password hashing)
+- TypeScript
+
+## 📸 Screenshots
+
+*(Add screenshots here)*
+- `[Dashboard Screenshot Placeholder]`
+- `[Jobs List Screenshot Placeholder]`
+- `[Add Job Screenshot Placeholder]`
+
+## 🛠️ Setup Instructions
 
 ### Prerequisites
 - Node.js (v18+)
-- MongoDB instance (local or MongoDB Atlas)
-- pnpm
+- pnpm (v10+)
+- MongoDB (local or Atlas URI)
 
 ### Backend Setup
-1. Navigate to the `server/` directory: `cd server`
-2. Install dependencies: `pnpm install`
-3. Create a `.env` file in the `server` root and add:
+1. Open a terminal and navigate to the `server` directory:
+   ```bash
+   cd server
+   ```
+2. Install dependencies:
+   ```bash
+   pnpm install
+   ```
+3. Create a `.env` file in the `server` root and add your MongoDB connection string and JWT secret:
    ```env
    PORT=5000
-   MONGO_URI=your_mongodb_connection_string
-   JWT_SECRET=your_super_secret_jwt_key
+   MONGO_URI=mongodb://127.0.0.1:27017/jobtracker
+   JWT_SECRET=your_super_secret_key
    ```
-4. Start the server: `pnpm exec ts-node src/index.ts` (or build and run `dist/index.js`).
+4. Start the backend development server:
+   ```bash
+   pnpm run dev
+   ```
 
 ### Frontend Setup
-1. Navigate to the `client/` directory: `cd client`
-2. Install dependencies: `pnpm install`
-3. Create a `.env` file in the `client` root and add:
+1. Open another terminal and navigate to the `client` directory:
+   ```bash
+   cd client
+   ```
+2. Install dependencies:
+   ```bash
+   pnpm install
+   ```
+3. Create a `.env` file in the `client` root (if your API URL differs from default):
    ```env
    VITE_API_URL=http://localhost:5000/api
    ```
-4. Start the dev server: `pnpm dev`
+4. Start the frontend development server:
+   ```bash
+   pnpm run dev
+   ```
 
-## Deployment Guidelines
+## 🚀 Deployment Guide
 
-### Deploying the Backend (Render)
-1. Push your code to GitHub.
-2. Go to Render.com and create a new **Web Service**.
-3. Connect your repository and set the Root Directory to `server`.
-4. Set the Build Command to `pnpm install && pnpm run build` (ensure you add a build script in `package.json` like `"build": "tsc"`).
-5. Set the Start Command to `node dist/index.js`.
-6. Add your Environment Variables (`MONGO_URI`, `JWT_SECRET`).
+### Backend Deployment (Render)
+1. Push your code to a GitHub repository.
+2. Go to [Render](https://render.com) and create a new **Web Service**.
+3. Connect your repository.
+4. Set the Root Directory to `server`.
+5. Build Command: `pnpm install && pnpm build`
+6. Start Command: `pnpm start` (which runs `node dist/index.js`)
+7. Add Environment Variables (`MONGO_URI`, `JWT_SECRET`).
 
-### Deploying the Frontend (Vercel)
-1. Go to Vercel.com and create a new Project.
-2. Import your repository and set the Root Directory to `client`.
-3. Vercel should auto-detect the Vite framework.
-4. Add the `VITE_API_URL` environment variable pointing to your deployed Render backend URL.
-5. Deploy!
-
-## Screenshots
-*(Add screenshot placeholders here)*
-- [Dashboard View](#)
-- [Login/Register View](#)
-- [Analytics View](#)
+### Frontend Deployment (Vercel)
+1. Go to [Vercel](https://vercel.com) and import your GitHub repository.
+2. Set the Framework Preset to **Vite**.
+3. Set the Root Directory to `client`.
+4. Build Command: `pnpm run build`
+5. Output Directory: `dist`
+6. Add Environment Variable: `VITE_API_URL=https://your-render-backend-url.onrender.com/api`
+7. Deploy!
