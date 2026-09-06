@@ -1,7 +1,7 @@
 
 import { useEffect, useState, useMemo } from 'react';
 
-const text = "Post Labs is rethinking how digital media works for Canadians. Our mission is simple: make journalism profitable, sustainable, and trusted – built for Canadians, by Canadians.";
+const TEXT = "Post Labs is rethinking how digital media works for Canadians. Our mission is simple: make journalism profitable, sustainable, and trusted – built for Canadians, by Canadians.";
 
 const About = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -12,11 +12,8 @@ const About = () => {
     return () => clearTimeout(timer);
   }, []);
 
-  // PERFORMANCE: Memoize animated span generation to prevent re-computing 170+ DOM
-  // elements on visibility state change. Animation state is decoupled from render loop
-  // by leveraging parent CSS attribute selectors (group-data-[visible=true]).
-  const animatedText = useMemo(() => {
-    return text.split('').map((char, index) => (
+  const animatedSpans = useMemo(() => {
+    return TEXT.split('').map((char, index) => (
       <span
         key={index}
         className="inline-block transition-all duration-700 ease-out opacity-0 translate-y-4 group-data-[visible=true]:opacity-100 group-data-[visible=true]:translate-y-0"
@@ -51,12 +48,12 @@ const About = () => {
           */}
           <p
             className="group text-center max-w-[594px] mx-auto mb-0 text-5xl lg:text-4xl md:text-3xl sm:text-2xl leading-[115%] font-medium text-gray-800 tracking-tight"
-            aria-label={text}
+            aria-label={TEXT}
             data-visible={isVisible}
           >
-            <span className="sr-only">{text}</span>
+            <span className="sr-only">{TEXT}</span>
             <span aria-hidden="true">
-              {animatedText}
+              {animatedSpans}
             </span>
           </p>
         </div>
