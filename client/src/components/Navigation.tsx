@@ -19,6 +19,8 @@ const Navigation = () => {
   const location = useLocation();
   const { scrollY } = useScroll();
 
+  // PERFORMANCE: Use framer-motion's useMotionValueEvent instead of native scroll
+  // listeners to leverage centralized read/write batching and prevent layout thrashing.
   useMotionValueEvent(scrollY, "change", (latest) => {
     setIsVisible(latest > 100);
   });
