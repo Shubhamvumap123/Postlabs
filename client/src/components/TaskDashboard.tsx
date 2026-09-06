@@ -119,6 +119,12 @@ export default function TaskDashboard() {
       return;
     }
 
+    // SECURITY: Validate input length before adding to state to prevent Local Storage exhaustion DoS
+    if (newTaskTitle.length > 100) {
+      toast.error("Task title cannot exceed 100 characters");
+      return;
+    }
+
     const newTask: Task = {
       id: crypto.randomUUID(),
       title: trimmedTitle,

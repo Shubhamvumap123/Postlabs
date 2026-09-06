@@ -14,18 +14,26 @@ const Settings = () => {
   });
   const [notifications, setNotifications] = useState(() => {
     const savedNotifs = globalThis.localStorage.getItem("notifications");
-    return savedNotifs ? JSON.parse(savedNotifs) : true;
-  });
-  const { theme, setTheme } = useTheme();
+    if (savedNotifs) {
+      try {
+        setNotifications(JSON.parse(savedNotifs));
+      } catch (e) {
+        // SECURITY: Prevent app crash if local storage is corrupted
+        console.error("Failed to parse notifications setting from local storage", e);
+      }
+    }
+  }, []);
 
   const handleSave = (e: React.FormEvent) => {
     e.preventDefault();
+
+    // SECURITY: Validate input length
     if (name.length > 50) {
-      toast.error("Display name cannot exceed 50 characters.");
+      toast.error("Display Name cannot exceed 50 characters");
       return;
     }
-    // Enforce server-side limit check (fallback for maxLength)
-    globalThis.localStorage.setItem("userName", name.slice(0, 50));
+
+    globalThis.localStorage.setItem("userName", name);
     globalThis.localStorage.setItem("notifications", JSON.stringify(notifications));
     toast.success("Settings saved successfully");
   };
@@ -74,7 +82,6 @@ const Settings = () => {
                     autoComplete="name"
                     placeholder="Enter your name"
                     maxLength={50}
-                    autoComplete="name"
                   />
                 </div>
                 <Button type="submit">Save Changes</Button>
