@@ -139,8 +139,7 @@ const Contact = () => {
               <Button type="submit" className="w-full" disabled={loading}>
                 {loading ? (
                   <>
-                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                    Sending...
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" /> Sending...
                   </>
                 ) : (
                   <>
