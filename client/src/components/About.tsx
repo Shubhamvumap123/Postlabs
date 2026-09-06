@@ -1,10 +1,12 @@
 
 import { useEffect, useState, useMemo } from 'react';
 
-const TEXT_CONTENT = "Post Labs is rethinking how digital media works for Canadians. Our mission is simple: make journalism profitable, sustainable, and trusted – built for Canadians, by Canadians.";
+const TEXT = "Post Labs is rethinking how digital media works for Canadians. Our mission is simple: make journalism profitable, sustainable, and trusted – built for Canadians, by Canadians.";
 
 const About = () => {
   const [isVisible, setIsVisible] = useState(false);
+  
+
   
   useEffect(() => {
     // Trigger the animation after component mounts
@@ -12,8 +14,8 @@ const About = () => {
     return () => clearTimeout(timer);
   }, []);
 
-  const memoizedSpans = useMemo(() => {
-    return TEXT_CONTENT.split('').map((char, index) => (
+  const animatedChars = useMemo(() => {
+    return TEXT.split('').map((char, index) => (
       <span
         key={index}
         className="inline-block transition-all duration-700 ease-out opacity-0 translate-y-4 group-data-[visible=true]:opacity-100 group-data-[visible=true]:translate-y-0"
@@ -48,12 +50,12 @@ const About = () => {
           */}
           <p
             className="group text-center max-w-[594px] mx-auto mb-0 text-5xl lg:text-4xl md:text-3xl sm:text-2xl leading-[115%] font-medium text-gray-800 tracking-tight"
-            aria-label={TEXT_CONTENT}
+            aria-label={TEXT}
             data-visible={isVisible}
           >
-            <span className="sr-only">{TEXT_CONTENT}</span>
+            <span className="sr-only">{TEXT}</span>
             <span aria-hidden="true">
-              {memoizedSpans}
+              {animatedChars}
             </span>
           </p>
         </div>

@@ -1,5 +1,6 @@
 import React from "react";
-import { motion, useInView } from "framer-motion";
+import { useInView } from "framer-motion";
+import { motion } from "framer-motion";
 
 type AnimWordsProps = {
   text: string;
@@ -36,19 +37,19 @@ const AnimWords = React.forwardRef<
   const inView = useInView(localRef, { once: true, amount: 0.2 });
   const words = React.useMemo(() => text.split(/\s+/), [text]);
 
-  // PERFORMANCE: Memoize generation of DOM elements to prevent main thread blocking and jank.
-  // We decouple the dynamic 'inView' state from the generation loop by relying on
-  // static data dependencies and controlling animations via parent CSS attribute selectors.
-  const animatedSpans = React.useMemo(() => {
+  const animatedWords = React.useMemo(() => {
     return words.map((w: string, i: number) => (
       <span
         key={`${w}-${i}`}
         aria-hidden="true"
-        className="inline-block relative opacity-0 translate-y-2 transition-all duration-[350ms] ease-out group-data-[visible=true]:opacity-100 group-data-[visible=true]:translate-y-0"
-        style={{ transitionDelay: `${i * 30}ms` }}
+        className="inline-block relative transition-all ease-out opacity-0 translate-y-2 group-data-[visible=true]:opacity-100 group-data-[visible=true]:translate-y-0"
+        style={{
+          transitionDuration: "350ms",
+          transitionDelay: `${i * 30}ms`
+        }}
       >
         {w}
-        {i < words.length - 1 ? "\u00A0" : ""}
+        {i < words.length - 1 ? " " : ""}
       </span>
     ));
   }, [words]);
@@ -56,14 +57,14 @@ const AnimWords = React.forwardRef<
   return (
     <Tag
       ref={combinedRef}
-      className={`group ${className || ''}`.trim()}
+      className={`group ${className}`}
       aria-label={ariaLabel || text}
       data-animation="text"
       data-speed={speed}
       data-visible={inView}
       {...rest}
     >
-      {animatedSpans}
+      {animatedWords}
     </Tag>
   );
 });
