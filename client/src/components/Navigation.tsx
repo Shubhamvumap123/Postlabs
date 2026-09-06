@@ -21,10 +21,8 @@ const Navigation = () => {
   const location = useLocation();
   const { scrollY } = useScroll();
 
-  const { scrollY } = useScroll();
-
-  // ⚡ Bolt: Use framer-motion's optimized useScroll instead of manual event listener
-  // This centralizes scroll read/write batching and prevents layout thrashing.
+  // ⚡ Bolt: Replaced independent DOM scroll event listener (throttled with rAF) with framer-motion's useScroll/useMotionValueEvent.
+  // This leverages the project's existing framer-motion setup for optimized, centralized read/write batching and prevents layout thrashing.
   useMotionValueEvent(scrollY, "change", (latest) => {
     setIsVisible(latest > 100);
   });
