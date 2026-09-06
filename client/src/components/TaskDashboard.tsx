@@ -1,418 +1,380 @@
 import { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Briefcase, Plus, MapPin, DollarSign, Building, Trash2, Edit2, Search } from 'lucide-react';
+import { Clock, Plus, Zap, Palette, Shield, Trash2, CheckCircle2, Circle, Archive } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { toast } from 'sonner';
 import { Dialog } from './ui/dialog';
 import { Input } from './ui/input';
 import { Button } from './ui/button';
-import api from '../lib/api/axios';
-import { useAuth } from '../context/AuthContext';
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer
-} from 'recharts';
 
-interface Job {
-  _id: string;
-  company: string;
-  position: string;
-  status: 'Applied' | 'Interview' | 'Offer' | 'Rejected';
-  location?: string;
-  salary?: string;
-  notes?: string;
-  appliedDate: string;
-  createdAt: string;
+interface Task {
+  id: string;
+  title: string;
+  status: 'Scheduled' | 'Completed' | 'Archived';
+  category: string;
+  createdAt: number;
 }
 
-const tabs = ["All", "Applied", "Interview", "Offer", "Rejected"] as const;
+/**
+ * TaskDashboard Component
+ *
+ * A modern, responsive dashboard card component for managing tasks.
+ *
+ * Implements the following requirements:
+ * - Layout: Dark-mode card container with rounded corners (xl) and a subtle border.
+ * - Navigation: Segmented control with tabs: "All", "Scheduled", "Completed", "Archived".
+ * - Interactions: "Pill" shape background animation for the active tab state.
+ * - Primary Action: Highly visible "+ New" button with purple accent color (bg-purple-600) and hover effect.
+ * - Empty State: Centered clock icon with "Scheduled tasks will show up here" text in muted gray when no tasks are present.
+ * - Bottom Filter Chips: "Skill-based agents" section with toggleable filters for "Performance" (lightning), "Design" (palette), and "Security" (shield).
+ * - Tech Stack: React, Tailwind CSS, Framer Motion, Lucide-React.
+ */
+const tabs = ["All", "Scheduled", "Completed", "Archived"] as const;
 type Tab = typeof tabs[number];
 
-export default function JobDashboard() {
-  const { user, logout } = useAuth();
-  const [activeTab, setActiveTab] = useState<Tab>("All");
-  const [searchQuery, setSearchQuery] = useState("");
-  const [jobs, setJobs] = useState<Job[]>([]);
-  const [stats, setStats] = useState<Record<string, number>>({});
+const filters = [
+  { id: 'performance', label: 'Performance', icon: Zap },
+  { id: 'design', label: 'Design', icon: Palette },
+  { id: 'security', label: 'Security', icon: Shield },
+] as const;
 
-  const [isJobModalOpen, setIsJobModalOpen] = useState(false);
-  const [editingJobId, setEditingJobId] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
+type FilterId = typeof filters[number]['id'];
 
-  // Form State
-  const [company, setCompany] = useState("");
-  const [position, setPosition] = useState("");
-  const [location, setLocation] = useState("");
-  const [salary, setSalary] = useState("");
-  const [status, setStatus] = useState<Job['status']>("Applied");
+export default function TaskDashboard() {
+  const [activeTab, setActiveTab] = useState<Tab>("Scheduled");
+  const [activeFilters, setActiveFilters] = useState<string[]>([]);
+  const [tasks, setTasks] = useState<Task[]>(() => {
+    try {
+      const savedTasks = globalThis.localStorage.getItem('tasks');
+      if (!savedTasks) return [];
+      const parsed = JSON.parse(savedTasks);
+      // SECURITY: Validate tasks from localStorage to prevent XSS/DoS from corrupted data
+      if (!Array.isArray(parsed)) return [];
+      return parsed.filter(t =>
+        t && typeof t === 'object' &&
+        typeof t.id === 'string' &&
+        typeof t.title === 'string' &&
+        ['Scheduled', 'Completed', 'Archived'].includes(t.status) &&
+        typeof t.category === 'string' &&
+        typeof t.createdAt === 'number'
+      ).slice(0, 1000); // Limit max tasks to prevent memory issues
+    } catch (e) {
+      console.error('Failed to parse tasks', e);
+      return [];
+    }
+  });
+  const [isNewTaskOpen, setIsNewTaskOpen] = useState(false);
+  const [newTaskTitle, setNewTaskTitle] = useState("");
+  const [newTaskCategory, setNewTaskCategory] = useState<FilterId>("performance");
 
+  // Save tasks to localStorage
   useEffect(() => {
-    fetchJobs();
-    fetchStats();
-  }, []);
+    globalThis.localStorage.setItem('tasks', JSON.stringify(tasks));
+  }, [tasks]);
 
-  const fetchJobs = async () => {
-    try {
-      const res = await api.get('/api/jobs');
-      setJobs(res.data);
-    } catch {
-      toast.error('Failed to fetch jobs');
-    } finally {
-      setLoading(false);
-    }
+  const toggleFilter = (id: string) => {
+    setActiveFilters(prev =>
+      prev.includes(id) ? prev.filter(f => f !== id) : [...prev, id]
+    );
   };
 
-  const fetchStats = async () => {
-    try {
-      const res = await api.get('/api/jobs/stats');
-      setStats(res.data);
-    } catch {
-      console.error('Failed to fetch stats');
-    }
-  };
-
-  const handleSubmitJob = async (e: React.FormEvent) => {
+  const addTask = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!company.trim() || !position.trim()) return;
+    const trimmedTitle = newTaskTitle.trim();
+    if (!trimmedTitle) return;
 
-    try {
-      const payload = { company, position, location, salary, status };
+    // SECURITY: Limit title length to prevent excessive memory usage/layout breakage
+    const safeTitle = trimmedTitle.substring(0, 200);
 
-      if (editingJobId) {
-        const res = await api.put(`/api/jobs/${editingJobId}`, payload);
-        setJobs(prev => prev.map(j => j._id === editingJobId ? res.data : j));
-        toast.success("Job updated successfully");
-      } else {
-        const res = await api.post('/api/jobs', payload);
-        setJobs(prev => [res.data, ...prev]);
-        toast.success("Job added successfully");
+    // SECURITY: Limit input length to prevent potential DoS or massive payload storage
+    if (newTaskTitle.length > 250) {
+      toast.error("Task title is too long (max 250 characters).");
+      return;
+    }
+
+    const newTask: Task = {
+      id: crypto.randomUUID(),
+      title: safeTitle,
+      status: 'Scheduled',
+      category: newTaskCategory,
+      createdAt: Date.now(),
+    };
+    setTasks(prev => [newTask, ...prev]);
+    toast.success("Task created successfully");
+    setIsNewTaskOpen(false);
+    setNewTaskTitle("");
+    setNewTaskCategory("performance");
+  };
+
+  const deleteTask = (id: string) => {
+    setTasks(prev => prev.filter(t => t.id !== id));
+    toast.info("Task deleted");
+  };
+
+  const toggleTaskStatus = (id: string) => {
+    setTasks(prev => prev.map(t => {
+      if (t.id === id) {
+        const newStatus = t.status === 'Completed' ? 'Scheduled' : 'Completed';
+        return { ...t, status: newStatus };
       }
-
-      setIsJobModalOpen(false);
-      resetForm();
-      fetchStats();
-    } catch {
-      toast.error(editingJobId ? "Failed to update job" : "Failed to add job");
-    }
+      return t;
+    }));
   };
 
-  const openEditModal = (job: Job) => {
-    setEditingJobId(job._id);
-    setCompany(job.company);
-    setPosition(job.position);
-    setLocation(job.location || "");
-    setSalary(job.salary || "");
-    setStatus(job.status);
-    setIsJobModalOpen(true);
+  const archiveTask = (id: string) => {
+     setTasks(prev => prev.map(t => {
+      if (t.id === id) {
+        return { ...t, status: 'Archived' };
+      }
+      return t;
+    }));
+    toast.success("Task archived");
   };
 
-  const openAddModal = () => {
-    resetForm();
-    setIsJobModalOpen(true);
-  };
+  // PERFORMANCE: Memoize filtered tasks to prevent O(N) recalculation
+  // on every keystroke when typing in the new task form.
+  const filteredTasks = useMemo(() => {
+    return tasks.filter(task => {
+      if (activeFilters.length > 0 && !activeFilters.includes(task.category)) return false;
 
-  const resetForm = () => {
-    setEditingJobId(null);
-    setCompany("");
-    setPosition("");
-    setLocation("");
-    setSalary("");
-    setStatus("Applied");
-  };
-
-  const deleteJob = async (id: string) => {
-    try {
-      await api.delete(`/api/jobs/${id}`);
-      setJobs(prev => prev.filter(j => j._id !== id));
-      toast.info("Job deleted");
-      fetchStats();
-    } catch {
-      toast.error("Failed to delete job");
-    }
-  };
-
-  const updateJobStatus = async (id: string, newStatus: Job['status']) => {
-    try {
-      const res = await api.put(`/api/jobs/${id}`, { status: newStatus });
-      setJobs(prev => prev.map(j => j._id === id ? res.data : j));
-      toast.success("Job status updated");
-      fetchStats();
-    } catch {
-      toast.error("Failed to update job status");
-    }
-  };
-
-  const filteredJobs = useMemo(() => {
-    return jobs.filter(job => {
-      const matchesSearch = job.company.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                            job.position.toLowerCase().includes(searchQuery.toLowerCase());
-
-      if (!matchesSearch) return false;
       if (activeTab === 'All') return true;
-      return job.status === activeTab;
+      if (activeTab === 'Scheduled' && (task.status === 'Scheduled')) return true;
+      if (activeTab === 'Completed' && task.status === 'Completed') return true;
+      if (activeTab === 'Archived' && task.status === 'Archived') return true;
+      return false;
     });
-  }, [jobs, activeTab, searchQuery]);
-
-  const chartData = [
-    { name: 'Applied', count: stats.Applied || 0 },
-    { name: 'Interview', count: stats.Interview || 0 },
-    { name: 'Offer', count: stats.Offer || 0 },
-    { name: 'Rejected', count: stats.Rejected || 0 },
-  ];
+  }, [tasks, activeFilters, activeTab]);
 
   return (
-    <div className="w-full max-w-5xl mx-auto p-4 sm:p-6 bg-zinc-950 min-h-screen text-zinc-100">
-
-      <div className="flex justify-between items-center mb-8">
-        <div>
-          <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-purple-600">
-            Job Tracker
-          </h1>
-          <p className="text-zinc-400 mt-1">Welcome back, {user?.name}</p>
+    <div className="w-full max-w-2xl mx-auto p-4 sm:p-6 bg-zinc-900 rounded-xl border border-zinc-800 text-zinc-100 shadow-xl">
+      {/* Top Navigation */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+        <div role="tablist" aria-label="Task filters" className="flex p-1 bg-zinc-800/50 rounded-full overflow-x-auto no-scrollbar">
+          {tabs.map((tab, index) => (
+            <button
+              type="button"
+              role="tab"
+              aria-selected={activeTab === tab}
+              aria-controls={`tabpanel-${tab}`}
+              id={`tab-${tab}`}
+              tabIndex={activeTab === tab ? 0 : -1}
+              key={tab}
+              onClick={() => setActiveTab(tab)}
+              onKeyDown={(e) => {
+                let newIndex = index;
+                if (e.key === 'ArrowRight') {
+                  newIndex = index === tabs.length - 1 ? 0 : index + 1;
+                } else if (e.key === 'ArrowLeft') {
+                  newIndex = index === 0 ? tabs.length - 1 : index - 1;
+                }
+                if (newIndex !== index) {
+                  e.preventDefault();
+                  setActiveTab(tabs[newIndex]);
+                  const nextTab = document.getElementById(`tab-${tabs[newIndex]}`);
+                  nextTab?.focus();
+                }
+              }}
+              className={cn(
+                "relative px-4 py-1.5 text-sm font-medium rounded-full transition-colors whitespace-nowrap outline-none focus-visible:ring-2 focus-visible:ring-purple-500",
+                activeTab === tab ? "text-white" : "text-zinc-400 hover:text-zinc-200"
+              )}
+            >
+              {activeTab === tab && (
+                <motion.div
+                  layoutId="active-tab"
+                  className="absolute inset-0 bg-zinc-700 rounded-full"
+                  transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                />
+              )}
+              <span className="relative z-10">{tab}</span>
+            </button>
+          ))}
         </div>
-        <Button variant="outline" onClick={logout} className="border-zinc-700 text-zinc-300 hover:text-white">
-          Logout
+
+        <Button
+          onClick={() => setIsNewTaskOpen(true)}
+          className="flex items-center justify-center gap-2 px-4 py-2 bg-purple-600 hover:bg-purple-500 text-white text-sm font-medium rounded-lg transition-colors shadow-lg shadow-purple-900/20 cursor-pointer"
+        >
+          <Plus className="w-4 h-4" />
+          <span>New</span>
         </Button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-        <div className="bg-zinc-900 border border-zinc-800 p-4 rounded-xl shadow-lg">
-          <p className="text-sm text-zinc-400">Total Applications</p>
-          <p className="text-3xl font-bold text-white mt-1">{jobs.length}</p>
-        </div>
-        <div className="bg-zinc-900 border border-zinc-800 p-4 rounded-xl shadow-lg">
-          <p className="text-sm text-blue-400">Interviews</p>
-          <p className="text-3xl font-bold text-white mt-1">{stats.Interview || 0}</p>
-        </div>
-        <div className="bg-zinc-900 border border-zinc-800 p-4 rounded-xl shadow-lg">
-          <p className="text-sm text-green-400">Offers</p>
-          <p className="text-3xl font-bold text-white mt-1">{stats.Offer || 0}</p>
-        </div>
-        <div className="bg-zinc-900 border border-zinc-800 p-4 rounded-xl shadow-lg">
-          <p className="text-sm text-red-400">Rejected</p>
-          <p className="text-3xl font-bold text-white mt-1">{stats.Rejected || 0}</p>
-        </div>
+      {/* Content Area */}
+      <div
+        id={`tabpanel-${activeTab}`}
+        role="tabpanel"
+        aria-labelledby={`tab-${activeTab}`}
+        tabIndex={0}
+        className="min-h-[300px] bg-zinc-900/50 rounded-xl border border-zinc-800/50 overflow-hidden outline-none focus-visible:ring-2 focus-visible:ring-purple-500"
+      >
+        {filteredTasks.length === 0 ? (
+          <div className="flex flex-col items-center justify-center text-center p-8 h-[300px]">
+            <div className="w-16 h-16 mb-4 rounded-full bg-zinc-800/50 flex items-center justify-center">
+              <Clock className="w-8 h-8 text-zinc-400" aria-hidden="true" />
+            </div>
+            <p className="text-zinc-400 font-medium">Scheduled tasks will show up here</p>
+          </div>
+        ) : (
+          <div className="divide-y divide-zinc-800">
+            <AnimatePresence mode='popLayout'>
+              {filteredTasks.map((task) => (
+                <motion.div
+                  key={task.id}
+                  layout
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, height: 0 }}
+                  className="flex items-center gap-4 p-4 hover:bg-zinc-800/30 transition-colors group"
+                >
+                  <button
+                    role="checkbox"
+                    aria-checked={task.status === 'Completed'}
+                    onClick={() => toggleTaskStatus(task.id)}
+                    className="flex-shrink-0 text-zinc-400 hover:text-purple-400 transition-colors rounded-full outline-none focus-visible:ring-2 focus-visible:ring-purple-500"
+                    aria-label={`Complete task: ${task.title}`}
+                  >
+                    {task.status === 'Completed' ? (
+                      <CheckCircle2 className="w-5 h-5 text-purple-500" />
+                    ) : (
+                      <Circle className="w-5 h-5" />
+                    )}
+                  </button>
+                  <div className="flex-1 min-w-0">
+                    <p className={cn(
+                      "text-sm font-medium text-zinc-200 truncate",
+                      task.status === 'Completed' && "text-zinc-400 line-through"
+                    )}>
+                      {task.title}
+                    </p>
+                    <div className="flex items-center gap-2 text-xs text-zinc-400 mt-0.5">
+                      <span className="capitalize">{task.category}</span>
+                      <span>•</span>
+                      <span>{new Date(task.createdAt).toLocaleDateString()}</span>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 focus-within:opacity-100 transition-opacity">
+                    {task.status !== 'Archived' && (
+                      <button
+                        onClick={() => archiveTask(task.id)}
+                        className="p-1.5 text-zinc-400 hover:text-zinc-300 rounded hover:bg-zinc-800 outline-none focus-visible:ring-2 focus-visible:ring-purple-500"
+                        title="Archive"
+                        aria-label={`Archive task: ${task.title}`}
+                      >
+                        <Archive className="w-4 h-4" />
+                      </button>
+                    )}
+                    <button
+                      onClick={() => deleteTask(task.id)}
+                      className="p-1.5 text-zinc-400 hover:text-red-400 rounded hover:bg-zinc-800 outline-none focus-visible:ring-2 focus-visible:ring-purple-500"
+                      title="Delete"
+                      aria-label={`Delete task: ${task.title}`}
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </div>
+                </motion.div>
+              ))}
+            </AnimatePresence>
+          </div>
+        )}
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div className="lg:col-span-2 bg-zinc-900 rounded-xl border border-zinc-800 shadow-xl p-4 sm:p-6">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
-            <div role="tablist" className="flex p-1 bg-zinc-800/50 rounded-full overflow-x-auto no-scrollbar">
-              {tabs.map((tab) => (
+      {/* New Task Dialog */}
+      <Dialog
+        isOpen={isNewTaskOpen}
+        onClose={() => setIsNewTaskOpen(false)}
+        title="Create New Task"
+        description="Add a new task to your dashboard."
+      >
+        <form onSubmit={addTask} className="space-y-4">
+          <div className="space-y-2">
+            <label htmlFor="title" className="text-sm font-medium text-zinc-300">
+              Task Title
+            </label>
+            {/* SECURITY: Added input length limit to prevent excessively large storage allocation and potential DoS */}
+            <Input
+              id="title"
+              value={newTaskTitle}
+              // SECURITY: Add input length limits to prevent client-side DoS/memory exhaustion
+              maxLength={100}
+              onChange={(e) => setNewTaskTitle(e.target.value)}
+              placeholder="e.g. Review system performance"
+              className="bg-zinc-900 border-zinc-700 text-zinc-100 focus:ring-purple-500"
+              maxLength={200}
+              autoFocus
+              maxLength={250}
+            />
+          </div>
+          <div className="space-y-2">
+            <label id="category-label" className="text-sm font-medium text-zinc-300">
+              Category
+            </label>
+            <div className="flex gap-2" role="group" aria-label="Select task category">
+              {filters.map(filter => (
                 <button
-                  key={tab}
-                  onClick={() => setActiveTab(tab)}
+                  key={filter.id}
+                  type="button"
+                  aria-pressed={newTaskCategory === filter.id}
+                  onClick={() => setNewTaskCategory(filter.id)}
                   className={cn(
-                    "relative px-4 py-1.5 text-sm font-medium rounded-full transition-colors whitespace-nowrap outline-none",
-                    activeTab === tab ? "text-white" : "text-zinc-400 hover:text-zinc-200"
+                    "flex-1 flex flex-col items-center justify-center p-3 rounded-lg border text-xs gap-1 transition-all outline-none focus-visible:ring-2 focus-visible:ring-purple-500",
+                    newTaskCategory === filter.id
+                      ? "bg-purple-900/20 border-purple-500 text-purple-200"
+                      : "bg-zinc-900 border-zinc-800 text-zinc-400 hover:border-zinc-700"
                   )}
                 >
-                  {activeTab === tab && (
-                    <motion.div
-                      layoutId="active-tab"
-                      className="absolute inset-0 bg-zinc-700 rounded-full"
-                      transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
-                    />
-                  )}
-                  <span className="relative z-10">{tab}</span>
+                  <filter.icon className="w-4 h-4" />
+                  {filter.label}
                 </button>
               ))}
             </div>
-
-            <Button
-              onClick={openAddModal}
-              className="flex items-center justify-center gap-2 px-4 py-2 bg-purple-600 hover:bg-purple-500 text-white text-sm font-medium rounded-lg"
-            >
-              <Plus className="w-4 h-4" />
-              <span>Add Job</span>
-            </Button>
           </div>
-
-          <div className="relative mb-6">
-            <Search className="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500" />
-            <Input
-              placeholder="Search by company or position..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10 bg-zinc-950 border-zinc-800"
-            />
-          </div>
-
-          <div className="min-h-[300px] bg-zinc-950/50 rounded-xl border border-zinc-800/50 overflow-hidden">
-            {loading ? (
-               <div className="flex justify-center items-center h-[300px]">
-                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-500"></div>
-               </div>
-            ) : filteredJobs.length === 0 ? (
-              <div className="flex flex-col items-center justify-center text-center p-8 h-[300px]">
-                <div className="w-16 h-16 mb-4 rounded-full bg-zinc-800/50 flex items-center justify-center">
-                  <Briefcase className="w-8 h-8 text-zinc-400" />
-                </div>
-                <p className="text-zinc-400 font-medium">No job applications found here</p>
-              </div>
-            ) : (
-              <div className="divide-y divide-zinc-800/50">
-                <AnimatePresence mode='popLayout'>
-                  {filteredJobs.map((job) => (
-                    <motion.div
-                      key={job._id}
-                      layout
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, height: 0 }}
-                      className="p-4 hover:bg-zinc-800/30 transition-colors group flex flex-col sm:flex-row sm:items-center justify-between gap-4"
-                    >
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 mb-1">
-                          <h3 className="font-semibold text-lg text-zinc-100 truncate">{job.position}</h3>
-                          <span className={cn(
-                            "px-2 py-0.5 text-xs rounded-full font-medium border",
-                            job.status === 'Applied' && "bg-zinc-800/50 text-zinc-300 border-zinc-700",
-                            job.status === 'Interview' && "bg-blue-900/20 text-blue-400 border-blue-900/50",
-                            job.status === 'Offer' && "bg-green-900/20 text-green-400 border-green-900/50",
-                            job.status === 'Rejected' && "bg-red-900/20 text-red-400 border-red-900/50"
-                          )}>
-                            {job.status}
-                          </span>
-                        </div>
-                        <div className="flex items-center gap-4 text-sm text-zinc-400">
-                          <span className="flex items-center gap-1"><Building className="w-3.5 h-3.5"/> {job.company}</span>
-                          {job.location && <span className="flex items-center gap-1"><MapPin className="w-3.5 h-3.5"/> {job.location}</span>}
-                          {job.salary && <span className="flex items-center gap-1"><DollarSign className="w-3.5 h-3.5"/> {job.salary}</span>}
-                        </div>
-                      </div>
-
-                      <div className="flex items-center gap-2 sm:opacity-0 group-hover:opacity-100 transition-opacity">
-                         <select
-                           value={job.status}
-                           onChange={(e) => updateJobStatus(job._id, e.target.value as Job['status'])}
-                           className="bg-zinc-800 border border-zinc-700 text-sm rounded px-2 py-1 outline-none text-zinc-200"
-                         >
-                           <option value="Applied">Applied</option>
-                           <option value="Interview">Interview</option>
-                           <option value="Offer">Offer</option>
-                           <option value="Rejected">Rejected</option>
-                         </select>
-                        <button
-                          onClick={() => openEditModal(job)}
-                          className="p-1.5 text-zinc-400 hover:text-blue-400 rounded hover:bg-zinc-800 transition-colors"
-                        >
-                          <Edit2 className="w-4 h-4" />
-                        </button>
-                        <button
-                          onClick={() => deleteJob(job._id)}
-                          className="p-1.5 text-zinc-400 hover:text-red-400 rounded hover:bg-zinc-800 transition-colors"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </button>
-                      </div>
-                    </motion.div>
-                  ))}
-                </AnimatePresence>
-              </div>
-            )}
-          </div>
-        </div>
-
-        <div className="bg-zinc-900 rounded-xl border border-zinc-800 shadow-xl p-4 sm:p-6 h-[450px]">
-          <h3 className="text-lg font-medium text-zinc-200 mb-6">Application Stats</h3>
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 20 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#27272a" vertical={false} />
-              <XAxis dataKey="name" stroke="#a1a1aa" fontSize={12} tickLine={false} axisLine={false} />
-              <YAxis stroke="#a1a1aa" fontSize={12} tickLine={false} axisLine={false} allowDecimals={false} />
-              <Tooltip
-                cursor={{fill: '#27272a', opacity: 0.4}}
-                contentStyle={{ backgroundColor: '#18181b', border: '1px solid #3f3f46', borderRadius: '8px' }}
-                itemStyle={{ color: '#d4d4d8' }}
-              />
-              <Bar dataKey="count" fill="#9333ea" radius={[4, 4, 0, 0]} barSize={40} />
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
-      </div>
-
-      <Dialog
-        isOpen={isJobModalOpen}
-        onClose={() => setIsJobModalOpen(false)}
-        title={editingJobId ? "Edit Job Application" : "Add Job Application"}
-        description="Track a job opportunity."
-      >
-        <form onSubmit={handleSubmitJob} className="space-y-4">
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-zinc-300">Company</label>
-            <Input
-              value={company}
-              onChange={(e) => setCompany(e.target.value)}
-              placeholder="e.g. Google"
-              className="bg-zinc-900 border-zinc-700"
-              required
-            />
-          </div>
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-zinc-300">Position</label>
-            <Input
-              value={position}
-              onChange={(e) => setPosition(e.target.value)}
-              placeholder="e.g. Frontend Engineer"
-              className="bg-zinc-900 border-zinc-700"
-              required
-            />
-          </div>
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-zinc-300">Location (Optional)</label>
-              <Input
-                value={location}
-                onChange={(e) => setLocation(e.target.value)}
-                placeholder="e.g. Remote"
-                className="bg-zinc-900 border-zinc-700"
-              />
-            </div>
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-zinc-300">Salary (Optional)</label>
-              <Input
-                value={salary}
-                onChange={(e) => setSalary(e.target.value)}
-                placeholder="e.g. $120k"
-                className="bg-zinc-900 border-zinc-700"
-              />
-            </div>
-          </div>
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-zinc-300">Status</label>
-            <select
-              value={status}
-              onChange={(e) => setStatus(e.target.value as Job['status'])}
-              className="w-full bg-zinc-900 border border-zinc-700 rounded-md p-2 text-sm text-zinc-100 outline-none focus:ring-2 focus:ring-purple-500"
-            >
-              <option value="Applied">Applied</option>
-              <option value="Interview">Interview</option>
-              <option value="Offer">Offer</option>
-              <option value="Rejected">Rejected</option>
-            </select>
-          </div>
-
           <div className="flex justify-end gap-3 mt-6">
             <Button
               type="button"
               variant="ghost"
-              onClick={() => setIsJobModalOpen(false)}
-              className="text-zinc-400 hover:text-white"
+              onClick={() => setIsNewTaskOpen(false)}
+              className="text-zinc-400 hover:text-white hover:bg-zinc-800"
             >
               Cancel
             </Button>
-            <Button type="submit" className="bg-purple-600 hover:bg-purple-500 text-white">
-              {editingJobId ? "Save Changes" : "Add Job"}
+            <Button
+              type="submit"
+              className="bg-purple-600 hover:bg-purple-500 text-white"
+            >
+              Create Task
             </Button>
           </div>
         </form>
       </Dialog>
+
+      {/* Bottom Filter Chips */}
+      <div className="mt-8">
+        <h4 id="skill-filters-label" className="text-sm font-medium text-zinc-400 mb-3">Skill-based agents</h4>
+        <div className="flex flex-wrap gap-3" role="group" aria-labelledby="skill-filters-label">
+          {filters.map(({ id, label, icon: Icon }) => {
+            const isActive = activeFilters.includes(id);
+            return (
+              <button
+                type="button"
+                aria-pressed={isActive}
+                key={id}
+                onClick={() => toggleFilter(id)}
+                className={cn(
+                  "flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium border transition-all duration-200 cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-purple-500",
+                  isActive
+                    ? "bg-zinc-800 border-zinc-700 text-white shadow-sm"
+                    : "bg-transparent border-zinc-800 text-zinc-400 hover:border-zinc-700 hover:text-zinc-300"
+                )}
+              >
+                <Icon className={cn("w-4 h-4", isActive ? "text-purple-400" : "text-current")} />
+                {label}
+              </button>
+            );
+          })}
+        </div>
+      </div>
     </div>
   );
 }

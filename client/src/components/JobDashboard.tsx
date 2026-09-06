@@ -1,273 +1,294 @@
-import { useState, useEffect } from 'react';
-import api from '../api/axios';
-import type { Job } from '../types';
-import { toast } from 'sonner';
-import { Button } from './ui/button';
-import { Input } from './ui/input';
-import { Plus, Building, MapPin, Briefcase, Trash2, Edit2 } from 'lucide-react';
-import { Dialog } from './ui/dialog';
-import { cn } from '../lib/utils';
-import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recharts';
+import { useState, useEffect } from "react";
+import { useAuth } from "../context/AuthContext";
+import { Plus, Search, LogOut, Edit2, Trash2 } from "lucide-react";
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip as RechartsTooltip, Legend } from "recharts";
 
-const STATUS_COLORS = {
-  Applied: '#6366f1', // Indigo
-  Interview: '#eab308', // Yellow
-  Offer: '#22c55e', // Green
-  Rejected: '#ef4444', // Red
-};
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
-const JobDashboard = () => {
+interface Job {
+  _id?: string;
+  title: string;
+  company: string;
+  status: string;
+}
+
+export default function JobDashboard() {
+  const { token, logout, login, signup, loading: authLoading, error: authError } = useAuth();
   const [jobs, setJobs] = useState<Job[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState("");
+  const [filter, setFilter] = useState("All");
+
+  const [isAuthMode, setIsAuthMode] = useState(true);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingJob, setEditingJob] = useState<Job | null>(null);
+  const [jobForm, setJobForm] = useState<Job>({ title: "", company: "", status: "Applied" });
 
-  // Form State
-  const [company, setCompany] = useState('');
-  const [position, setPosition] = useState('');
-  const [location, setLocation] = useState('');
-  const [status, setStatus] = useState<'Applied' | 'Interview' | 'Offer' | 'Rejected'>('Applied');
-
-  const [filter, setFilter] = useState('All');
-  const [searchQuery, setSearchQuery] = useState('');
+  const statuses = ["All", "Applied", "Interview", "Offer", "Rejected"];
+  const formStatuses = ["Applied", "Interview", "Offer", "Rejected"];
 
   useEffect(() => {
-    fetchJobs();
-  }, []);
+    if (token) fetchJobs();
+  }, [token]);
 
   const fetchJobs = async () => {
+    setLoading(true);
     try {
-      const response = await api.get('/jobs');
-      setJobs(response.data);
-    } catch (_error) {
-      toast.error('Failed to fetch jobs');
+      const res = await fetch(`${API_URL}/jobs`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      const data = await res.json();
+      if(Array.isArray(data)) setJobs(data);
+    } catch (e) {
+      console.error(e);
+      setError("Failed to fetch jobs");
     } finally {
       setLoading(false);
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const jobData = { company, position, location, status };
-      if (editingJob) {
-        const response = await api.put(`/jobs/${editingJob._id}`, jobData);
-        setJobs(jobs.map(j => j._id === editingJob._id ? response.data : j));
-        toast.success('Job updated successfully');
+      if (isAuthMode) {
+        await login(email, password);
       } else {
-        const response = await api.post('/jobs', jobData);
-        setJobs([response.data, ...jobs]);
-        toast.success('Job added successfully');
+        await signup(email, password);
+        await login(email, password);
       }
-      handleCloseModal();
-    } catch (_error) {
-      toast.error('Failed to save job');
+    } catch (err) {
+      // Error is handled in context
     }
   };
 
-  const handleDelete = async (id: string) => {
-    if (!globalThis.confirm('Are you sure you want to delete this job?')) return;
-    try {
-      await api.delete(`/jobs/${id}`);
-      setJobs(jobs.filter(j => j._id !== id));
-      toast.success('Job deleted');
-    } catch (_error) {
-      toast.error('Failed to delete job');
+  const openModal = (job: Job | null = null) => {
+    if (job) {
+      setEditingJob(job);
+      setJobForm({ title: job.title, company: job.company, status: job.status });
+    } else {
+      setEditingJob(null);
+      setJobForm({ title: "", company: "", status: "Applied" });
     }
-  };
-
-  const handleEdit = (job: Job) => {
-    setEditingJob(job);
-    setCompany(job.company);
-    setPosition(job.position);
-    setLocation(job.location || '');
-    setStatus(job.status);
     setIsModalOpen(true);
   };
 
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
-    setEditingJob(null);
-    setCompany('');
-    setPosition('');
-    setLocation('');
-    setStatus('Applied');
+  const saveJob = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      if (editingJob) {
+        const res = await fetch(`${API_URL}/jobs/${editingJob._id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+          body: JSON.stringify(jobForm)
+        });
+        if (!res.ok) throw new Error("Failed to update job");
+      } else {
+        const res = await fetch(`${API_URL}/jobs`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+          body: JSON.stringify(jobForm)
+        });
+        if (!res.ok) throw new Error("Failed to create job");
+      }
+      setIsModalOpen(false);
+      fetchJobs();
+    } catch (err: any) {
+      setError(err.message);
+    }
   };
 
-  const filteredJobs = jobs.filter(j => {
-    const matchesFilter = filter === 'All' || j.status === filter;
-    const matchesSearch = j.company.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                          j.position.toLowerCase().includes(searchQuery.toLowerCase());
-    return matchesFilter && matchesSearch;
-  });
+  const deleteJob = async (id?: string) => {
+    if (!id) return;
+    if (!confirm("Are you sure you want to delete this job?")) return;
+    try {
+      const res = await fetch(`${API_URL}/jobs/${id}`, {
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (!res.ok) throw new Error("Failed to delete job");
+      fetchJobs();
+    } catch (err: any) {
+      setError(err.message);
+    }
+  };
 
-  const stats = [
-    { name: 'Applied', value: jobs.filter(j => j.status === 'Applied').length },
-    { name: 'Interview', value: jobs.filter(j => j.status === 'Interview').length },
-    { name: 'Offer', value: jobs.filter(j => j.status === 'Offer').length },
-    { name: 'Rejected', value: jobs.filter(j => j.status === 'Rejected').length },
-  ].filter(s => s.value > 0);
-
-  if (loading) {
-    return <div className="text-zinc-400 text-center py-8">Loading jobs...</div>;
+  if (!token) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-zinc-950 p-4">
+        <div className="bg-zinc-900 p-8 rounded-xl border border-zinc-800 w-full max-w-md">
+          <h2 className="text-2xl font-bold text-white mb-6 text-center">{isAuthMode ? 'Login' : 'Sign Up'}</h2>
+          {authError && <p className="text-red-500 mb-4">{authError}</p>}
+          <form onSubmit={handleAuth} className="space-y-4">
+            <input
+              type="email"
+              placeholder="Email"
+              required
+              className="w-full bg-zinc-800 border border-zinc-700 rounded p-2 text-white"
+              value={email} onChange={e => setEmail(e.target.value)}
+            />
+            <input
+              type="password"
+              placeholder="Password"
+              required
+              className="w-full bg-zinc-800 border border-zinc-700 rounded p-2 text-white"
+              value={password} onChange={e => setPassword(e.target.value)}
+            />
+            <button disabled={authLoading} type="submit" className="w-full bg-purple-600 text-white p-2 rounded hover:bg-purple-500">
+              {authLoading ? 'Loading...' : (isAuthMode ? 'Login' : 'Sign Up')}
+            </button>
+          </form>
+          <button onClick={() => setIsAuthMode(!isAuthMode)} className="w-full text-zinc-400 mt-4 hover:text-white">
+            {isAuthMode ? 'Need an account? Sign up' : 'Already have an account? Login'}
+          </button>
+        </div>
+      </div>
+    );
   }
 
+
+  const chartData = statuses.slice(1).map(s => ({
+    name: s,
+    value: jobs.filter(j => j.status === s).length
+  })).filter(d => d.value > 0);
+
+  const COLORS = ['#3b82f6', '#eab308', '#22c55e', '#ef4444'];
+
+  const filteredJobs = jobs.filter(j =>
+    j.title.toLowerCase().includes(search.toLowerCase()) &&
+    (filter === "All" || j.status === filter)
+  );
+
   return (
-    <div className="w-full max-w-6xl mx-auto space-y-8">
-      {/* Analytics Section */}
+    <div className="min-h-screen bg-zinc-950 p-8 text-white relative">
+      <div className="flex justify-between items-center mb-8">
+        <h1 className="text-2xl font-bold">Job Dashboard</h1>
+        <button onClick={logout} className="p-2 bg-red-600 hover:bg-red-500 rounded flex items-center gap-2"><LogOut size={16}/> Logout</button>
+      </div>
+
+      {error && <div className="bg-red-500/20 text-red-400 p-4 rounded mb-4">{error}</div>}
+
+
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+        {statuses.slice(1).map(s => (
+          <div key={s} className="bg-zinc-900 p-4 rounded-xl border border-zinc-800">
+            <p className="text-zinc-400">{s}</p>
+            <p className="text-2xl font-bold">{jobs.filter(j => j.status === s).length}</p>
+          </div>
+        ))}
+      </div>
+
       {jobs.length > 0 && (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-6 col-span-1 md:col-span-2 flex items-center justify-center min-h-[300px]">
-             <ResponsiveContainer width="100%" height={250}>
-              <PieChart>
-                <Pie
-                  data={stats}
-                  cx="50%"
-                  cy="50%"
-                  innerRadius={60}
-                  outerRadius={80}
-                  paddingAngle={5}
-                  dataKey="value"
-                >
-                  {stats.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={STATUS_COLORS[entry.name as keyof typeof STATUS_COLORS]} />
-                  ))}
-                </Pie>
-                <Tooltip
-                  contentStyle={{ backgroundColor: '#18181b', borderColor: '#27272a', color: '#e4e4e7' }}
-                  itemStyle={{ color: '#e4e4e7' }}
-                />
-                <Legend />
-              </PieChart>
-            </ResponsiveContainer>
-          </div>
-          <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-6 grid grid-cols-2 gap-4">
-            <div className="col-span-2">
-              <h3 className="text-zinc-400 text-sm font-medium">Total Applications</h3>
-              <p className="text-4xl font-bold text-white mt-2">{jobs.length}</p>
-            </div>
-            {Object.entries(STATUS_COLORS).map(([stat, color]) => (
-               <div key={stat} className="bg-zinc-950 p-4 rounded-lg border border-zinc-800">
-                 <h4 className="text-zinc-400 text-xs font-medium">{stat}</h4>
-                 <p className="text-xl font-bold mt-1" style={{ color }}>
-                   {jobs.filter(j => j.status === stat).length}
-                 </p>
-               </div>
-            ))}
-          </div>
+        <div className="bg-zinc-900 p-4 rounded-xl border border-zinc-800 mb-8 h-64">
+          <ResponsiveContainer width="100%" height="100%">
+            <PieChart>
+              <Pie data={chartData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={80} fill="#8884d8">
+                {chartData.map((_, index) => (
+                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                ))}
+              </Pie>
+              <RechartsTooltip />
+              <Legend />
+            </PieChart>
+          </ResponsiveContainer>
         </div>
       )}
 
-      {/* Header & Controls */}
-      <div className="flex flex-col sm:flex-row justify-between items-center gap-4 bg-zinc-900 p-4 rounded-xl border border-zinc-800">
-        <div className="w-full sm:w-1/3">
-          <Input
-            placeholder="Search by company or position..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="bg-zinc-950 border-zinc-800 text-white w-full"
+
+      <div className="flex flex-col md:flex-row gap-4 mb-4">
+        <div className="flex-1 relative">
+          <Search className="absolute left-3 top-3 text-zinc-500 w-4 h-4" />
+          <input
+            className="w-full bg-zinc-900 border border-zinc-800 rounded-lg py-2 pl-10 pr-4 text-white focus:outline-none focus:border-purple-500"
+            placeholder="Search jobs..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
           />
         </div>
-        <div className="flex gap-2 bg-zinc-950 p-1 rounded-lg overflow-x-auto w-full sm:w-auto">
-          {['All', 'Applied', 'Interview', 'Offer', 'Rejected'].map(t => (
-            <button
-              key={t}
-              onClick={() => setFilter(t)}
-              className={cn(
-                "px-4 py-1.5 rounded-md text-sm font-medium transition-colors whitespace-nowrap",
-                filter === t ? "bg-zinc-800 text-white" : "text-zinc-400 hover:text-zinc-300"
-              )}
-            >
-              {t}
-            </button>
-          ))}
-        </div>
-        <Button onClick={() => setIsModalOpen(true)} className="w-full sm:w-auto bg-purple-600 hover:bg-purple-700 text-white flex items-center gap-2">
-          <Plus className="w-4 h-4" /> Add Job
-        </Button>
+        <select
+          className="bg-zinc-900 border border-zinc-800 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-purple-500"
+          value={filter}
+          onChange={(e) => setFilter(e.target.value)}
+        >
+          {statuses.map(s => <option key={s} value={s}>{s}</option>)}
+        </select>
+        <button onClick={() => openModal()} className="bg-purple-600 hover:bg-purple-500 px-4 py-2 rounded-lg flex items-center justify-center gap-2">
+          <Plus size={16} /> New Job
+        </button>
       </div>
 
-      {/* Jobs List */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {filteredJobs.length === 0 ? (
-          <div className="col-span-full py-12 text-center text-zinc-500">
-            No jobs found.
-          </div>
+      <div className="bg-zinc-900 rounded-xl border border-zinc-800 overflow-x-auto">
+        {loading ? (
+          <p className="p-8 text-center text-zinc-500">Loading jobs...</p>
+        ) : filteredJobs.length === 0 ? (
+          <p className="p-8 text-center text-zinc-500">No jobs found.</p>
         ) : (
-          filteredJobs.map(job => (
-            <div key={job._id} className="bg-zinc-900 border border-zinc-800 rounded-xl p-5 hover:border-zinc-700 transition-colors group">
-              <div className="flex justify-between items-start mb-4">
-                <h3 className="text-lg font-bold text-white truncate pr-2">{job.position}</h3>
-                <span className="px-2.5 py-1 text-xs font-medium rounded-full" style={{ backgroundColor: `${STATUS_COLORS[job.status]}20`, color: STATUS_COLORS[job.status] }}>
-                  {job.status}
-                </span>
-              </div>
-
-              <div className="space-y-2 mb-6">
-                <div className="flex items-center gap-2 text-zinc-400 text-sm">
-                  <Building className="w-4 h-4" />
-                  <span className="truncate">{job.company}</span>
-                </div>
-                {job.location && (
-                  <div className="flex items-center gap-2 text-zinc-400 text-sm">
-                    <MapPin className="w-4 h-4" />
-                    <span className="truncate">{job.location}</span>
-                  </div>
-                )}
-                <div className="flex items-center gap-2 text-zinc-500 text-xs">
-                   <Briefcase className="w-4 h-4" />
-                   <span>Applied: {new Date(job.createdAt).toLocaleDateString()}</span>
-                </div>
-              </div>
-
-              <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                <button onClick={() => handleEdit(job)} className="p-2 text-zinc-400 hover:text-white bg-zinc-800 hover:bg-zinc-700 rounded-md transition-colors">
-                  <Edit2 className="w-4 h-4" />
-                </button>
-                <button onClick={() => handleDelete(job._id)} className="p-2 text-zinc-400 hover:text-red-400 bg-zinc-800 hover:bg-red-950 rounded-md transition-colors">
-                  <Trash2 className="w-4 h-4" />
-                </button>
-              </div>
-            </div>
-          ))
+          <table className="w-full text-left min-w-[600px]">
+            <thead className="bg-zinc-800">
+              <tr>
+                <th className="p-4">Title</th>
+                <th className="p-4">Company</th>
+                <th className="p-4">Status</th>
+                <th className="p-4 text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredJobs.map(job => (
+                <tr key={job._id} className="border-t border-zinc-800 hover:bg-zinc-800/50">
+                  <td className="p-4 font-medium">{job.title}</td>
+                  <td className="p-4 text-zinc-400">{job.company}</td>
+                  <td className="p-4">
+                    <span className={`px-2 py-1 rounded text-xs font-medium ${
+                      job.status === 'Applied' ? 'bg-blue-500/20 text-blue-400' :
+                      job.status === 'Interview' ? 'bg-yellow-500/20 text-yellow-400' :
+                      job.status === 'Offer' ? 'bg-green-500/20 text-green-400' :
+                      'bg-red-500/20 text-red-400'
+                    }`}>
+                      {job.status}
+                    </span>
+                  </td>
+                  <td className="p-4 flex justify-end gap-3">
+                    <button onClick={() => openModal(job)} className="text-zinc-400 hover:text-purple-400"><Edit2 size={18}/></button>
+                    <button onClick={() => deleteJob(job._id)} className="text-zinc-400 hover:text-red-400"><Trash2 size={18}/></button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         )}
       </div>
 
-      <Dialog isOpen={isModalOpen} onClose={handleCloseModal} title={editingJob ? "Edit Job" : "Add New Job"} description="Enter the details of the job application.">
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-zinc-400 mb-1">Company</label>
-            <Input required value={company} onChange={e => setCompany(e.target.value)} className="bg-zinc-900 border-zinc-700 text-white" />
+      {isModalOpen && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+          <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-6 w-full max-w-md">
+            <h2 className="text-xl font-bold mb-4">{editingJob ? 'Edit Job' : 'New Job'}</h2>
+            <form onSubmit={saveJob} className="space-y-4">
+              <div>
+                <label className="block text-sm text-zinc-400 mb-1">Job Title</label>
+                <input required className="w-full bg-zinc-800 border border-zinc-700 rounded p-2 text-white" value={jobForm.title} onChange={e => setJobForm({...jobForm, title: e.target.value})} />
+              </div>
+              <div>
+                <label className="block text-sm text-zinc-400 mb-1">Company</label>
+                <input required className="w-full bg-zinc-800 border border-zinc-700 rounded p-2 text-white" value={jobForm.company} onChange={e => setJobForm({...jobForm, company: e.target.value})} />
+              </div>
+              <div>
+                <label className="block text-sm text-zinc-400 mb-1">Status</label>
+                <select className="w-full bg-zinc-800 border border-zinc-700 rounded p-2 text-white" value={jobForm.status} onChange={e => setJobForm({...jobForm, status: e.target.value})}>
+                  {formStatuses.map(s => <option key={s} value={s}>{s}</option>)}
+                </select>
+              </div>
+              <div className="flex gap-4 mt-6">
+                <button type="button" onClick={() => setIsModalOpen(false)} className="flex-1 bg-zinc-800 hover:bg-zinc-700 p-2 rounded">Cancel</button>
+                <button type="submit" className="flex-1 bg-purple-600 hover:bg-purple-500 p-2 rounded">Save</button>
+              </div>
+            </form>
           </div>
-          <div>
-            <label className="block text-sm font-medium text-zinc-400 mb-1">Position</label>
-            <Input required value={position} onChange={e => setPosition(e.target.value)} className="bg-zinc-900 border-zinc-700 text-white" />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-zinc-400 mb-1">Location</label>
-            <Input value={location} onChange={e => setLocation(e.target.value)} placeholder="e.g. Remote, NY" className="bg-zinc-900 border-zinc-700 text-white" />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-zinc-400 mb-1">Status</label>
-            <select
-              value={status}
-              onChange={(e) => setStatus(e.target.value as 'Applied' | 'Interview' | 'Offer' | 'Rejected')}
-              className="w-full bg-zinc-900 border border-zinc-700 text-white rounded-md h-10 px-3 focus:outline-none focus:ring-2 focus:ring-purple-500"
-            >
-              <option value="Applied">Applied</option>
-              <option value="Interview">Interview</option>
-              <option value="Offer">Offer</option>
-              <option value="Rejected">Rejected</option>
-            </select>
-          </div>
-          <div className="flex justify-end gap-3 mt-6">
-             <Button type="button" variant="ghost" onClick={handleCloseModal} className="text-zinc-400 hover:text-white">Cancel</Button>
-             <Button type="submit" className="bg-purple-600 hover:bg-purple-700 text-white">Save</Button>
-          </div>
-        </form>
-      </Dialog>
+        </div>
+      )}
     </div>
   );
-};
-
-export default JobDashboard;
+}

@@ -1,76 +1,44 @@
 import Job from '../models/Job.js';
 
-export const getJobs = async (req, res) => {
+export const createJob = async (req, res) => {
   try {
-    const jobs = await Job.find({ user: req.user._id }).sort({ createdAt: -1 });
-    res.json(jobs);
+    const job = new Job({ ...req.body, user: req.user._id });
+    await job.save();
+    res.status(201).json(job);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(400).json({ error: error.message });
   }
 };
 
-export const createJob = async (req, res) => {
+export const getJobs = async (req, res) => {
   try {
-    const { company, position, status, salary, location, notes } = req.body;
-
-    const job = new Job({
-      user: req.user._id,
-      company,
-      position,
-      status,
-      salary,
-      location,
-      notes
-    });
-
-    const createdJob = await job.save();
-    res.status(201).json(createdJob);
+    const jobs = await Job.find({ user: req.user._id });
+    res.json(jobs);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ error: error.message });
   }
 };
 
 export const updateJob = async (req, res) => {
   try {
-    const job = await Job.findById(req.params.id);
-
-    if (job) {
-      if (job.user.toString() !== req.user._id.toString()) {
-        return res.status(401).json({ message: 'Not authorized to update this job' });
-      }
-
-      job.company = req.body.company || job.company;
-      job.position = req.body.position || job.position;
-      job.status = req.body.status || job.status;
-      job.salary = req.body.salary || job.salary;
-      job.location = req.body.location || job.location;
-      job.notes = req.body.notes || job.notes;
-
-      const updatedJob = await job.save();
-      res.json(updatedJob);
-    } else {
-      res.status(404).json({ message: 'Job not found' });
-    }
+    const job = await Job.findOneAndUpdate(
+      { _id: req.params.id, user: req.user._id },
+      req.body,
+      { new: true }
+    );
+    if (!job) return res.status(404).json({ error: 'Job not found' });
+    res.json(job);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(400).json({ error: error.message });
   }
 };
 
 export const deleteJob = async (req, res) => {
   try {
-    const job = await Job.findById(req.params.id);
-
-    if (job) {
-      if (job.user.toString() !== req.user._id.toString()) {
-        return res.status(401).json({ message: 'Not authorized to delete this job' });
-      }
-
-      await job.deleteOne();
-      res.json({ message: 'Job removed' });
-    } else {
-      res.status(404).json({ message: 'Job not found' });
-    }
+    const job = await Job.findOneAndDelete({ _id: req.params.id, user: req.user._id });
+    if (!job) return res.status(404).json({ error: 'Job not found' });
+    res.json({ message: 'Job deleted' });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ error: error.message });
   }
 };

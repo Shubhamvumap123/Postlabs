@@ -1,15 +1,14 @@
 import express from 'express';
-import { getJobs, createJob, updateJob, deleteJob } from '../controllers/jobController.js';
-import { protect } from '../middleware/authMiddleware.js';
+import { createJob, getJobs, updateJob, deleteJob } from '../controllers/jobController.js';
+import { verifyToken } from '../middleware/auth.js';
 
 const router = express.Router();
 
-router.route('/')
-  .get(protect, getJobs)
-  .post(protect, createJob);
+router.use(verifyToken);
 
-router.route('/:id')
-  .put(protect, updateJob)
-  .delete(protect, deleteJob);
+router.post('/', createJob);
+router.get('/', getJobs);
+router.put('/:id', updateJob);
+router.delete('/:id', deleteJob);
 
 export default router;
