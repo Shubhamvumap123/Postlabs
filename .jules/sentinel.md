@@ -3,7 +3,7 @@
 **Learning:** `element.innerHTML` assignment bypasses React's default XSS escaping mechanism. While it was extracting text from `innerText`, any previously injected scripts or user-controlled content in the DOM could be parsed and executed when re-assigned using `innerHTML`. This issue bypasses the React DOM and opens up XSS vectors through animation effects.
 **Prevention:** Avoid `element.innerHTML` assignment for manipulating DOM nodes inside custom React hooks. Use native DOM API `document.createElement`, set properties safely with `.textContent`, and `element.appendChild()`, or structure the markup safely using React state and JSX.
 
-## 2024-03-25 - Local Storage Exhaustion DoS Vulnerability
-**Vulnerability:** Unbounded inputs and unlimited item accumulation in `localStorage` in `TaskDashboard.tsx`.
-**Learning:** React state that synchronizes with `localStorage` without enforcing input bounds (`maxLength`) or collection size constraints can be exploited to exhaust browser storage, leading to a client-side Denial of Service (DoS).
-**Prevention:** Always enforce strict length limits on user inputs (e.g., `maxLength={100}`) and cap the maximum size of collections (e.g., `.slice(0, 100)`) before persisting them to `localStorage`.
+## 2025-03-26 - Local Storage Exhaustion (Client-Side DoS)
+**Vulnerability:** A lack of strict collection-size limits and input character limits allowed local storage state (`TaskDashboard` items) to grow boundlessly, posing a risk of client-side Denial of Service due to `localStorage` space exhaustion.
+**Learning:** Even though state is isolated client-side, unlimited growth in `localStorage` operations or string lengths can exhaust the available 5MB limit, throwing quota exceeded errors and preventing the app from functioning correctly for the user.
+**Prevention:** Implement strict length limits on user text inputs (e.g., `maxLength`) and restrict the overall size of persistent collections (e.g., max 100 items), displaying explicit error messages rather than silently failing.

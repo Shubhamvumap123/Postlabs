@@ -136,10 +136,18 @@ export default function TaskDashboard() {
       return;
     }
 
+    // SECURITY: Prevent local storage exhaustion (client-side DoS)
+    if (tasks.length >= 100) {
+      toast.error("Task limit reached. Please delete some tasks first.");
+      return;
+    }
+
+    // SECURITY: Limit input length to prevent large payloads
+    const safeTitle = newTaskTitle.trim().slice(0, 100);
+
     const newTask: Task = {
       id: crypto.randomUUID(),
-      // SECURITY: Limit input length to prevent LocalStorage exhaustion DoS
-      title: newTaskTitle.slice(0, 100),
+      title: safeTitle,
       status: 'Scheduled',
       category: newTaskCategory,
       createdAt: Date.now(),
