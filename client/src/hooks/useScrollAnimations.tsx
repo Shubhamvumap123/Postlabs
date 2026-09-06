@@ -16,19 +16,24 @@ export const useScrollAnimations = () => {
           const words = element.innerText.split(' ');
           element.textContent = ''; // Clear existing content
 
+          // ⚡ Bolt: Batch DOM insertions using a DocumentFragment to prevent layout thrashing and reduce reflows.
+          const fragment = document.createDocumentFragment();
+
           words.forEach((word, index) => {
             const span = document.createElement('span');
             span.className = 'inline-block opacity-15 transition-opacity duration-300 ease-out';
             span.style.transitionDelay = `${index * 50}ms`;
             span.textContent = word;
-            element.appendChild(span);
+            fragment.appendChild(span);
 
             // Add space between words, but avoid trailing spaces
             if (index < words.length - 1) {
-                element.appendChild(document.createTextNode(' '));
+                fragment.appendChild(document.createTextNode(' '));
             }
           });
           
+          element.appendChild(fragment);
+
           // Trigger animation
           setTimeout(() => {
             const spans = element.querySelectorAll('span');
