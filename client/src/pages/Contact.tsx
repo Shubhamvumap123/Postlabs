@@ -103,13 +103,13 @@ const Contact = () => {
                   <label htmlFor="firstName" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
                     First Name
                   </label>
-                  <Input id="firstName" required placeholder="John" maxLength={50} disabled={loading} />
+                  <Input id="firstName" required placeholder="John" disabled={loading} />
                 </div>
                 <div className="space-y-2">
                   <label htmlFor="lastName" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
                     Last Name
                   </label>
-                  <Input id="lastName" required placeholder="Doe" maxLength={50} disabled={loading} />
+                  <Input id="lastName" required placeholder="Doe" disabled={loading} />
                 </div>
               </div>
 
@@ -117,7 +117,7 @@ const Contact = () => {
                 <label htmlFor="email" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
                   Email
                 </label>
-                <Input id="email" type="email" required placeholder="john@example.com" maxLength={100} disabled={loading} />
+                <Input id="email" type="email" required placeholder="john@example.com" disabled={loading} />
               </div>
 
               <div className="space-y-2">
@@ -127,7 +127,7 @@ const Contact = () => {
                 <textarea
                   id="message"
                   required
-                  maxLength={1000}
+                  disabled={loading}
                   placeholder="How can we help you?"
                   maxLength={1000}
                   disabled={loading}
@@ -138,11 +138,12 @@ const Contact = () => {
 
               <Button type="submit" className="w-full relative" disabled={loading}>
                 {loading && (
-                  <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center">
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                  </span>
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <Loader2 className="w-5 h-5 animate-spin" />
+                    <span className="sr-only">Sending message...</span>
+                  </div>
                 )}
-                <span className={`flex items-center ${loading ? 'opacity-0' : 'opacity-100'}`}>
+                <span className={loading ? "opacity-0 flex items-center" : "flex items-center"}>
                   Send Message <Send className="w-4 h-4 ml-2" />
                 </span>
               </Button>
