@@ -7,6 +7,6 @@
 ## 2025-05-18 - Custom Toggle Switch Accessibility
 **Learning:** Building custom toggle switches using `<div>` elements with `onClick` handlers removes keyboard accessibility and screen reader support. Users navigating via keyboard cannot focus or activate the toggle, and screen readers do not recognize its state or purpose.
 **Action:** When creating custom interactive elements like toggles, always use a native interactive element (e.g., `<button type="button">`) with the appropriate ARIA roles (e.g., `role="switch"`), state attributes (e.g., `aria-checked`), and associated labels (`aria-labelledby` or `aria-label`). Ensure the element has clear `:focus-visible` styles for keyboard navigation.
-## 2025-03-25 - Mobile Navigation Accessibility
-**Learning:** Hiding text on mobile breakpoints using `display: none` (e.g., Tailwind's `hidden` class) completely removes the element from the accessibility tree. This leaves screen readers with icon-only links that lack an `aria-label` or any descriptive text, severely degrading mobile accessibility.
-**Action:** When aiming to visually hide text on smaller screens while preserving it for assistive technologies, use CSS clipping methods instead of `display: none`. In Tailwind CSS, this is achieved by combining `sr-only` for mobile and `not-sr-only` for larger breakpoints (e.g., `sr-only sm:not-sr-only sm:inline`).
+## 2025-05-18 - Mobile Navigation Safe Area Padding
+**Learning:** Adding padding to fixed UI elements (like `pb-`) to support iOS home indicators (`env(safe-area-inset-bottom)`) expands the element's invisible bounding box, inadvertently blocking users from clicking content underneath.
+**Action:** When adding safe area insets to bottom-fixed elements, apply the value directly to the `bottom` positioning property (e.g., `bottom-[max(1.5rem,env(safe-area-inset-bottom))]`) instead of using padding, ensuring the element bounds match its visual footprint.
