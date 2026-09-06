@@ -12,11 +12,9 @@ const About = () => {
     return () => clearTimeout(timer);
   }, []);
 
-  // PERFORMANCE: Explicitly memoize the expensive string splitting and DOM generation loop.
-  // By delegating the visibility toggle to a CSS group-data attribute on the parent wrapper,
-  // we remove `isVisible` from the dependency array, completely preventing the main-thread
-  // blocking re-creation of 170+ animated spans during state updates.
-  const animatedText = useMemo(() => {
+  // PERFORMANCE: Memoize large DOM generation and use CSS attribute selectors for animation
+  // to prevent re-computation and main thread jank when visibility state changes.
+  const memoizedSpans = useMemo(() => {
     return text.split('').map((char, index) => (
       <span
         key={index}
@@ -52,7 +50,7 @@ const About = () => {
           >
             <span className="sr-only">{text}</span>
             <span aria-hidden="true">
-              {animatedText}
+              {memoizedSpans}
             </span>
           </p>
         </div>
