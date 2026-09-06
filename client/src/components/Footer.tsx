@@ -14,6 +14,7 @@ export default function Footer() {
    
     // SECURITY: Replaced innerHTML with textContent to prevent DOM-based XSS
     const style = document.createElement("style");
+    // SECURITY: Replace innerHTML with textContent to prevent XSS
     style.textContent = `
       @keyframes marquee-horizontal {
         from { transform: translateX(0); }
