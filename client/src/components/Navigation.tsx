@@ -20,8 +20,9 @@ const Navigation = () => {
   const location = useLocation();
   const { scrollY } = useScroll();
 
-  // ⚡ Bolt: Leverage framer-motion's useScroll/useMotionValueEvent for batched, coordinated reads
-  const { scrollY } = useScroll();
+  // ⚡ Bolt: Using framer-motion's useMotionValueEvent to track scroll position
+  // instead of attaching independent DOM scroll event listeners. This leverages
+  // framer-motion's optimized, centralized read/write batching to prevent layout thrashing.
   useMotionValueEvent(scrollY, "change", (latest) => {
     setIsVisible(latest > 100);
   });
