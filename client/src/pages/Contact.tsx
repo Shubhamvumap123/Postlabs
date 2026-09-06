@@ -97,20 +97,19 @@ const Contact = () => {
             className="bg-card border border-border rounded-2xl p-8 shadow-sm"
           >
             <form onSubmit={handleSubmit} className="space-y-6">
-              {/* SECURITY: Added maxLength limits to all inputs to prevent DoS via extremely large payloads */}
+              {/* SECURITY: Added maxLength limits to all inputs to prevent excessively large payload sizes (DoS risk) */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div className="space-y-2">
                   <label htmlFor="firstName" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
                     First Name
                   </label>
-                  {/* SECURITY: Added input length limits to prevent resource exhaustion */}
-                  <Input id="firstName" required maxLength={50} placeholder="John" />
+                  <Input id="firstName" required placeholder="John" maxLength={50} />
                 </div>
                 <div className="space-y-2">
                   <label htmlFor="lastName" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
                     Last Name
                   </label>
-                  <Input id="lastName" required maxLength={50} placeholder="Doe" />
+                  <Input id="lastName" required placeholder="Doe" maxLength={50} />
                 </div>
               </div>
 
@@ -118,7 +117,7 @@ const Contact = () => {
                 <label htmlFor="email" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
                   Email
                 </label>
-                <Input id="email" type="email" required maxLength={100} placeholder="john@example.com" />
+                <Input id="email" type="email" required placeholder="john@example.com" maxLength={100} />
               </div>
 
               <div className="space-y-2">
