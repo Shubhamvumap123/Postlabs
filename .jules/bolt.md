@@ -20,7 +20,6 @@
 ## 2026-06-08 - Layout Thrashing in Throttled Scroll Listeners
 **Learning:** Querying layout properties like `document.body.offsetHeight` inside a scroll listener still triggers continuous synchronous layout thrashing (forced reflow), severely impacting performance even when throttled with `requestAnimationFrame`.
 **Action:** Replace layout-thrashing scroll listeners with `framer-motion`'s `useInView` combined with a sentinel element naturally placed at the end of the document flow.
-
-## 2024-05-18 - Missing Lazy Loading for Below-the-Fold Images
-**Learning:** Decorative and below-the-fold images in components like `PrivacySection` and `CardSection` were eager-loaded by default, competing with critical above-the-fold assets for bandwidth during initial page load.
-**Action:** Always audit below-the-fold `<img>` tags and apply `loading="lazy"` to defer loading until they are near the viewport, improving LCP.
+## 2024-05-18 - Inverted Image Loading Strategies Anti-Pattern
+**Learning:** Found a systemic anti-pattern where critical above-the-fold images (Header logo, Hero down arrow) were intentionally deferred using `loading="lazy"`, actively delaying the Largest Contentful Paint (LCP) and worsening initial render times. Conversely, deeply nested below-the-fold images (e.g., in the Footer, PrivacySection, CardSection) were missing lazy loading entirely, bloating the initial payload.
+**Action:** Always eagerly load above-the-fold critical images (use `fetchPriority="high"` where appropriate) and explicitly apply `loading="lazy"` to all below-the-fold images. Never apply `loading="lazy"` to LCP elements.
