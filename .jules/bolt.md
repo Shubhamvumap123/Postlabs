@@ -21,10 +21,6 @@
 **Learning:** Querying layout properties like `document.body.offsetHeight` inside a scroll listener still triggers continuous synchronous layout thrashing (forced reflow), severely impacting performance even when throttled with `requestAnimationFrame`.
 **Action:** Replace layout-thrashing scroll listeners with `framer-motion`'s `useInView` combined with a sentinel element naturally placed at the end of the document flow.
 
-## 2024-05-18 - Inverted Image Loading Strategies Anti-Pattern
-**Learning:** Found a systemic anti-pattern where critical above-the-fold images (Header logo, Hero down arrow) were intentionally deferred using `loading="lazy"`, actively delaying the Largest Contentful Paint (LCP) and worsening initial render times. Conversely, deeply nested below-the-fold images (e.g., in the Footer, CardSection, PrivacySection) were missing lazy loading entirely, bloating the initial payload.
-**Action:** Always eagerly load above-the-fold critical images (use `fetchPriority="high"` where appropriate) and explicitly apply `loading="lazy"` to all below-the-fold images. Never apply `loading="lazy"` to LCP elements.
-
-## 2024-05-18 - Video Preloading Anti-Pattern
-**Learning:** Attempting to optimize scroll-triggered videos by changing `preload="none"` to `preload="auto"` backfires catastrophically on initial page load. While it might prevent a small layout shift or buffering delay when the video scrolls into view, it forces the browser to download massive video assets immediately on page load, severely degrading LCP and TTI for the rest of the application.
-**Action:** In the postlabs application, explicitly preserve `preload="none"` for below-the-fold videos (like those in `VideoSection` and `FullWidthVideoSection`) to prevent blocking the initial page load. Only use `preload="auto"` or `preload="metadata"` for critical, above-the-fold videos.
+## 2024-05-18 - Missing Lazy Loading for Below-the-Fold Images
+**Learning:** Decorative and below-the-fold images in components like `PrivacySection` and `CardSection` were eager-loaded by default, competing with critical above-the-fold assets for bandwidth during initial page load.
+**Action:** Always audit below-the-fold `<img>` tags and apply `loading="lazy"` to defer loading until they are near the viewport, improving LCP.
