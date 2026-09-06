@@ -12,10 +12,10 @@ const About = () => {
     return () => clearTimeout(timer);
   }, []);
 
-  // PERFORMANCE: Memoize the split text DOM elements to avoid recreating
-  // the entire array of spans on every state change. Uses group-data
-  // to control the animation state through parent without re-rendering children.
-  const splitTextMemo = useMemo(() => {
+  // PERFORMANCE: Memoize large DOM node generation to prevent main thread blocking.
+  // Dynamic state (isVisible) is decoupled from the memoized generation loop by relying
+  // on static data dependencies and controlling animations via parent CSS attribute selectors.
+  const memoizedTextSpans = useMemo(() => {
     return text.split('').map((char, index) => (
       <span
         key={index}
@@ -56,7 +56,7 @@ const About = () => {
           >
             <span className="sr-only">{text}</span>
             <span aria-hidden="true">
-              {splitTextMemo}
+              {memoizedTextSpans}
             </span>
           </p>
         </div>
