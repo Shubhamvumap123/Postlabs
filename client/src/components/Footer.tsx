@@ -8,7 +8,7 @@ export default function Footer() {
   const sentinelRef = useRef<HTMLDivElement>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const atBottom = useInView(sentinelRef, { margin: "0px 0px 50px 0px" });
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
    
@@ -45,7 +45,7 @@ export default function Footer() {
 
     // Capture the form element before the await
     const form = e.currentTarget;
-    setIsSubmitting(true);
+    setIsLoading(true);
 
     setIsSubmitting(true);
     try {
@@ -64,7 +64,7 @@ export default function Footer() {
       console.error(error);
       toast.error("Error signing up. Please try again later.");
     } finally {
-      setIsSubmitting(false);
+      setIsLoading(false);
     }
   };
 
@@ -172,9 +172,10 @@ export default function Footer() {
               type="submit"
               disabled={isSubmitting}
               aria-label="Subscribe to newsletter"
-              className="min-w-[56px] inline-flex items-center justify-center bg-white text-black rounded-md font-medium outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 disabled:opacity-70 disabled:cursor-not-allowed"
+              disabled={isLoading}
+              className="min-w-[56px] inline-flex items-center justify-center bg-white text-black rounded-md font-medium outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 disabled:opacity-70"
             >
-              {isSubmitting ? <Loader2 className="w-5 h-5 animate-spin" /> : "→"}
+              {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : "→"}
             </button>
           </form>
         </div>
