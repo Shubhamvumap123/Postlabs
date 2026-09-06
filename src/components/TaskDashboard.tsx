@@ -115,6 +115,16 @@ export default function TaskDashboard() {
       return;
     }
 
+    if (newTaskTitle.length > 100) {
+      toast.error("Task title cannot exceed 100 characters");
+      return;
+    }
+
+    if (tasks.length >= 100) {
+      toast.error("Maximum task limit (100) reached. Please delete some tasks first.");
+      return;
+    }
+
     const newTask: Task = {
       id: crypto.randomUUID(),
       title: safeTitle,
