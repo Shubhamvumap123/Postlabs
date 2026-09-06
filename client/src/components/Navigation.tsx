@@ -18,12 +18,10 @@ const Navigation = () => {
   const location = useLocation();
   const { scrollY } = useScroll();
 
-  useEffect(() => {
-    // PERFORMANCE: Replaced isolated requestAnimationFrame scroll listener with framer-motion's useScroll to utilize centralized read/write batching to prevent layout thrashing.
-    return scrollY.on("change", (latest) => {
-      setIsVisible(latest > 100);
-    });
-  }, [scrollY]);
+  // PERFORMANCE: Replaced custom rAF scroll listener with framer-motion's useScroll and useMotionValueEvent for centralized read/write batching to prevent layout thrashing.
+  useMotionValueEvent(scrollY, "change", (latest) => {
+    setIsVisible(latest > 100);
+  });
 
   return (
     <>
