@@ -1,6 +1,6 @@
 import { useEffect, useState, useMemo } from 'react';
 
-const ABOUT_TEXT = "Post Labs is rethinking how digital media works for Canadians. Our mission is simple: make journalism profitable, sustainable, and trusted – built for Canadians, by Canadians.";
+const TEXT_CONTENT = "Post Labs is rethinking how digital media works for Canadians. Our mission is simple: make journalism profitable, sustainable, and trusted – built for Canadians, by Canadians.";
 
 const About = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -11,8 +11,11 @@ const About = () => {
     return () => clearTimeout(timer);
   }, []);
 
-  const textSpans = useMemo(() => {
-    return ABOUT_TEXT.split('').map((char, index) => (
+  // PERFORMANCE: Memoize the character splitting to avoid O(N) DOM node
+  // generation on every re-render. We also extract the text content
+  // outside the component to avoid redefining the string.
+  const animatedText = useMemo(() => {
+    return TEXT_CONTENT.split('').map((char, index) => (
       <span
         key={index}
         className="inline-block transition-all duration-700 ease-out opacity-0 translate-y-4 group-data-[visible=true]:opacity-100 group-data-[visible=true]:translate-y-0"
@@ -47,12 +50,12 @@ const About = () => {
           */}
           <p
             className="group text-center max-w-[594px] mx-auto mb-0 text-5xl lg:text-4xl md:text-3xl sm:text-2xl leading-[115%] font-medium text-gray-800 tracking-tight"
-            aria-label={ABOUT_TEXT}
+            aria-label={TEXT_CONTENT}
             data-visible={isVisible}
           >
-            <span className="sr-only">{ABOUT_TEXT}</span>
+            <span className="sr-only">{TEXT_CONTENT}</span>
             <span aria-hidden="true">
-              {textSpans}
+              {animatedText}
             </span>
           </p>
         </div>
