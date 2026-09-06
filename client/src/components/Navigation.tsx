@@ -4,6 +4,7 @@ import { useScroll, useMotionValueEvent } from 'framer-motion';
 import { ThemeToggle } from './ThemeToggle';
 import { useScroll, useMotionValueEvent } from 'framer-motion';
 import { Home, LayoutDashboard, Settings, Mail } from 'lucide-react';
+import { useScroll, useMotionValueEvent } from 'framer-motion';
 import { cn } from '../lib/utils';
 import { useScroll, useMotionValueEvent } from 'framer-motion';
 
@@ -19,9 +20,9 @@ const Navigation = () => {
   const location = useLocation();
   const { scrollY } = useScroll();
 
-  // ⚡ Bolt: Leveraged framer-motion's useScroll and useMotionValueEvent for optimized scroll tracking
-  // instead of independent DOM event listeners to prevent layout thrashing and utilize centralized read/write batching.
-  useMotionValueEvent(scrollY, "change", (latest) => {
+  // ⚡ Bolt: Replaced independent DOM scroll event listener with framer-motion's useScroll to leverage centralized read/write batching and prevent layout thrashing.
+  const { scrollY } = useScroll();
+  useMotionValueEvent(scrollY, 'change', (latest) => {
     setIsVisible(latest > 100);
   });
 
