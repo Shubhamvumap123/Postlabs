@@ -12,6 +12,6 @@
 **Learning:** When using list actions (like complete, archive, delete) for specific items in a list, generic `aria-label`s like 'Mark as complete' or 'Archive' create ambiguity for screen reader users as they do not indicate *which* item is being affected. Using action verbs with checkboxes can also be confusing.
 **Action:** When implementing item-specific actions in a list, always include the item's title in the `aria-label` (e.g., `Archive task: ${task.title}`). For completion toggles, use `role="checkbox"`, `aria-checked`, and an `aria-label` that concisely describes the item (e.g., `Complete task: ${task.title}`) instead of action-oriented verbs.
 
-## 2026-08-06 - Navigation Link Accessibility
-**Learning:** Navigation links often have icons and text that might be hidden on smaller screens, and lack proper keyboard focus states or indications of current page status for screen readers.
-**Action:** Always add `aria-current="page"` to active navigation links, provide an explicit `aria-label` (or `title` for tooltips on truncated/icon-only views), mark decorative icons with `aria-hidden="true"`, and ensure robust `:focus-visible` styling for keyboard users.
+## 2026-08-08 - Navigation Keyboard Accessibility
+**Learning:** Navigation links often only include hover states, making them invisible to users navigating via keyboard.
+**Action:** Always ensure interactive elements like navigation links have explicit `:focus-visible` styles (e.g., ring) to indicate keyboard focus clearly.
