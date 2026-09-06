@@ -6,7 +6,6 @@ import Footer from "../components/Footer";
 import { Input } from "../components/ui/input";
 import { Button } from "../components/ui/button";
 import { Send, Mail, MapPin, Phone, Loader2 } from "lucide-react";
-import { cn } from "../lib/utils";
 
 const Contact = () => {
   const [loading, setLoading] = useState(false);
@@ -104,13 +103,13 @@ const Contact = () => {
                   <label htmlFor="firstName" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
                     First Name
                   </label>
-                  <Input id="firstName" required placeholder="John" maxLength={50} />
+                  <Input id="firstName" required placeholder="John" disabled={loading} maxLength={50} />
                 </div>
                 <div className="space-y-2">
                   <label htmlFor="lastName" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
                     Last Name
                   </label>
-                  <Input id="lastName" required placeholder="Doe" maxLength={50} />
+                  <Input id="lastName" required placeholder="Doe" disabled={loading} maxLength={50} />
                 </div>
               </div>
 
@@ -118,7 +117,7 @@ const Contact = () => {
                 <label htmlFor="email" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
                   Email
                 </label>
-                <Input id="email" type="email" required placeholder="john@example.com" maxLength={100} />
+                <Input id="email" type="email" required placeholder="john@example.com" disabled={loading} maxLength={100} />
               </div>
 
               <div className="space-y-2">
@@ -130,6 +129,7 @@ const Contact = () => {
                   required
                   maxLength={1000}
                   placeholder="How can we help you?"
+                  disabled={loading}
                   maxLength={1000}
                   className="flex min-h-[120px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 resize-none"
                   disabled={loading}
@@ -137,10 +137,13 @@ const Contact = () => {
               </div>
 
               <Button type="submit" className="w-full relative" disabled={loading}>
+                <span className={`flex items-center ${loading ? 'opacity-0' : 'opacity-100'}`}>
+                  Send Message <Send className="w-4 h-4 ml-2" />
+                </span>
                 {loading && (
-                  <div className="absolute inset-0 flex items-center justify-center">
+                  <span className="absolute inset-0 flex items-center justify-center">
                     <Loader2 className="w-5 h-5 animate-spin" />
-                  </div>
+                  </span>
                 )}
                 <span className={cn("flex items-center", loading && "opacity-0")}>
                   Send Message <Send className="w-4 h-4 ml-2" />
