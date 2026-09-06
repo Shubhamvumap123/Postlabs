@@ -18,6 +18,6 @@
 **Learning:** Found a systemic anti-pattern where critical above-the-fold images (Header logo, Hero down arrow) were intentionally deferred using `loading="lazy"`, actively delaying the Largest Contentful Paint (LCP) and worsening initial render times. Conversely, deeply nested below-the-fold images (e.g., in the Footer) were missing lazy loading entirely, bloating the initial payload.
 **Action:** Always eagerly load above-the-fold critical images (use `fetchPriority="high"` where appropriate) and explicitly apply `loading="lazy"` to all below-the-fold images. Never apply `loading="lazy"` to LCP elements.
 
-## 2024-05-18 - Animated Text Performance Optimization
-**Learning:** Generating large amounts of DOM elements inside a functional component that also tracks fast-updating or frequent state (like visibility toggles) causes excessive re-renders and jank.
-**Action:** Explicitly memoize functions that generate large amounts of DOM elements using useMemo. Decouple dynamic state from the memoized generation loop by relying on static data dependencies and controlling animations via parent CSS attribute selectors (e.g., `group-data-[visible=true]`).
+## 2024-05-18 - Text Animation Re-render Bottleneck
+**Learning:** Generating large amounts of DOM elements (like splitting text into animated spans) inside the render loop causes significant main thread blocking and animation jank when component state (like visibility toggles) triggers re-renders.
+**Action:** Explicitly memoize DOM element generation with `useMemo`, extract static text outside the component, and decouple dynamic state from the generation loop by controlling animations via parent CSS attribute selectors (e.g., `group-data-[visible=true]`) to prevent re-computation.

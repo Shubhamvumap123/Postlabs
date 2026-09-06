@@ -12,9 +12,7 @@ const About = () => {
     return () => clearTimeout(timer);
   }, []);
 
-  // PERFORMANCE: Memoize large DOM generation to prevent re-renders when isVisible changes.
-  // Decouple animation state from the generation loop by using Tailwind's group-data-[visible=true] selector.
-  const animatedTextContent = useMemo(() => {
+  const animatedSpans = useMemo(() => {
     return ABOUT_TEXT.split('').map((char, index) => (
       <span
         key={index}
@@ -49,12 +47,13 @@ const About = () => {
               - This prevents a massive re-render of all text nodes when `isVisible` state changes, significantly improving animation performance.
           */}
           <p
-            className="text-center max-w-[594px] mx-auto mb-0 text-5xl lg:text-4xl md:text-3xl sm:text-2xl leading-[115%] font-medium text-gray-800 tracking-tight"
+            className="group text-center max-w-[594px] mx-auto mb-0 text-5xl lg:text-4xl md:text-3xl sm:text-2xl leading-[115%] font-medium text-gray-800 tracking-tight"
             aria-label={ABOUT_TEXT}
+            data-visible={isVisible}
           >
             <span className="sr-only">{ABOUT_TEXT}</span>
             <span aria-hidden="true">
-              {animatedTextContent}
+              {animatedSpans}
             </span>
           </p>
         </div>
