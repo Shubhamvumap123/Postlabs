@@ -118,6 +118,12 @@ export default function TaskDashboard() {
       return;
     }
 
+    // SECURITY: Prevent localStorage exhaustion (client-side DoS)
+    if (tasks.length >= 100) {
+      toast.error("Maximum limit of 100 tasks reached.");
+      return;
+    }
+
     const newTask: Task = {
       id: crypto.randomUUID(),
       title: safeTitle,
