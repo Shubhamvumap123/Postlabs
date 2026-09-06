@@ -11,7 +11,6 @@
 ## 2026-06-08 - Contextual ARIA labels and roles for list items
 **Learning:** When using list actions (like complete, archive, delete) for specific items in a list, generic `aria-label`s like 'Mark as complete' or 'Archive' create ambiguity for screen reader users as they do not indicate *which* item is being affected. Using action verbs with checkboxes can also be confusing.
 **Action:** When implementing item-specific actions in a list, always include the item's title in the `aria-label` (e.g., `Archive task: ${task.title}`). For completion toggles, use `role="checkbox"`, `aria-checked`, and an `aria-label` that concisely describes the item (e.g., `Complete task: ${task.title}`) instead of action-oriented verbs.
-
-## 2025-03-09 - Loading states on icon-only/small buttons
-**Learning:** Adding a loading spinner to a submit button that originally had only a single small text character or icon can cause a visual jump or jank if the dimensions change during submission. Adding `min-w-[56px] flex items-center justify-center` ensures stable padding and alignment when swapping to the `Loader2` spinner.
-**Action:** Always wrap small or icon-only submission buttons with explicit min-width and flex centering properties when adding `disabled={isSubmitting}` and a loading spinner.
+## 2026-07-05 - Added loading state to newsletter submit button
+**Learning:** When adding loading states to symbol-based or icon-only form buttons, swapping horizontal padding for an explicit minimum width (e.g., `min-w-[56px]`) and centering properties (`inline-flex items-center justify-center`) prevents layout jank and avoids breaking horizontal form layouts.
+**Action:** Use `min-w` and `inline-flex` instead of standard flex or padding when swapping an icon/symbol for a loading spinner in a button.
