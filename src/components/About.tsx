@@ -12,7 +12,10 @@ const About = () => {
     return () => clearTimeout(timer);
   }, []);
 
-  const splitTextNodes = useMemo(() => {
+  // PERFORMANCE: Memoize the split text DOM elements to avoid recreating
+  // the entire array of spans on every state change. Uses group-data
+  // to control the animation state through parent without re-rendering children.
+  const splitTextMemo = useMemo(() => {
     return text.split('').map((char, index) => (
       <span
         key={index}
@@ -53,7 +56,7 @@ const About = () => {
           >
             <span className="sr-only">{text}</span>
             <span aria-hidden="true">
-              {splitTextNodes}
+              {splitTextMemo}
             </span>
           </p>
         </div>
