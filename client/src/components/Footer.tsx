@@ -1,10 +1,36 @@
 import { useEffect, useRef } from "react";
 import { toast } from "sonner";
-import { useInView } from "framer-motion";
+import { Loader2 } from "lucide-react";
 
 export default function Footer() {
-  const sentinelRef = useRef<HTMLDivElement>(null);
-  const atBottom = useInView(sentinelRef, { margin: "0px 0px 50px 0px" });
+    const [atBottom, setAtBottom] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    let ticking = false;
+    let frameId: number = 0;
+
+    const handleScroll = () => {
+      if (!ticking) {
+        frameId = globalThis.requestAnimationFrame(() => {
+          const bottom =
+            globalThis.innerHeight + globalThis.scrollY >= document.body.offsetHeight - 50;
+          setAtBottom(bottom);
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+
+    // Call once to set initial state in case the page is already at the bottom
+    handleScroll();
+
+    globalThis.addEventListener("scroll", handleScroll, { passive: true });
+    return () => {
+      globalThis.removeEventListener("scroll", handleScroll);
+      globalThis.cancelAnimationFrame(frameId);
+    };
+  }, []);
 
   useEffect(() => {
    
@@ -37,6 +63,7 @@ export default function Footer() {
     // Capture the form element before the await
     const form = e.currentTarget;
 
+    setIsSubmitting(true);
     try {
       // SECURITY: In a real production app, never call the Mailchimp API directly from the client.
       // It exposes your API key. Always proxy these requests through your own backend.
@@ -51,6 +78,8 @@ export default function Footer() {
     } catch (error) {
       console.error(error);
       toast.error("Error signing up. Please try again later.");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -145,15 +174,17 @@ export default function Footer() {
               type="email"
               name="email"
               required
+              disabled={isSubmitting}
               placeholder="Email Address"
-              className="flex-1 px-3 py-2 text-black rounded-md outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2"
+              className="flex-1 px-3 py-2 text-black rounded-md outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
             />
             <button
               type="submit"
+              disabled={isSubmitting}
               aria-label="Subscribe to newsletter"
-              className="px-5 bg-white text-black rounded-md font-medium outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2"
+              className="px-5 bg-white text-black rounded-md font-medium outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center min-w-[3rem]"
             >
-              →
+              {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" aria-hidden="true" /> : "→"}
             </button>
           </form>
         </div>
