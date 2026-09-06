@@ -28,3 +28,16 @@ playwright-report/
 test-results/
 blob-report/
 playwright/.cache/
+node_modules/
+dist/
+server/dist/
+client/dist/
+
+
+*.map
+*.d.ts
+server/pnpm-lock.yaml
+
+server/.env
+client/.env
+server/**/*.js
