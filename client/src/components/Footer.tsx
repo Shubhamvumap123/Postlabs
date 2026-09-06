@@ -4,7 +4,7 @@ import { Loader2 } from "lucide-react";
 
 export default function Footer() {
     const [atBottom, setAtBottom] = useState(false);
-    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     let ticking = false;
@@ -57,7 +57,7 @@ export default function Footer() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setLoading(true);
+    setIsLoading(true);
     const formData = new FormData(e.currentTarget);
     const email = formData.get("email") as string;
 
@@ -82,7 +82,7 @@ export default function Footer() {
       console.error(error);
       toast.error("Error signing up. Please try again later.");
     } finally {
-      setIsSubmitting(false);
+      setIsLoading(false);
     }
   };
 
@@ -179,21 +179,20 @@ export default function Footer() {
               name="email"
               maxLength={254}
               required
-              maxLength={100}
+              disabled={isLoading}
               placeholder="Email Address"
-              className="flex-1 px-3 py-2 text-black rounded-md outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex-1 px-3 py-2 text-black rounded-md outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 disabled:opacity-50"
             />
             <button
               type="submit"
-              disabled={isSubmitting}
+              disabled={isLoading}
               aria-label="Subscribe to newsletter"
-              disabled={isSubmitting}
-              className="px-5 bg-white text-black rounded-md font-medium outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed relative"
+              className="relative px-5 bg-white text-black rounded-md font-medium outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              <span className={isSubmitting ? "opacity-0" : ""}>→</span>
-              {isSubmitting && (
+              <span className={isLoading ? "opacity-0" : "opacity-100"}>→</span>
+              {isLoading && (
                 <div className="absolute inset-0 flex items-center justify-center">
-                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <Loader2 className="w-4 h-4 animate-spin text-black" />
                 </div>
               )}
             </button>
