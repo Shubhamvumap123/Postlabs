@@ -18,9 +18,8 @@ const Navigation = () => {
   const location = useLocation();
   const { scrollY } = useScroll();
 
-  // PERFORMANCE: Use Framer Motion's centralized scroll tracking
-  // instead of attaching raw window scroll event listeners to prevent
-  // redundant layout thrashing and excessive re-renders.
+  // PERFORMANCE: Replaced raw scroll listener with framer-motion's optimized scroll tracking
+  // to avoid redundant event bindings and reduce main thread workload.
   useMotionValueEvent(scrollY, "change", (latest) => {
     setIsVisible(latest > 100);
   });

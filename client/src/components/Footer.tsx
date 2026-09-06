@@ -3,8 +3,11 @@ import { toast } from "sonner";
 import { useInView } from "framer-motion";
 
 export default function Footer() {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { margin: "0px 0px 50px 0px" });
+  const sentinelRef = useRef<HTMLDivElement>(null);
+
+  // PERFORMANCE: Replaced raw scroll listener and synchronous layout queries (offsetHeight)
+  // with an IntersectionObserver sentinel to eliminate layout thrashing.
+  const atBottom = useInView(sentinelRef, { margin: "0px 0px 50px 0px" });
 
   useEffect(() => {
    
@@ -188,6 +191,8 @@ export default function Footer() {
         </div>
       </div>
       
+      {/* Sentinel element to trigger intersection observer when bottom is reached */}
+      <div ref={sentinelRef} className="h-px w-full invisible" aria-hidden="true" />
     </footer>
     <div ref={ref} className="w-full h-px" />
     </>

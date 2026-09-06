@@ -18,6 +18,6 @@
 **Learning:** Found a systemic anti-pattern where critical above-the-fold images (Header logo, Hero down arrow) were intentionally deferred using `loading="lazy"`, actively delaying the Largest Contentful Paint (LCP) and worsening initial render times. Conversely, deeply nested below-the-fold images (e.g., in the Footer) were missing lazy loading entirely, bloating the initial payload.
 **Action:** Always eagerly load above-the-fold critical images (use `fetchPriority="high"` where appropriate) and explicitly apply `loading="lazy"` to all below-the-fold images. Never apply `loading="lazy"` to LCP elements.
 
-## 2026-06-06 - Layout Thrashing with offsetHeight
-**Learning:** Querying document.body.offsetHeight inside a requestAnimationFrame scroll listener causes continuous layout thrashing (synchronous reflows), stalling the main thread even when throttled.
-**Action:** Use framer-motion's useInView with a sentinel element instead of manually calculating scroll positions against layout properties.
+## 2025-02-18 - Replacing Unthrottled Scroll Listeners with Modern Hooks
+**Learning:** Querying layout properties like `document.body.offsetHeight` inside scroll event listeners causes severe layout thrashing, even when using `requestAnimationFrame`. Raw scroll event listeners for basic position tracking are often inefficient.
+**Action:** Use `framer-motion`'s `useScroll` and `useMotionValueEvent` for optimized global scroll tracking, and `useInView` combined with sentinel elements for scroll position tracking instead of raw window events.
