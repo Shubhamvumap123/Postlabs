@@ -12,6 +12,6 @@
 **Learning:** When using list actions (like complete, archive, delete) for specific items in a list, generic `aria-label`s like 'Mark as complete' or 'Archive' create ambiguity for screen reader users as they do not indicate *which* item is being affected. Using action verbs with checkboxes can also be confusing.
 **Action:** When implementing item-specific actions in a list, always include the item's title in the `aria-label` (e.g., `Archive task: ${task.title}`). For completion toggles, use `role="checkbox"`, `aria-checked`, and an `aria-label` that concisely describes the item (e.g., `Complete task: ${task.title}`) instead of action-oriented verbs.
 
-## 2026-08-14 - Adding loading states to async form actions
-**Learning:** Found an async form in `Footer.tsx` without any loading state for the submit button during a network request. Without visual feedback, users might double-submit or think the app froze.
-**Action:** Add a loading spinner and disable the button while the form is submitting to improve interaction feedback.
+## 2026-08-15 - Responsive Navigation Accessibility
+**Learning:** When using responsive utility classes to visually hide text on mobile (e.g., `hidden sm:inline`), it breaks the accessible name of links/buttons for screen readers on those viewport sizes. This is a common pitfall when building responsive components.
+**Action:** Always provide an explicit `aria-label` on the parent element when text might be hidden contextually via CSS. Additionally, explicitly use `aria-hidden="true"` on purely decorative icons to prevent redundant or confusing screen reader announcements.
