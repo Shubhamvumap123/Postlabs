@@ -199,6 +199,16 @@ export default function TaskDashboard() {
       return;
     }
 
+    // SECURITY: Prevent localStorage exhaustion and DoS by limiting task count and title length
+    if (tasks.length >= 100) {
+      toast.error("Maximum task limit (100) reached. Please delete some tasks first.");
+      return;
+    }
+    if (newTaskTitle.length > 200) {
+      toast.error("Task title exceeds maximum length of 200 characters.");
+      return;
+    }
+
     const newTask: Task = {
       id: crypto.randomUUID(),
       title: safeTitle,
@@ -397,7 +407,7 @@ export default function TaskDashboard() {
               className="bg-zinc-900 border-zinc-700 text-zinc-100 focus:ring-purple-500"
               maxLength={200}
               autoFocus
-              maxLength={100}
+              maxLength={200}
             />
           </div>
           <div className="space-y-2">
