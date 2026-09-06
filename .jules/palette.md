@@ -11,7 +11,6 @@
 ## 2026-06-08 - Contextual ARIA labels and roles for list items
 **Learning:** When using list actions (like complete, archive, delete) for specific items in a list, generic `aria-label`s like 'Mark as complete' or 'Archive' create ambiguity for screen reader users as they do not indicate *which* item is being affected. Using action verbs with checkboxes can also be confusing.
 **Action:** When implementing item-specific actions in a list, always include the item's title in the `aria-label` (e.g., `Archive task: ${task.title}`). For completion toggles, use `role="checkbox"`, `aria-checked`, and an `aria-label` that concisely describes the item (e.g., `Complete task: ${task.title}`) instead of action-oriented verbs.
-
-## 2026-08-15 - Responsive Navigation Accessibility
-**Learning:** When using responsive utility classes to visually hide text on mobile (e.g., `hidden sm:inline`), it breaks the accessible name of links/buttons for screen readers on those viewport sizes. This is a common pitfall when building responsive components.
-**Action:** Always provide an explicit `aria-label` on the parent element when text might be hidden contextually via CSS. Additionally, explicitly use `aria-hidden="true"` on purely decorative icons to prevent redundant or confusing screen reader announcements.
+## 2026-08-17 - Mobile-Hidden Link Text Requires Explicit ARIA Labels
+**Learning:** When using responsive utility classes (like `hidden sm:inline`) to visually hide link text on mobile devices, the element effectively becomes an icon-only interactive element for screen readers on those screen sizes. Without an explicit `aria-label` on the parent and `aria-hidden="true"` on the decorative icon, screen readers may announce the icon cryptically or not provide meaningful context to the user.
+**Action:** When hiding text content responsively on interactive elements, always explicitly define an `aria-label` on the parent interactive element and add `aria-hidden="true"` to any purely decorative icons to preserve screen reader accessibility across all viewport sizes.
