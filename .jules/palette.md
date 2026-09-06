@@ -7,7 +7,6 @@
 ## 2025-05-18 - Custom Toggle Switch Accessibility
 **Learning:** Building custom toggle switches using `<div>` elements with `onClick` handlers removes keyboard accessibility and screen reader support. Users navigating via keyboard cannot focus or activate the toggle, and screen readers do not recognize its state or purpose.
 **Action:** When creating custom interactive elements like toggles, always use a native interactive element (e.g., `<button type="button">`) with the appropriate ARIA roles (e.g., `role="switch"`), state attributes (e.g., `aria-checked`), and associated labels (`aria-labelledby` or `aria-label`). Ensure the element has clear `:focus-visible` styles for keyboard navigation.
-
-## 2026-04-20 - Async Form Loading States
-**Learning:** When adding loading text and spinners to submit buttons, the button's dimensions can change if the new content has a different width, causing the layout to jump abruptly. Also, failing to disable form inputs during async submission can lead to users modifying data mid-flight.
-**Action:** When implementing visual loading states for asynchronous actions, always disable all form inputs to prevent duplicate/invalid submissions, and ensure the submit button maintains its size by absolutely positioning the loading state over a visually hidden original state.
+## 2026-04-22 - Stable Async Button Loading States
+**Learning:** Implementing inline text-swapping loading states (e.g. 'Sending...') often causes the button's physical dimensions to change if the character count or layout is different. This creates a jarring layout shift (jank) and poor visual feedback. Additionally, failing to disable form fields during async operations can lead to accidental double-submissions or mid-flight data edits.
+**Action:** When implementing async form submissions, always disable the input fields during the request. For the submit button, preserve its original dimensions by rendering the original text with `opacity-0` and absolutely positioning an animated spinner (`Loader2`) in the center to provide stable, professional feedback.
