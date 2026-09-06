@@ -61,7 +61,7 @@ const Settings = () => {
               </div>
 
               <form onSubmit={handleSave} className="space-y-4">
-                {/* SECURITY: Added maxLength limit to prevent unbounded memory growth in localStorage */}
+                {/* SECURITY: Added maxLength limit to prevent DoS via massive payloads */}
                 <div className="space-y-2">
                   <label htmlFor="name" className="text-sm font-medium text-foreground">
                     Display Name

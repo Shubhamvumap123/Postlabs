@@ -170,6 +170,7 @@ export default function Footer() {
           <h2 className="text-xl font-semibold">Sign Up for Our Newsletter</h2>
           {/* SECURITY: Added maxLength to prevent client-side DoS from enormous input */}
           <form className="flex gap-2 max-w-md" onSubmit={handleSubmit}>
+            {/* SECURITY: Added maxLength limit to prevent DoS via massive payloads */}
             <label htmlFor="newsletter-email" className="sr-only">
               Email Address
             </label>
