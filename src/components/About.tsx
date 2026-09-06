@@ -1,10 +1,10 @@
 
 import { useEffect, useState, useMemo } from 'react';
 
+const text = "Post Labs is rethinking how digital media works for Canadians. Our mission is simple: make journalism profitable, sustainable, and trusted – built for Canadians, by Canadians.";
+
 const About = () => {
   const [isVisible, setIsVisible] = useState(false);
-  
-  const text = "Post Labs is rethinking how digital media works for Canadians. Our mission is simple: make journalism profitable, sustainable, and trusted – built for Canadians, by Canadians.";
   
   useEffect(() => {
     // Trigger the animation after component mounts
@@ -12,7 +12,10 @@ const About = () => {
     return () => clearTimeout(timer);
   }, []);
 
-  const memoizedSpans = useMemo(() => {
+  // PERFORMANCE: Memoize animated span generation to prevent re-computing 170+ DOM
+  // elements on visibility state change. Animation state is decoupled from render loop
+  // by leveraging parent CSS attribute selectors (group-data-[visible=true]).
+  const animatedText = useMemo(() => {
     return text.split('').map((char, index) => (
       <span
         key={index}
@@ -26,7 +29,7 @@ const About = () => {
         {char}
       </span>
     ));
-  }, [text]);
+  }, []);
 
   return (
     <section className="relative z-10 bg-cream-50 min-h-screen">
@@ -53,7 +56,7 @@ const About = () => {
           >
             <span className="sr-only">{text}</span>
             <span aria-hidden="true">
-              {memoizedSpans}
+              {animatedText}
             </span>
           </p>
         </div>
