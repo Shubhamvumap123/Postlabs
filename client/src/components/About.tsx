@@ -12,11 +12,7 @@ const About = () => {
     return () => clearTimeout(timer);
   }, []);
 
-  // PERFORMANCE: Memoize the generation of 160+ span elements and toggle their
-  // visibility via parent CSS attribute selectors (group-data-[visible=true]).
-  // This prevents main thread blocking and avoids an O(N) recalculation of the
-  // entire component array on every render loop.
-  const animatedSpans = useMemo(() => {
+  const animatedText = useMemo(() => {
     return ABOUT_TEXT.split('').map((char, index) => (
       <span
         key={index}
@@ -57,7 +53,7 @@ const About = () => {
           >
             <span className="sr-only">{ABOUT_TEXT}</span>
             <span aria-hidden="true">
-              {animatedSpans}
+              {animatedText}
             </span>
           </p>
         </div>
