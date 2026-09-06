@@ -155,7 +155,7 @@ export default function Footer() {
             <label htmlFor="newsletter-email" className="sr-only">
               Email Address
             </label>
-            {/* SECURITY: Added input length limits to prevent resource exhaustion */}
+            {/* SECURITY: Added maxLength limit to prevent extremely long email inputs */}
             <input
               id="newsletter-email"
               type="email"
