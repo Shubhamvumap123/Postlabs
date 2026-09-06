@@ -10,19 +10,16 @@ import { useTheme } from "next-themes";
 
 const Settings = () => {
   const [name, setName] = useState(() => {
-    return globalThis.localStorage.getItem("userName") || "";
+    /* PERFORMANCE: Prevent flash of uninitialized state and extra re-render on mount */
+    const savedName = globalThis.localStorage.getItem("userName");
+    return savedName || "";
   });
+
   const [notifications, setNotifications] = useState(() => {
     const savedNotifs = globalThis.localStorage.getItem("notifications");
-    if (savedNotifs) {
-      try {
-        setNotifications(JSON.parse(savedNotifs));
-      } catch (e) {
-        // SECURITY: Prevent app crash if local storage is corrupted
-        console.error("Failed to parse notifications setting from local storage", e);
-      }
-    }
-  }, []);
+    return savedNotifs ? JSON.parse(savedNotifs) : true;
+  });
+  const { theme, setTheme } = useTheme();
 
   const handleSave = (e: React.FormEvent) => {
     e.preventDefault();
