@@ -1,35 +1,15 @@
-import { useEffect, useState } from "react";
-import { Loader2 } from "lucide-react";
+import { useEffect, useRef } from "react";
+import { useInView } from "framer-motion";
 import { toast } from "sonner";
 import { useInView } from "framer-motion";
 
 export default function Footer() {
-    const [atBottom, setAtBottom] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const sentinelRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        // If it's intersecting, we are at the bottom.
-        // If it's not intersecting but its bounding client rect top is negative (meaning it's above the viewport),
-        // we are also at the bottom (scrolled past it).
-        if (entry.isIntersecting || entry.boundingClientRect.top < 0) {
-          setAtBottom(true);
-        } else {
-          setAtBottom(false);
-        }
-      },
-      { rootMargin: "50px" } // trigger slightly before hitting the very bottom
-    );
-
-    if (footerSentinelRef.current) {
-      observer.observe(footerSentinelRef.current);
-    }
-
-    return () => {
-      observer.disconnect();
-    };
-  }, []);
+  // PERFORMANCE: Replaced expensive unthrottled scroll event listeners and synchronous
+  // layout thrashing (offsetHeight) with Framer Motion's useInView (IntersectionObserver)
+  // to track when the bottom of the page is reached efficiently.
+  const atBottom = useInView(sentinelRef, { once: false });
 
   useEffect(() => {
    
@@ -89,11 +69,9 @@ export default function Footer() {
 
   return (
     <>
-      <footer
-        className={`bg-black text-white transition-all duration-700 ease-in-out z-50
-          ${atBottom ? "opacity-100 translate-y-0" : "opacity-0 translate-y-full"}
-        `}
-      >
+    <footer    className={ `bg-black text-white transition-all duration-700 ease-in-out z-50 
+        ${atBottom ? "opacity-100 translate-y-0" : "opacity-0 translate-y-full"}
+      `}>
       {/* Marquee */}
       <div className="relative flex w-full overflow-hidden justify-start items-center py-16 md:py-10">
         <div className="marquee-inner absolute flex items-center gap-5">
@@ -214,10 +192,8 @@ export default function Footer() {
           </a>
         </div>
       </div>
-      
-      </footer>
-      {/* PERFORMANCE: Replaced window scroll listener with IntersectionObserver to prevent layout thrashing */}
-      <div ref={footerSentinelRef} id="footer-sentinel" className="h-px w-full" aria-hidden="true" />
+    </footer>
+    <div ref={sentinelRef} className="h-1 w-full" aria-hidden="true" />
     </>
   );
 }
