@@ -102,13 +102,13 @@ const Contact = () => {
                   <label htmlFor="firstName" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
                     First Name
                   </label>
-                  <Input id="firstName" required placeholder="John" disabled={loading} />
+                  <Input id="firstName" required maxLength={50} placeholder="John" />
                 </div>
                 <div className="space-y-2">
                   <label htmlFor="lastName" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
                     Last Name
                   </label>
-                  <Input id="lastName" required placeholder="Doe" disabled={loading} />
+                  <Input id="lastName" required maxLength={50} placeholder="Doe" />
                 </div>
               </div>
 
@@ -116,7 +116,7 @@ const Contact = () => {
                 <label htmlFor="email" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
                   Email
                 </label>
-                <Input id="email" type="email" required placeholder="john@example.com" disabled={loading} />
+                <Input id="email" type="email" required maxLength={255} placeholder="john@example.com" />
               </div>
 
               <div className="space-y-2">
