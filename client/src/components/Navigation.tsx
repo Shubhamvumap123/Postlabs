@@ -4,28 +4,25 @@ import { useScroll, useMotionValueEvent } from 'framer-motion';
 import { ThemeToggle } from './ThemeToggle';
 import { Home, LayoutDashboard, Settings, Mail, LogIn } from 'lucide-react';
 import { cn } from '../lib/utils';
-import { useAuth } from '../context/AuthContext';
+import { useScroll, useMotionValueEvent } from 'framer-motion';
+
+const navItems = [
+  { name: 'Home', path: '/', icon: Home },
+  { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
+  { name: 'Contact', path: '/contact-us', icon: Mail },
+  { name: 'Settings', path: '/settings', icon: Settings },
+];
 
 const Navigation = () => {
   const [isVisible, setIsVisible] = useState(false);
   const location = useLocation();
-  const { user } = useAuth();
+  const { scrollY } = useScroll();
 
-  // ⚡ Bolt: Replaced throttled independent DOM scroll event listener with framer-motion hooks to leverage centralized read/write batching to prevent layout thrashing.
-  useMotionValueEvent(scrollY, "change", (latest) => {
+  // PERFORMANCE: Use framer-motion's useMotionValueEvent for centralized read/write batching
+  // to prevent layout thrashing and unnecessary re-renders during high-frequency scroll events.
+  useMotionValueEvent(scrollY, 'change', (latest) => {
     setIsVisible(latest > 100);
   });
-
-  const navItems = [
-    { name: 'Home', path: '/', icon: Home },
-    { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
-    { name: 'Contact', path: '/contact-us', icon: Mail },
-    { name: 'Settings', path: '/settings', icon: Settings },
-  ];
-
-  if (!user) {
-    navItems.splice(1, 0, { name: 'Login', path: '/login', icon: LogIn });
-  }
 
   return (
     <>
