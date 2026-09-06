@@ -20,6 +20,7 @@
 ## 2026-06-08 - Layout Thrashing in Throttled Scroll Listeners
 **Learning:** Querying layout properties like `document.body.offsetHeight` inside a scroll listener still triggers continuous synchronous layout thrashing (forced reflow), severely impacting performance even when throttled with `requestAnimationFrame`.
 **Action:** Replace layout-thrashing scroll listeners with `framer-motion`'s `useInView` combined with a sentinel element naturally placed at the end of the document flow.
-## 2024-06-18 - Prevent Password Re-Hashing in Mongoose Hooks
-**Learning:** In Mongoose `pre('save')` hooks, simply calling `next()` when a field is not modified does not stop the execution of the rest of the hook function. This leads to the code continuing and unintentionally executing the hashing logic again, overwriting the valid hash with a hash-of-a-hash.
-**Action:** Always use `return next();` to ensure the hook immediately exits and prevents unintended side effects when a modification condition is bypassed.
+
+## 2026-06-18 - Centralized Scroll Tracking Bottleneck
+**Learning:** Attaching independent DOM scroll event listeners (even if throttled with requestAnimationFrame) bypasses centralized read/write batching, leading to layout thrashing.
+**Action:** Prefer framer-motion's useScroll and useMotionValueEvent hooks for tracking scroll position to leverage optimized, centralized read/write batching.
