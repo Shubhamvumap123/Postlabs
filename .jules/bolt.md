@@ -17,6 +17,7 @@
 ## 2024-05-18 - Inverted Image Loading Strategies Anti-Pattern
 **Learning:** Found a systemic anti-pattern where critical above-the-fold images (Header logo, Hero down arrow) were intentionally deferred using `loading="lazy"`, actively delaying the Largest Contentful Paint (LCP) and worsening initial render times. Conversely, deeply nested below-the-fold images (e.g., in the Footer) were missing lazy loading entirely, bloating the initial payload.
 **Action:** Always eagerly load above-the-fold critical images (use `fetchPriority="high"` where appropriate) and explicitly apply `loading="lazy"` to all below-the-fold images. Never apply `loading="lazy"` to LCP elements.
-## 2026-05-25 - Footer Layout Thrashing Bottleneck
-**Learning:** Querying layout properties like `document.body.offsetHeight` inside scroll event listeners triggers continuous synchronous layout recalculations (layout thrashing), causing severe main thread blocking and animation jank, even when throttled by `requestAnimationFrame`.
-**Action:** Use `IntersectionObserver` on a sentinel element placed at the bottom of the content instead of calculating scroll position against layout properties, completely bypassing React renders and layout reflows during scrolling.
+
+## 2026-05-26 - rAF Scroll Thrashing
+**Learning:** Wrapping a scroll event listener in requestAnimationFrame surprisingly didn't work to eliminate layout thrashing if the handler still queries layout properties like document.body.offsetHeight. This still forces synchronous reflows on every frame.
+**Action:** Use an IntersectionObserver with a naturally positioned sentinel element instead of scroll listeners for triggering end-of-page animations.

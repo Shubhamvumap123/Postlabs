@@ -1,28 +1,10 @@
-import { useEffect,useState,useRef } from "react";
+import { useEffect, useRef } from "react";
 import { toast } from "sonner";
-import { Loader2 } from "lucide-react";
+import { useInView } from "framer-motion";
 
 export default function Footer() {
-    const [atBottom, setAtBottom] = useState(false);
-    const [isSubmitting, setIsSubmitting] = useState(false);
-
-  useEffect(() => {
-    // PERFORMANCE: Use IntersectionObserver on a sentinel element to track bottom
-    // of page instead of querying layout properties inside a scroll handler
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        setAtBottom(entry.isIntersecting);
-      },
-      // A small positive rootMargin means the footer starts revealing just before reaching the absolute bottom
-      { rootMargin: "200px" }
-    );
-
-    if (sentinelRef.current) {
-      observer.observe(sentinelRef.current);
-    }
-
-    return () => observer.disconnect();
-  }, []);
+  const ref = useRef<HTMLDivElement>(null);
+  const atBottom = useInView(ref);
 
   useEffect(() => {
    
@@ -81,9 +63,9 @@ export default function Footer() {
 
   return (
     <>
-    <footer    className={ `bg-black text-white transition-all duration-700 ease-in-out z-50 
-        ${atBottom ? "opacity-100 translate-y-0" : "opacity-0 translate-y-full"}
-      `}>
+      <footer className={`bg-black text-white transition-all duration-700 ease-in-out z-50
+          ${atBottom ? "opacity-100 translate-y-0" : "opacity-0 translate-y-full"}
+        `}>
       {/* Marquee */}
       <div className="relative flex w-full overflow-hidden justify-start items-center py-16 md:py-10">
         <div className="marquee-inner absolute flex items-center gap-5">
@@ -201,10 +183,9 @@ export default function Footer() {
           </a>
         </div>
       </div>
-      
-    </footer>
-    {/* Sentinel element placed at the bottom to trigger IntersectionObserver */}
-    <div ref={sentinelRef} className="w-full h-1 pointer-events-none" />
+      </footer>
+      {/* PERFORMANCE: Replaced layout-thrashing scroll event listener with an IntersectionObserver on a naturally positioned sentinel element. */}
+      <div ref={ref} className="h-1 w-full pointer-events-none" />
     </>
   );
 }
