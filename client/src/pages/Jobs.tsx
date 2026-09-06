@@ -1,259 +1,165 @@
-import { useState } from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { format } from 'date-fns';
-import { Search, Plus, Edit2, Trash2 } from 'lucide-react';
-import api from '../lib/axios';
+import { useState, useEffect, useContext, useMemo } from 'react';
+import { AuthContext } from '../context/AuthContext';
+import api from '../lib/api/axios';
+import { toast } from 'sonner';
+import { Plus, Trash2, Edit } from 'lucide-react';
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
+import JobModal from '../components/JobModal';
+import { Button } from '../components/ui/button';
+import { Input } from '../components/ui/input';
 
-interface Job {
-  _id: string;
-  company: string;
-  position: string;
-  status: string;
-  location: string;
-  dateApplied: string;
-}
-
-const Jobs = () => {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [filterStatus, setFilterStatus] = useState('All');
+const Dashboard = () => {
+  const { user, logout } = useContext(AuthContext);
+  const [jobs, setJobs] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState('');
+  const [statusFilter, setStatusFilter] = useState('All');
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingJob, setEditingJob] = useState<Job | null>(null);
-  const [formData, setFormData] = useState({
-    company: '', position: '', status: 'Applied', location: ''
-  });
+  const [editingJob, setEditingJob] = useState<any>(null);
 
-  const queryClient = useQueryClient();
+  useEffect(() => {
+    fetchJobs();
+  }, []);
 
-  const { data: jobs, isLoading } = useQuery({
-    queryKey: ['jobs'],
-    queryFn: async () => {
-      const { data } = await api.get('/jobs');
-      return data;
-    },
-  });
-
-  const createMutation = useMutation({
-    mutationFn: (newJob: Record<string, unknown>) => api.post('/jobs', newJob),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['jobs'] });
-      queryClient.invalidateQueries({ queryKey: ['jobStats'] });
-      setIsModalOpen(false);
-      resetForm();
-    },
-  });
-
-  const updateMutation = useMutation({
-    mutationFn: (updatedJob: Record<string, unknown>) => api.patch(`/jobs/${updatedJob._id}`, updatedJob),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['jobs'] });
-      queryClient.invalidateQueries({ queryKey: ['jobStats'] });
-      setIsModalOpen(false);
-      resetForm();
-    },
-  });
-
-  const deleteMutation = useMutation({
-    mutationFn: (id: string) => api.delete(`/jobs/${id}`),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['jobs'] });
-      queryClient.invalidateQueries({ queryKey: ['jobStats'] });
-    },
-  });
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (editingJob) {
-      updateMutation.mutate({ ...formData, _id: editingJob._id });
-    } else {
-      createMutation.mutate(formData);
+  const fetchJobs = async () => {
+    try {
+      setLoading(true);
+      const res = await api.get('/jobs');
+      setJobs(res.data);
+    } catch (err) {
+      toast.error('Failed to fetch jobs');
+    } finally {
+      setLoading(false);
     }
   };
 
-  const handleEdit = (job: Job) => {
-    setEditingJob(job);
-    setFormData({
-      company: job.company,
-      position: job.position,
-      status: job.status,
-      location: job.location || '',
+  const handleSaveJob = async (job: any) => {
+    try {
+      if (job._id) {
+        await api.put(`/jobs/${job._id}`, job);
+        toast.success('Job updated');
+      } else {
+        await api.post('/jobs', job);
+        toast.success('Job added');
+      }
+      fetchJobs();
+      setIsModalOpen(false);
+      setEditingJob(null);
+    } catch (err) {
+      toast.error('Failed to save job');
+    }
+  };
+
+  const handleDelete = async (id: string) => {
+    if (confirm('Are you sure you want to delete this job?')) {
+      try {
+        await api.delete(`/jobs/${id}`);
+        toast.success('Job deleted');
+        fetchJobs();
+      } catch (err) {
+        toast.error('Failed to delete job');
+      }
+    }
+  };
+
+  const filteredJobs = useMemo(() => {
+    return jobs.filter(job => {
+      const matchesSearch = job.company.toLowerCase().includes(search.toLowerCase()) || job.position.toLowerCase().includes(search.toLowerCase());
+      const matchesStatus = statusFilter === 'All' || job.status === statusFilter;
+      return matchesSearch && matchesStatus;
     });
-    setIsModalOpen(true);
-  };
+  }, [jobs, search, statusFilter]);
 
-  const resetForm = () => {
-    setEditingJob(null);
-    setFormData({ company: '', position: '', status: 'Applied', location: '' });
-  };
+  const chartData = useMemo(() => {
+    const counts = { Applied: 0, Interview: 0, Offer: 0, Rejected: 0 };
+    jobs.forEach(job => {
+      if (counts[job.status as keyof typeof counts] !== undefined) {
+        counts[job.status as keyof typeof counts]++;
+      }
+    });
+    return Object.entries(counts).map(([name, value]) => ({ name, value }));
+  }, [jobs]);
 
-  const filteredJobs = jobs?.filter((job: Job) => {
-    const matchesSearch = job.company.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                          job.position.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesStatus = filterStatus === 'All' || job.status === filterStatus;
-    return matchesSearch && matchesStatus;
-  });
+  if (!user) return <div className="min-h-screen bg-zinc-950 flex items-center justify-center text-white">Please log in.</div>;
 
   return (
-    <div className="p-8">
-      <div className="mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <h1 className="text-3xl font-bold">Jobs</h1>
-        <button
-          onClick={() => { resetForm(); setIsModalOpen(true); }}
-          className="flex items-center space-x-2 rounded-md bg-primary px-4 py-2 text-primary-foreground hover:bg-primary/90"
-        >
-          <Plus className="h-4 w-4" />
-          <span>Add Job</span>
-        </button>
-      </div>
-
-      <div className="mb-6 flex flex-col sm:flex-row gap-4">
-        <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-          <input
-            type="text"
-            placeholder="Search by company or position..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full rounded-md border bg-background pl-10 pr-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
-          />
-        </div>
-        <select
-          value={filterStatus}
-          onChange={(e) => setFilterStatus(e.target.value)}
-          className="rounded-md border bg-background px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
-        >
-          <option value="All">All Statuses</option>
-          <option value="Applied">Applied</option>
-          <option value="Interview">Interview</option>
-          <option value="Offer">Offer</option>
-          <option value="Rejected">Rejected</option>
-        </select>
-      </div>
-
-      {isLoading ? (
-        <div>Loading...</div>
-      ) : (
-        <div className="rounded-lg border bg-card overflow-hidden">
-          <table className="w-full text-left text-sm">
-            <thead className="bg-muted/50 border-b">
-              <tr>
-                <th className="px-6 py-3 font-medium">Company</th>
-                <th className="px-6 py-3 font-medium">Position</th>
-                <th className="px-6 py-3 font-medium">Date Applied</th>
-                <th className="px-6 py-3 font-medium">Status</th>
-                <th className="px-6 py-3 font-medium text-right">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredJobs?.length === 0 ? (
-                <tr>
-                  <td colSpan={5} className="px-6 py-8 text-center text-muted-foreground">
-                    No jobs found.
-                  </td>
-                </tr>
-              ) : (
-                filteredJobs?.map((job: Job) => (
-                  <tr key={job._id} className="border-b last:border-0 hover:bg-muted/50 transition-colors">
-                    <td className="px-6 py-4 font-medium">{job.company}</td>
-                    <td className="px-6 py-4">{job.position}</td>
-                    <td className="px-6 py-4 text-muted-foreground">
-                      {format(new Date(job.dateApplied), 'MMM d, yyyy')}
-                    </td>
-                    <td className="px-6 py-4">
-                      <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ${
-                        job.status === 'Applied' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400' :
-                        job.status === 'Interview' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400' :
-                        job.status === 'Offer' ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400' :
-                        'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'
-                      }`}>
-                        {job.status}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 text-right">
-                      <button onClick={() => handleEdit(job)} className="p-2 text-muted-foreground hover:text-foreground">
-                        <Edit2 className="h-4 w-4" />
-                      </button>
-                      <button onClick={() => deleteMutation.mutate(job._id)} className="p-2 text-red-500 hover:text-red-600">
-                        <Trash2 className="h-4 w-4" />
-                      </button>
-                    </td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
-      )}
-
-      {/* Modal */}
-      {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm">
-          <div className="w-full max-w-md rounded-lg border bg-card p-6 shadow-lg">
-            <h2 className="mb-4 text-xl font-bold">{editingJob ? 'Edit Job' : 'Add Job'}</h2>
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium mb-1">Company</label>
-                <input
-                  type="text"
-                  required
-                  value={formData.company}
-                  onChange={(e) => setFormData({ ...formData, company: e.target.value })}
-                  className="w-full rounded-md border bg-background px-3 py-2"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium mb-1">Position</label>
-                <input
-                  type="text"
-                  required
-                  value={formData.position}
-                  onChange={(e) => setFormData({ ...formData, position: e.target.value })}
-                  className="w-full rounded-md border bg-background px-3 py-2"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium mb-1">Location</label>
-                <input
-                  type="text"
-                  value={formData.location}
-                  onChange={(e) => setFormData({ ...formData, location: e.target.value })}
-                  className="w-full rounded-md border bg-background px-3 py-2"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium mb-1">Status</label>
-                <select
-                  value={formData.status}
-                  onChange={(e) => setFormData({ ...formData, status: e.target.value })}
-                  className="w-full rounded-md border bg-background px-3 py-2"
-                >
-                  <option value="Applied">Applied</option>
-                  <option value="Interview">Interview</option>
-                  <option value="Offer">Offer</option>
-                  <option value="Rejected">Rejected</option>
-                </select>
-              </div>
-              <div className="flex justify-end space-x-2 pt-4">
-                <button
-                  type="button"
-                  onClick={() => setIsModalOpen(false)}
-                  className="rounded-md border bg-background px-4 py-2 hover:bg-accent"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  disabled={createMutation.isPending || updateMutation.isPending}
-                  className="rounded-md bg-primary px-4 py-2 text-primary-foreground hover:bg-primary/90"
-                >
-                  {createMutation.isPending || updateMutation.isPending ? 'Saving...' : 'Save'}
-                </button>
-              </div>
-            </form>
+    <div className="min-h-screen bg-zinc-950 text-white p-6">
+      <div className="max-w-6xl mx-auto space-y-6">
+        <div className="flex justify-between items-center">
+          <h1 className="text-2xl font-bold">Job Tracker Dashboard</h1>
+          <div className="flex gap-4 items-center">
+            <span className="text-zinc-400">Welcome, {user.name}</span>
+            <Button variant="outline" onClick={logout} className="border-zinc-700 hover:bg-zinc-800">Logout</Button>
           </div>
         </div>
-      )}
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="col-span-1 md:col-span-1 bg-zinc-900 p-4 rounded-xl border border-zinc-800">
+             <h2 className="text-lg font-semibold mb-4">Analytics</h2>
+             <div className="h-48">
+               <ResponsiveContainer width="100%" height="100%">
+                 <BarChart data={chartData}>
+                   <XAxis dataKey="name" stroke="#a1a1aa" fontSize={12} />
+                   <YAxis stroke="#a1a1aa" fontSize={12} allowDecimals={false} />
+                   <Tooltip contentStyle={{ backgroundColor: '#18181b', border: '1px solid #27272a' }} />
+                   <Bar dataKey="value" fill="#9333ea" radius={[4, 4, 0, 0]} />
+                 </BarChart>
+               </ResponsiveContainer>
+             </div>
+          </div>
+
+          <div className="col-span-1 md:col-span-2 bg-zinc-900 p-4 rounded-xl border border-zinc-800 flex flex-col">
+            <div className="flex justify-between items-center mb-4">
+               <h2 className="text-lg font-semibold">Applications</h2>
+               <Button onClick={() => { setEditingJob(null); setIsModalOpen(true); }} className="bg-purple-600 hover:bg-purple-700">
+                 <Plus className="w-4 h-4 mr-2" /> New Job
+               </Button>
+            </div>
+
+            <div className="flex gap-2 mb-4">
+              <Input placeholder="Search company or position..." value={search} onChange={(e) => setSearch(e.target.value)} className="bg-zinc-800 border-zinc-700 flex-1" />
+              <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)} className="bg-zinc-800 border border-zinc-700 rounded-md p-2 text-white outline-none">
+                <option value="All">All Statuses</option>
+                <option value="Applied">Applied</option>
+                <option value="Interview">Interview</option>
+                <option value="Offer">Offer</option>
+                <option value="Rejected">Rejected</option>
+              </select>
+            </div>
+
+            <div className="flex-1 overflow-auto">
+              {loading ? (
+                <div className="text-center text-zinc-500 py-8">Loading...</div>
+              ) : filteredJobs.length === 0 ? (
+                <div className="text-center text-zinc-500 py-8">No jobs found.</div>
+              ) : (
+                <div className="space-y-2">
+                  {filteredJobs.map(job => (
+                    <div key={job._id} className="flex items-center justify-between p-3 bg-zinc-800/50 rounded-lg border border-zinc-700 hover:border-zinc-600 transition-colors">
+                      <div>
+                        <div className="font-medium">{job.company}</div>
+                        <div className="text-sm text-zinc-400">{job.position}</div>
+                      </div>
+                      <div className="flex items-center gap-4">
+                        <span className={`px-2 py-1 text-xs rounded-full ${job.status === 'Applied' ? 'bg-blue-500/20 text-blue-400' : job.status === 'Interview' ? 'bg-yellow-500/20 text-yellow-400' : job.status === 'Offer' ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'}`}>
+                          {job.status}
+                        </span>
+                        <div className="flex gap-2">
+                          <button onClick={() => { setEditingJob(job); setIsModalOpen(true); }} className="text-zinc-400 hover:text-white"><Edit className="w-4 h-4" /></button>
+                          <button onClick={() => handleDelete(job._id)} className="text-zinc-400 hover:text-red-400"><Trash2 className="w-4 h-4" /></button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+      <JobModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} onSave={handleSaveJob} job={editingJob} />
     </div>
   );
 };
 
-export default Jobs;
+export default Dashboard;

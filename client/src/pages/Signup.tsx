@@ -1,84 +1,47 @@
-import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
-import api from '../lib/axios';
+import { useState, useContext } from 'react';
+import { AuthContext } from '../context/AuthContext';
+import api from '../lib/api/axios';
+import { toast } from 'sonner';
+import { Link } from 'react-router-dom';
 
 const Signup = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const { login } = useAuth();
-  const navigate = useNavigate();
+  const { login } = useContext(AuthContext);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
-    setError('');
-
     try {
       const res = await api.post('/auth/register', { name, email, password });
-      login(res.data.token, res.data.user);
-      navigate('/dashboard');
-    } catch (err) {
-      const error = err as { response?: { data?: { message?: string } } };
-      setError(error.response?.data?.message || 'Signup failed');
-    } finally {
-      setIsLoading(false);
+      login(res.data.token);
+    } catch (err: any) {
+      toast.error(err.response?.data?.message || 'Signup failed');
     }
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background">
-      <div className="w-full max-w-md rounded-lg border bg-card p-8 shadow-sm">
-        <h2 className="mb-6 text-2xl font-bold text-center">Sign up for Job Tracker</h2>
-        {error && <div className="mb-4 text-sm text-red-500 text-center">{error}</div>}
+    <div className="min-h-screen flex items-center justify-center bg-zinc-950 p-4">
+      <div className="bg-zinc-900 p-8 rounded-xl border border-zinc-800 w-full max-w-md">
+        <h2 className="text-2xl font-bold text-white mb-6 text-center">Sign Up</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium mb-1">Name</label>
-            <input
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              className="w-full rounded-md border bg-background px-3 py-2"
-              required
-            />
+            <label className="text-zinc-400 text-sm">Name</label>
+            <input type="text" value={name} onChange={(e) => setName(e.target.value)} required className="w-full bg-zinc-800 border border-zinc-700 rounded-md p-2 text-white" />
           </div>
           <div>
-            <label className="block text-sm font-medium mb-1">Email</label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full rounded-md border bg-background px-3 py-2"
-              required
-            />
+            <label className="text-zinc-400 text-sm">Email</label>
+            <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required className="w-full bg-zinc-800 border border-zinc-700 rounded-md p-2 text-white" />
           </div>
           <div>
-            <label className="block text-sm font-medium mb-1">Password</label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full rounded-md border bg-background px-3 py-2"
-              required
-            />
+            <label className="text-zinc-400 text-sm">Password</label>
+            <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required className="w-full bg-zinc-800 border border-zinc-700 rounded-md p-2 text-white" />
           </div>
-          <button
-            type="submit"
-            disabled={isLoading}
-            className="w-full rounded-md bg-primary px-4 py-2 text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
-          >
-            {isLoading ? 'Loading...' : 'Sign Up'}
-          </button>
+          <button type="submit" className="w-full bg-purple-600 hover:bg-purple-700 text-white rounded-md p-2 transition-colors">Sign Up</button>
         </form>
-        <div className="mt-4 text-center text-sm">
-          Already have an account? <Link to="/login" className="text-blue-500 hover:underline">Login</Link>
-        </div>
+        <p className="text-zinc-400 text-sm mt-4 text-center">Already have an account? <Link to="/login" className="text-purple-400 hover:text-purple-300">Login</Link></p>
       </div>
     </div>
   );
 };
-
 export default Signup;
