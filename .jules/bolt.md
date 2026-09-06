@@ -20,7 +20,6 @@
 ## 2026-06-08 - Layout Thrashing in Throttled Scroll Listeners
 **Learning:** Querying layout properties like `document.body.offsetHeight` inside a scroll listener still triggers continuous synchronous layout thrashing (forced reflow), severely impacting performance even when throttled with `requestAnimationFrame`.
 **Action:** Replace layout-thrashing scroll listeners with `framer-motion`'s `useInView` combined with a sentinel element naturally placed at the end of the document flow.
-
-## 2024-07-06 - Framer Motion useScroll Centralized Batching
-**Learning:** Using independent DOM scroll event listeners (even if throttled with requestAnimationFrame) fragments read/write operations and can lead to minor layout thrashing when tracking scroll positions.
-**Action:** Always prefer framer-motion's useScroll and useMotionValueEvent hooks when tracking scroll position in a React app that already uses framer-motion, as it leverages centralized read/write batching to prevent layout thrashing.
+## 2024-07-13 - [Cancel RAF Loops on Async Unmount]
+**Learning:** In an SPA architecture, initializing global animation loops (like Lenis smooth scrolling) inside an async dynamic import can cause a race condition where the component unmounts before the import resolves, leading to an un-cancellable, compounding CPU leak (orphan RAF loop).
+**Action:** Always store the `requestAnimationFrame` ID, use an `isDestroyed` flag to prevent late initialization, and explicitly call `cancelAnimationFrame` in the cleanup function.
