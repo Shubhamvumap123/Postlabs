@@ -346,7 +346,7 @@ export default function TaskDashboard() {
               id="title"
               maxLength={100}
               value={newTaskTitle}
-              maxLength={150}
+              maxLength={100}
               onChange={(e) => setNewTaskTitle(e.target.value)}
               maxLength={100}
               placeholder="e.g. Review system performance"
