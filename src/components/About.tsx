@@ -12,8 +12,8 @@ const About = () => {
     return () => clearTimeout(timer);
   }, []);
 
-  // ⚡ Bolt: Memoize the split text generation to prevent unnecessary DOM element
-  // recreation on every re-render (which would otherwise block the main thread)
+  // PERFORMANCE: Memoize the generated spans to prevent recreating hundreds of elements
+  // on every render, avoiding main thread blocking and animation jank.
   const animatedText = useMemo(() => {
     return text.split('').map((char, index) => (
       <span
