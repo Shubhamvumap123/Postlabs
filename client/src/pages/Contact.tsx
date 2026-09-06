@@ -127,7 +127,7 @@ const Contact = () => {
                 <textarea
                   id="message"
                   required
-                  maxLength={1000}
+                  disabled={loading}
                   placeholder="How can we help you?"
                   maxLength={1000}
                   className="flex min-h-[120px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 resize-none"
@@ -136,15 +136,10 @@ const Contact = () => {
               </div>
 
               <Button type="submit" className="w-full relative" disabled={loading}>
-                <span className={`flex items-center justify-center transition-opacity ${loading ? "opacity-0" : "opacity-100"}`}>
-                  Send Message <Send className="w-4 h-4 ml-2" />
-                </span>
                 {loading && (
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <Loader2 className="w-5 h-5 animate-spin" />
-                  </div>
+                  <Loader2 className="w-5 h-5 animate-spin absolute" />
                 )}
-                <span className={`flex items-center ${loading ? "opacity-0" : "opacity-100"}`}>
+                <span className={`flex items-center ${loading ? 'opacity-0' : 'opacity-100'}`}>
                   Send Message <Send className="w-4 h-4 ml-2" />
                 </span>
               </Button>
