@@ -1,6 +1,10 @@
-import { useState, useEffect, useMemo } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Clock, Plus, Zap, Palette, Shield, Trash2, CheckCircle2, Circle, Archive } from 'lucide-react';
+/**
+ * TaskDashboard Component
+ * Displays a dashboard with tabs, an empty state, and filter chips.
+ */
+import { useState } from 'react';
+import { motion } from 'framer-motion';
+import { Clock, Plus, Zap, Palette, Shield } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { toast } from 'sonner';
 import { Dialog } from './ui/dialog';
