@@ -13,7 +13,7 @@ const About = () => {
     return () => clearTimeout(timer);
   }, []);
 
-  const memoizedSplitText = useMemo(() => {
+  const animatedSpans = useMemo(() => {
     return ABOUT_TEXT.split('').map((char, index) => (
       <span
         key={index}
@@ -54,7 +54,7 @@ const About = () => {
           >
             <span className="sr-only">{ABOUT_TEXT}</span>
             <span aria-hidden="true">
-              {memoizedSplitText}
+              {animatedSpans}
             </span>
           </p>
         </div>
