@@ -21,6 +21,6 @@
 **Learning:** Querying layout properties like `document.body.offsetHeight` inside a scroll listener still triggers continuous synchronous layout thrashing (forced reflow), severely impacting performance even when throttled with `requestAnimationFrame`.
 **Action:** Replace layout-thrashing scroll listeners with `framer-motion`'s `useInView` combined with a sentinel element naturally placed at the end of the document flow.
 
-## 2024-06-09 - Navigation RequestAnimationFrame Bottleneck
-**Learning:** Manual tracking of scroll events using `requestAnimationFrame` with native `globalThis.addEventListener('scroll')` creates duplicate scroll tracking infrastructure and can still lead to layout thrashing if multiple components track scroll position independently.
-**Action:** Replaced manual `requestAnimationFrame` scroll tracking with Framer Motion's `useScroll` and `useMotionValueEvent`, which utilizes Framer Motion's internal unified render loop for centralized read/write batching and prevents layout thrashing across the application.
+## 2026-07-25 - Layout Thrashing in Manual Scroll Listeners
+**Learning:** Implementing manual `requestAnimationFrame` throttled scroll listeners in React components can still lead to layout thrashing and poor read/write batching compared to specialized motion libraries, especially when combined with local state updates.
+**Action:** Replace manual `rAF` scroll listeners with Framer Motion's `useScroll` and `useMotionValueEvent` hooks when the library is available, as it leverages a globally coordinated animation loop to centralize DOM reads/writes and prevent layout thrashing.
