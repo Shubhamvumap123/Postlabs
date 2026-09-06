@@ -7,6 +7,6 @@
 ## 2025-05-18 - Custom Toggle Switch Accessibility
 **Learning:** Building custom toggle switches using `<div>` elements with `onClick` handlers removes keyboard accessibility and screen reader support. Users navigating via keyboard cannot focus or activate the toggle, and screen readers do not recognize its state or purpose.
 **Action:** When creating custom interactive elements like toggles, always use a native interactive element (e.g., `<button type="button">`) with the appropriate ARIA roles (e.g., `role="switch"`), state attributes (e.g., `aria-checked`), and associated labels (`aria-labelledby` or `aria-label`). Ensure the element has clear `:focus-visible` styles for keyboard navigation.
-## 2025-05-18 - Button Loading Layout Shifts
-**Learning:** Adding a loading spinner alters button width and causes jarring layout shifts.
-**Action:** Absolutely position the loader and apply opacity-0 to the original text.
+## 2026-04-28 - Prevent Visual Jumping in Async Buttons
+**Learning:** When adding loading spinners to buttons, the button dimensions often shrink or jump if the text is replaced entirely, causing a jarring layout shift.
+**Action:** Use absolute positioning for the spinner and render the original button text with `opacity-0` during loading to seamlessly preserve the element's exact width and height.
