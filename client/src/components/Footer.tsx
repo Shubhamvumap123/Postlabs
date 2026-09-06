@@ -13,6 +13,7 @@ export default function Footer() {
   useEffect(() => {
    
     const style = document.createElement("style");
+    // SECURITY: Use textContent instead of innerHTML to prevent DOM-based XSS vulnerabilities
     style.textContent = `
       @keyframes marquee-horizontal {
         from { transform: translateX(0); }
