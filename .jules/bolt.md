@@ -21,6 +21,6 @@
 **Learning:** Querying layout properties like `document.body.offsetHeight` inside a scroll listener still triggers continuous synchronous layout thrashing (forced reflow), severely impacting performance even when throttled with `requestAnimationFrame`.
 **Action:** Replace layout-thrashing scroll listeners with `framer-motion`'s `useInView` combined with a sentinel element naturally placed at the end of the document flow.
 
-## 2026-08-09 - Missing lazy loading on below-the-fold images
-**Learning:** Found multiple deeply nested below-the-fold images in PrivacySection and CardSection that were missing `loading="lazy"`, contributing to bloated initial payload sizes. While the footer correctly implemented this, intermediate sections did not.
-**Action:** Always explicitly apply `loading="lazy"` to all deeply nested below-the-fold images to optimize initial payload and defer loading of non-critical assets.
+## 2024-05-18 - Video preload Attribute
+**Learning:** Found an anti-pattern where critical above-the-fold or immediate-scroll videos (FullWidthVideoSection, VideoSection) were using `preload="none"`. This prevents the browser from loading the video metadata or initial frames until playback is explicitly triggered (e.g. by scrolling), causing a noticeable delay and a flash of the poster image or blank space.
+**Action:** For videos that are very likely to be played quickly after load, change `preload="none"` to `preload="auto"` or at least `preload="metadata"` to ensure smooth playback without layout shifts or delays.

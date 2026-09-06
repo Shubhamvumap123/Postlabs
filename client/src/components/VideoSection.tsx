@@ -30,7 +30,8 @@ const VideoSection = () => {
             <video
               ref={video1Ref}
               className="absolute inset-0 h-full w-full object-cover"
-              preload="none"
+              // PERFORMANCE: preload="auto" to fetch metadata and first frame immediately for smoother playback without layout shifts.
+              preload="auto"
               loop
               muted
               playsInline
@@ -44,7 +45,8 @@ const VideoSection = () => {
             <video
               ref={video2Ref}
               className="absolute inset-0 h-full w-full object-cover opacity-0"
-              preload="none"
+              // PERFORMANCE: preload="auto" to fetch metadata and first frame immediately for smoother playback without layout shifts.
+              preload="auto"
               loop
               muted
               playsInline
