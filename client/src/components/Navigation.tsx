@@ -18,8 +18,6 @@ const Navigation = () => {
   const location = useLocation();
   const { scrollY } = useScroll();
 
-  // PERFORMANCE: Replaced raw scroll listener with framer-motion's optimized scroll tracking
-  // to avoid redundant event bindings and reduce main thread workload.
   useMotionValueEvent(scrollY, "change", (latest) => {
     setIsVisible(latest > 100);
   });
