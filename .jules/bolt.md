@@ -20,6 +20,7 @@
 ## 2026-06-08 - Layout Thrashing in Throttled Scroll Listeners
 **Learning:** Querying layout properties like `document.body.offsetHeight` inside a scroll listener still triggers continuous synchronous layout thrashing (forced reflow), severely impacting performance even when throttled with `requestAnimationFrame`.
 **Action:** Replace layout-thrashing scroll listeners with `framer-motion`'s `useInView` combined with a sentinel element naturally placed at the end of the document flow.
-## 2026-06-11 - Framer Motion Centralized Scroll Tracking
-**Learning:** Using raw DOM scroll event listeners combined with requestAnimationFrame for layout updates leads to decentralized, redundant scroll tracking and potential performance bottlenecks.
-**Action:** Use framer-motion's useScroll and useMotionValueEvent hooks to tap into a centralized, optimized scroll tracker instead of attaching raw event listeners.
+
+## 2026-06-12 - Unnecessary Double Render via useEffect
+**Learning:** Initializing React state with default values and subsequently updating them from `localStorage` inside a `useEffect` triggers an unnecessary double-render cycle and potentially a flash of incorrect state when the component mounts.
+**Action:** Use synchronous lazy initialization for `localStorage` state (`useState(() => localStorage.getItem(...))`) to read the value during the initial render phase, preventing the extra render cycle.
