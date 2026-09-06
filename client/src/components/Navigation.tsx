@@ -19,6 +19,11 @@ const Navigation = () => {
   const location = useLocation();
   const { scrollY } = useScroll();
 
+  // PERFORMANCE: Replaced unthrottled global scroll listener with Framer Motion's useScroll.
+  // This hooks directly into their centralized requestAnimationFrame read/write batching loop,
+  // preventing decentralized DOM layout thrashing and maintaining consistent 60fps on scroll.
+  const { scrollY } = useScroll();
+
   useMotionValueEvent(scrollY, "change", (latest) => {
     setIsVisible(latest > 100);
   });
