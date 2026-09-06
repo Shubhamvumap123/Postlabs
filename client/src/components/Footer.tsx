@@ -160,7 +160,7 @@ export default function Footer() {
               name="email"
               autoComplete="email"
               required
-              disabled={isSubmitting}
+              maxLength={254}
               placeholder="Email Address"
               maxLength={100}
               className="flex-1 px-3 py-2 text-black rounded-md outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2"
