@@ -18,9 +18,7 @@ const Navigation = () => {
   const location = useLocation();
   const { scrollY } = useScroll();
 
-  const { scrollY } = useScroll();
-
-  // PERFORMANCE: Replaced manual requestAnimationFrame scroll listener with Framer Motion's useMotionValueEvent to achieve centralized read/write batching and prevent layout thrashing.
+  // PERFORMANCE: Replaced manual requestAnimationFrame scroll event listener with Framer Motion's useScroll and useMotionValueEvent to achieve centralized read/write batching and prevent layout thrashing.
   useMotionValueEvent(scrollY, "change", (latest) => {
     setIsVisible(latest > 100);
   });
