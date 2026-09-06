@@ -136,16 +136,11 @@ const Contact = () => {
                 />
               </div>
 
-              <Button type="submit" className="w-full" disabled={loading}>
+              <Button type="submit" className="w-full" disabled={loading} aria-disabled={loading}>
                 {loading ? (
-                  <>
-                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                    Sending...
-                  </>
+                  <><Loader2 className="mr-2 h-4 w-4 animate-spin" aria-hidden="true" /> Sending...</>
                 ) : (
-                  <>
-                    Send Message <Send className="w-4 h-4 ml-2" />
-                  </>
+                  <>Send Message <Send className="w-4 h-4 ml-2" aria-hidden="true" /></>
                 )}
                 <span className={`flex items-center ${loading ? 'opacity-0' : 'opacity-100'} transition-opacity`}>
                   Send Message <Send className="w-4 h-4 ml-2" />
