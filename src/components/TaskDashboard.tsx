@@ -150,6 +150,12 @@ export default function TaskDashboard() {
       return;
     }
 
+    // SECURITY: Prevent localStorage exhaustion (DoS risk) by limiting collection size.
+    if (tasks.length >= 100) {
+      toast.error("Maximum task limit reached (100). Please delete some tasks first.");
+      return;
+    }
+
     const newTask: Task = {
       id: crypto.randomUUID(),
       title: safeTitle,
