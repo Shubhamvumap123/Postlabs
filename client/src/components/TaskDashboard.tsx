@@ -273,9 +273,11 @@ export default function TaskDashboard() {
                 >
                   <button
                     type="button"
+                    role="checkbox"
+                    aria-checked={task.status === 'Completed'}
                     onClick={() => toggleTaskStatus(task.id)}
-                    className="flex-shrink-0 text-zinc-400 hover:text-purple-400 transition-colors rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-                    aria-label={task.status === 'Completed' ? "Mark as incomplete" : "Mark as complete"}
+                    className="flex-shrink-0 text-zinc-400 hover:text-purple-400 transition-colors rounded-full outline-none focus-visible:ring-2 focus-visible:ring-purple-500"
+                    aria-label={`Complete task: ${task.title}`}
                   >
                     {task.status === 'Completed' ? (
                       <CheckCircle2 className="w-5 h-5 text-purple-500" />

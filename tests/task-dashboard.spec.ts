@@ -81,8 +81,10 @@ test('TaskDashboard component functionality', async ({ page }) => {
   await page.locator('form').getByRole('button', { name: 'Create Task' }).click();
   await expect(page.locator('form')).toBeHidden();
 
-  // Wait for dialog to close
-  await expect(page.locator('form')).not.toBeVisible();
+  // Use .group class to target the task row container
+  const taskToCompleteRow = page.locator('.group', { hasText: 'Task to Complete' }).first();
+  // Click the check circle button
+  await taskToCompleteRow.getByRole('checkbox', { name: 'Complete task: Task to Complete' }).click();
 
   // 2. Verify it is visible when no filters are active
   await expect(page.getByText('Design Task')).toBeVisible();
