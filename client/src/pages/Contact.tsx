@@ -97,21 +97,19 @@ const Contact = () => {
             className="bg-card border border-border rounded-2xl p-8 shadow-sm"
           >
             <form onSubmit={handleSubmit} className="space-y-6">
-              {/* SECURITY: Added maxLength constraints to all inputs to prevent excessively large payload submissions (DoS risk) */}
+              {/* SECURITY: Added maxLength attributes to prevent application-layer DoS (Denial of Service) attacks via massive input strings */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div className="space-y-2">
                   <label htmlFor="firstName" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
                     First Name
                   </label>
-                  {/* SECURITY: Added maxLength to prevent DoS via large payload */}
-                  <Input id="firstName" required placeholder="John" maxLength={50} />
+                  <Input id="firstName" required maxLength={50} placeholder="John" />
                 </div>
                 <div className="space-y-2">
                   <label htmlFor="lastName" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
                     Last Name
                   </label>
-                  {/* SECURITY: Added maxLength to prevent DoS */}
-                  <Input id="lastName" required placeholder="Doe" maxLength={50} />
+                  <Input id="lastName" required maxLength={50} placeholder="Doe" />
                 </div>
               </div>
 
@@ -119,8 +117,7 @@ const Contact = () => {
                 <label htmlFor="email" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
                   Email
                 </label>
-                {/* SECURITY: Added maxLength to prevent DoS */}
-                <Input id="email" type="email" required placeholder="john@example.com" maxLength={100} />
+                <Input id="email" type="email" required maxLength={254} placeholder="john@example.com" />
               </div>
 
               <div className="space-y-2">
