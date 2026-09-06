@@ -1,123 +1,86 @@
-# Full Stack Job Tracker Application
+# Full Stack Job Tracker SaaS
 
-A production-ready full-stack SaaS application for tracking job applications, managing statuses, and viewing analytics. Built with a modern React frontend and a robust Node.js/Express backend.
+A production-ready Full Stack Job Tracker application built to help users manage their job applications effectively.
 
-## 🚀 Features
+## Features
 
-- **User Authentication:** Secure signup, login, and logout using JSON Web Tokens (JWT).
-- **Job Management:** Complete CRUD operations (Create, Read, Update, Delete) for job applications.
-- **Status Tracking:** Track applications across stages (Applied, Interview, Offer, Rejected).
-- **Search & Filter:** Easily find specific applications by company, position, or status.
-- **Analytics Dashboard:** Visual insights into your application success rate using Recharts.
-- **Protected Routes:** Ensure sensitive data and routes are only accessible to authenticated users.
-- **Responsive UI:** A beautiful, dark-mode focused UI built with Tailwind CSS.
+- **User Authentication:** Secure signup, login, and logout using JWT.
+- **Job Application Management:** Full CRUD (Create, Read, Update, Delete) operations for job applications.
+- **Job Status Tracking:** Track applications through different stages (Applied, Interview, Offer, Rejected).
+- **Search & Filtering:** View all job applications with status color-coding.
+- **Analytics Dashboard:** Visualize application statuses using a Pie Chart (powered by Recharts).
+- **Protected Routes:** Ensure user data privacy and security.
 
-## 🛠️ Tech Stack
+## Tech Stack
 
-**Frontend:**
-- React.js / Next.js (Vite)
-- TypeScript
-- Tailwind CSS
-- Recharts (Analytics)
-- React Router DOM
-- Axios (HTTP Client)
-- Sonner (Toast notifications)
+- **Frontend:** React.js (v19), Vite, TailwindCSS, Recharts, Axios, Lucide React
+- **Backend:** Node.js, Express.js, TypeScript
+- **Database:** MongoDB (via Mongoose)
+- **Authentication:** JSON Web Tokens (JWT), bcryptjs
 
-**Backend:**
-- Node.js
-- Express.js
-- MongoDB (Database)
-- Mongoose (ODM)
-- JWT (Authentication)
-- bcryptjs (Password Hashing)
+## Folder Structure
 
-## 📸 Screenshots
+```
+├── client/
+│   ├── src/
+│   │   ├── components/  # React components (e.g., JobDashboard)
+│   │   ├── pages/       # Route pages (Login, Signup, Dashboard)
+│   │   ├── lib/         # AuthContext and utils
+│   │   └── ...
+├── server/
+│   ├── src/
+│   │   ├── controllers/ # Route logic (auth, jobs)
+│   │   ├── middleware/  # JWT authentication middleware
+│   │   ├── models/      # Mongoose schemas (User, Job)
+│   │   ├── routes/      # Express routes
+│   │   └── index.ts     # Entry point
+└── package.json         # Workspace configuration (concurrently)
+```
 
-*(Placeholders for screenshots)*
-- [Dashboard View](https://placehold.co/800x400?text=Dashboard+Analytics)
-- [Job List](https://placehold.co/800x400?text=Job+List+View)
-- [Add/Edit Job Modal](https://placehold.co/800x400?text=Add+Job+Modal)
+## Setup Instructions
 
-## ⚙️ Setup Instructions
-
-### Prerequisites
-- Node.js (v18 or higher)
-- MongoDB (Local instance or MongoDB Atlas)
-
-### Local Development Setup
-
-1. **Clone the repository:**
+1. **Prerequisites:** Ensure you have Node.js and `pnpm` installed. You will also need a MongoDB database (local or MongoDB Atlas).
+2. **Install Dependencies:**
+   From the root directory, run:
    ```bash
-   git clone <repository-url>
-   cd postlabs
+   pnpm run install:all
    ```
-
-2. **Install Frontend Dependencies:**
-   ```bash
-   npm install
-   ```
-
-3. **Install Backend Dependencies:**
-   Navigate to the `server/` directory (if applicable) or ensure the root `package.json` includes the backend dependencies, and run:
-   ```bash
-   npm install
-   ```
-   *(Note: In this specific setup, dependencies are shared in the root `package.json`)*
-
-4. **Environment Variables:**
-   Create a `.env` file in the root directory and add the following:
+3. **Environment Variables:**
+   Create a `.env` file in the `server/` directory and add:
    ```env
    PORT=5000
-   MONGODB_URI=mongodb://127.0.0.1:27017/jobtracker
-   JWT_SECRET=your_super_secret_jwt_key
+   MONGODB_URI=your_mongodb_connection_string
+   JWT_SECRET=your_jwt_secret
    ```
-
-5. **Run the Backend Server:**
-   You can start the backend server by running:
+4. **Run the Application:**
+   From the root directory, start both client and server concurrently:
    ```bash
-   node server/index.js
+   pnpm run dev
    ```
+   - Client runs on `http://localhost:5173`
+   - Server runs on `http://localhost:5000`
 
-6. **Run the Frontend Development Server:**
-   In a separate terminal, start the Vite development server:
-   ```bash
-   npm run dev
-   ```
+## Scalability & Clean Architecture Suggestions
 
-7. **Access the Application:**
-   Open your browser and navigate to `http://localhost:5173`. The backend runs on `http://localhost:5000` and is proxied by Vite.
+- **Pagination & Caching:** Implement pagination for the jobs API and integrate React Query for efficient frontend caching.
+- **Microservices:** As the application grows, consider splitting the backend into microservices (e.g., Auth Service, Job Service).
+- **Global Error Handling:** Implement a centralized error-handling middleware in Express.
+- **Validation:** Use a schema validation library like `Zod` or `Joi` for API payload validation.
 
-## 🚀 Deployment Steps
+## Deployment Steps
 
-### Deploying the Backend (Render)
+### Frontend (Vercel)
+1. Push your code to GitHub.
+2. Import the project into Vercel.
+3. Set the Root Directory to `client`.
+4. Configure Build Command: `pnpm run build` and Output Directory: `dist`.
+5. Deploy!
 
-1. Create a new Web Service on [Render](https://render.com/).
-2. Connect your GitHub repository.
-3. Configure the settings:
-   - **Build Command:** `npm install`
-   - **Start Command:** `node server/index.js`
-4. Add your Environment Variables (`MONGODB_URI` pointing to MongoDB Atlas, `JWT_SECRET`, etc.).
-5. Deploy the service and note the deployed URL.
-
-### Deploying the Frontend (Vercel)
-
-1. Import your project into [Vercel](https://vercel.com/).
-2. Ensure the Framework Preset is set to Vite.
-3. **Important:** Since the frontend and backend are deployed separately in production, you need to configure Axios base URL or environment variables for the production backend API URL instead of relying on the Vite proxy.
-   - Example: Create a `.env.production` file:
-     ```env
-     VITE_API_URL=https://your-render-backend-url.onrender.com
-     ```
-   - Update Axios setup (e.g., in `src/main.tsx` or `src/App.tsx`):
-     ```javascript
-     axios.defaults.baseURL = import.meta.env.VITE_API_URL || '';
-     ```
-4. Deploy the frontend application.
-
-## 🏛️ Architecture & Scalability Improvements
-
-- **Separation of Concerns:** Keep controllers, models, and routes strictly separated.
-- **Validation:** Implement stricter request validation using libraries like Joi or Zod before hitting controllers.
-- **Error Handling:** Create a centralized error handling middleware to standardize API error responses.
-- **Pagination:** Implement pagination for the `/api/jobs` endpoint to handle users with thousands of applications efficiently.
-- **State Management:** For larger applications, consider moving from Context API to Redux Toolkit or Zustand for more robust global state management.
+### Backend (Render)
+1. Push your code to GitHub.
+2. Create a new Web Service on Render.
+3. Set the Root Directory to `server`.
+4. Configure Build Command: `pnpm install && pnpm run build`
+5. Configure Start Command: `node dist/index.js`
+6. Add necessary Environment Variables (`MONGODB_URI`, `JWT_SECRET`).
+7. Deploy!
