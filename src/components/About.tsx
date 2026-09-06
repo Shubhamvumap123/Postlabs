@@ -12,14 +12,13 @@ const About = () => {
     return () => clearTimeout(timer);
   }, []);
 
-  // PERFORMANCE: Memoize large DOM node generation to prevent main thread blocking.
-  // Dynamic state (isVisible) is decoupled from the memoized generation loop by relying
-  // on static data dependencies and controlling animations via parent CSS attribute selectors.
-  const memoizedTextSpans = useMemo(() => {
+  // PERFORMANCE: Memoize large DOM generation by decoupling the static span generation from the dynamic visibility state (`isVisible`).
+  // Animation relies on CSS `group-data-[visible=true]` targeting instead.
+  const splitTextNodes = useMemo(() => {
     return text.split('').map((char, index) => (
       <span
         key={index}
-        className="inline-block transition-all duration-700 ease-out opacity-0 translate-y-4 group-data-[visible=true]:opacity-100 group-data-[visible=true]:translate-y-0"
+        className={`inline-block transition-all duration-700 ease-out opacity-0 translate-y-4 group-data-[visible=true]:opacity-100 group-data-[visible=true]:translate-y-0`}
         style={{
           transitionDelay: `${index * 50}ms`,
           whiteSpace: char === ' ' ? 'pre' : 'normal'
@@ -56,7 +55,7 @@ const About = () => {
           >
             <span className="sr-only">{text}</span>
             <span aria-hidden="true">
-              {memoizedTextSpans}
+              {splitTextNodes}
             </span>
           </p>
         </div>
