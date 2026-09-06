@@ -272,7 +272,6 @@ export default function TaskDashboard() {
                   className="flex items-center gap-4 p-4 hover:bg-zinc-800/30 transition-colors group"
                 >
                   <button
-                    type="button"
                     role="checkbox"
                     aria-checked={task.status === 'Completed'}
                     onClick={() => toggleTaskStatus(task.id)}

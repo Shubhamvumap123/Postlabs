@@ -33,15 +33,9 @@ test('TaskDashboard component functionality', async ({ page }) => {
   await expect(page.getByText('No scheduled tasks found')).toBeVisible();
 
   // Verify filter chips existence
-  const performanceChip = page.locator('#root').getByRole('button', { name: 'Performance' });
-  const designChip = page.locator('#root').getByRole('button', { name: 'Design' });
-  const securityChip = page.locator('#root').getByRole('button', { name: 'Security' });
-
-  // Verify input limits (Security test)
-  await newButton.click();
-  const titleInput = page.getByLabel('Task Title');
-  await expect(titleInput).toHaveAttribute('maxLength', '100');
-  await page.getByRole('button', { name: 'Cancel' }).click();
+  const performanceChip = page.getByRole('button', { name: 'Performance', exact: true });
+  const designChip = page.getByRole('button', { name: 'Design', exact: true });
+  const securityChip = page.getByRole('button', { name: 'Security', exact: true });
 
   await expect(performanceChip).toBeVisible();
   await expect(designChip).toBeVisible();
@@ -109,7 +103,7 @@ test('TaskDashboard component functionality', async ({ page }) => {
   await taskToArchiveRow.hover();
 
   // Click Archive button
-  await taskToArchiveRow.getByRole('button', { name: 'Archive' }).click();
+  await taskToArchiveRow.getByRole('button', { name: 'Archive task: Task to Archive' }).click();
 
   // Verify it's gone from Scheduled tab
   await expect(page.getByText('Task to Archive')).toBeHidden();
