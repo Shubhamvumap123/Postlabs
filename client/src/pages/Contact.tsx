@@ -103,13 +103,14 @@ const Contact = () => {
                   <label htmlFor="firstName" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
                     First Name
                   </label>
-                  {/* SECURITY: Added maxLength to prevent payload attacks and resource exhaustion */}
+                  {/* SECURITY: Added maxLength limit to prevent excessively long input which could cause DoS or layout issues */}
                   <Input id="firstName" required maxLength={50} placeholder="John" />
                 </div>
                 <div className="space-y-2">
                   <label htmlFor="lastName" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
                     Last Name
                   </label>
+                  {/* SECURITY: Added maxLength limit to prevent excessively long input which could cause DoS or layout issues */}
                   <Input id="lastName" required maxLength={50} placeholder="Doe" />
                 </div>
               </div>
@@ -118,6 +119,7 @@ const Contact = () => {
                 <label htmlFor="email" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
                   Email
                 </label>
+                {/* SECURITY: Added maxLength limit to prevent excessively long input which could cause DoS or layout issues */}
                 <Input id="email" type="email" required maxLength={100} placeholder="john@example.com" />
               </div>
 
@@ -125,7 +127,7 @@ const Contact = () => {
                 <label htmlFor="message" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
                   Message
                 </label>
-                {/* SECURITY: Added maxLength to prevent DoS */}
+                {/* SECURITY: Added maxLength limit to prevent excessively long input which could cause DoS or layout issues */}
                 <textarea
                   id="message"
                   required
