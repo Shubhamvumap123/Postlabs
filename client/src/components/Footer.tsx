@@ -4,7 +4,7 @@ import { Loader2 } from "lucide-react";
 
 export default function Footer() {
     const [atBottom, setAtBottom] = useState(false);
-    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     let ticking = false;
@@ -57,6 +57,7 @@ export default function Footer() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setLoading(true);
     const formData = new FormData(e.currentTarget);
     const email = formData.get("email") as string;
 
@@ -80,7 +81,7 @@ export default function Footer() {
       console.error(error);
       toast.error("Error signing up. Please try again later.");
     } finally {
-      setIsSubmitting(false);
+      setLoading(false);
     }
   };
 
@@ -179,21 +180,17 @@ export default function Footer() {
               required
               maxLength={100}
               placeholder="Email Address"
-              maxLength={255}
-              className="flex-1 px-3 py-2 text-black rounded-md outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2"
+              disabled={loading}
+              className="flex-1 px-3 py-2 text-black rounded-md outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
             />
             <button
               type="submit"
               disabled={isSubmitting}
               aria-label="Subscribe to newsletter"
-              disabled={isSubmitting}
-              className="px-5 bg-white text-black rounded-md font-medium outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center min-w-[3rem]"
+              disabled={loading}
+              className="flex items-center justify-center min-w-[3.5rem] px-5 bg-white text-black rounded-md font-medium outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {isSubmitting ? (
-                <Loader2 className="w-4 h-4 animate-spin" />
-              ) : (
-                "→"
-              )}
+              {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "→"}
             </button>
           </form>
         </div>
