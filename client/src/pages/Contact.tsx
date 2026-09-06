@@ -103,15 +103,13 @@ const Contact = () => {
                   <label htmlFor="firstName" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
                     First Name
                   </label>
-                  {/* SECURITY: Added maxLength to prevent DoS via excessively large input */}
-                  <Input id="firstName" required maxLength={100} placeholder="John" />
+                  <Input id="firstName" required placeholder="John" autoComplete="given-name" />
                 </div>
                 <div className="space-y-2">
                   <label htmlFor="lastName" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
                     Last Name
                   </label>
-                  {/* SECURITY: Added maxLength to prevent DoS via excessively large input */}
-                  <Input id="lastName" required maxLength={100} placeholder="Doe" />
+                  <Input id="lastName" required placeholder="Doe" autoComplete="family-name" />
                 </div>
               </div>
 
@@ -119,8 +117,7 @@ const Contact = () => {
                 <label htmlFor="email" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
                   Email
                 </label>
-                {/* SECURITY: Added maxLength to prevent DoS via excessively large input */}
-                <Input id="email" type="email" required maxLength={255} placeholder="john@example.com" />
+                <Input id="email" type="email" required placeholder="john@example.com" autoComplete="email" />
               </div>
 
               <div className="space-y-2">
