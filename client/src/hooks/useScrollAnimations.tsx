@@ -16,7 +16,7 @@ export const useScrollAnimations = () => {
           const words = element.innerText.split(' ');
           element.textContent = ''; // Clear existing content
 
-          // PERFORMANCE: Batch DOM mutations using a DocumentFragment
+          // PERFORMANCE: Use DocumentFragment to batch DOM insertions and avoid layout thrashing
           const fragment = document.createDocumentFragment();
 
           words.forEach((word, index) => {
@@ -37,12 +37,11 @@ export const useScrollAnimations = () => {
           element.appendChild(fragment);
 
           // Trigger animation
+          // PERFORMANCE: Rely on CSS transitionDelay and remove O(N) nested setTimeouts to unblock the main thread
           setTimeout(() => {
             const spans = element.querySelectorAll('span');
-            spans.forEach((span, index) => {
-              setTimeout(() => {
-                span.style.opacity = '1';
-              }, index * 50);
+            spans.forEach((span) => {
+              span.style.opacity = '1';
             });
           }, 100);
           
