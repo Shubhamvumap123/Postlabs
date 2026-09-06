@@ -9,17 +9,15 @@ import { User, Bell, Smartphone } from "lucide-react";
 import { useTheme } from "next-themes";
 
 const Settings = () => {
-  // PERFORMANCE: Initialize state synchronously from localStorage to prevent unnecessary double render and flash of empty state
+  // PERFORMANCE: Use synchronous lazy initialization for localStorage to prevent
+  // flash of incorrect initial state and unnecessary re-renders.
   const [name, setName] = useState(() => {
-    const savedName = globalThis.localStorage.getItem("userName");
-    return savedName || "";
+    return globalThis.localStorage.getItem("userName") || "";
   });
-
   const [notifications, setNotifications] = useState(() => {
     const savedNotifs = globalThis.localStorage.getItem("notifications");
     return savedNotifs ? JSON.parse(savedNotifs) : true;
   });
-
   const { theme, setTheme } = useTheme();
 
   const handleSave = (e: React.FormEvent) => {
