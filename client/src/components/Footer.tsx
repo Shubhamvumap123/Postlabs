@@ -175,6 +175,7 @@ export default function Footer() {
               id="newsletter-email"
               type="email"
               name="email"
+              maxLength={254}
               required
               maxLength={254}
               placeholder="Email Address"
