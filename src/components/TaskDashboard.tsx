@@ -106,118 +106,15 @@ export default function TaskDashboard() {
 
   const addTask = (e: React.FormEvent) => {
     e.preventDefault();
-    const title = newTaskTitle.trim();
-    if (!title) return;
 
-    // SECURITY: Limit input length to prevent localStorage exhaustion and potential DoS
-    if (title.length > 200) {
-      toast.error("Task title must be 200 characters or less");
-      return;
-    }
-
-    // SECURITY: Prevent localStorage exhaustion (DoS) by enforcing strict length limits
-    if (newTaskTitle.length > 150) {
-      toast.error("Task title cannot exceed 150 characters");
-      return;
-    }
-
-    if (tasks.length >= 100) {
-      toast.error("Maximum limit of 100 tasks reached. Please delete some tasks to add more.");
-      return;
-    }
-
-    if (tasks.length >= 100) {
-      toast.error("Maximum limit of 100 tasks reached. Please delete some tasks before adding new ones.");
-      return;
-    }
-
-    if (tasks.length >= 100) {
-      toast.error("Maximum task limit (100) reached. Please delete some tasks first.");
-      return;
-    }
-
-    // SECURITY: Prevent local storage exhaustion (client-side DoS)
-    if (tasks.length >= 100) {
-      toast.error("Task limit reached. Please delete some tasks first.");
-      return;
-    }
-
-    // SECURITY: Limit input length to prevent large payloads
-    const safeTitle = newTaskTitle.trim().slice(0, 100);
-
-    if (tasks.length >= 100) {
-      toast.error("Maximum limit of 100 tasks reached");
-      return;
-    }
-
-    // SECURITY: Prevent localStorage exhaustion (DoS risk) by limiting collection size.
-    if (tasks.length >= 100) {
-      toast.error("Maximum task limit reached (100). Please delete some tasks first.");
-      return;
-    }
-
-    // SECURITY: Enforce bounds to prevent local storage DoS/exhaustion
+    // SECURITY: Prevent DoS via LocalStorage exhaustion by enforcing length and collection limits
+    if (!newTaskTitle.trim()) return;
     if (newTaskTitle.length > 100) {
       toast.error("Task title must be 100 characters or less");
       return;
     }
     if (tasks.length >= 100) {
-      toast.error("Maximum limit of 100 tasks reached");
-      return;
-    }
-
-    // SECURITY: Enforce length limits to prevent localStorage exhaustion (client-side DoS)
-    if (newTaskTitle.length > 200) {
-      toast.error("Task title must be 200 characters or less");
-      return;
-    }
-
-    if (tasks.length >= 100) {
-      toast.error("Maximum of 100 tasks reached. Please delete or archive existing tasks first.");
-      return;
-    }
-
-    if (newTaskTitle.length > 100) {
-      toast.error("Task title cannot exceed 100 characters");
-      return;
-    }
-
-    if (tasks.length >= 100) {
-      toast.error("Maximum of 100 tasks allowed. Please delete or archive existing tasks.");
-      return;
-    }
-
-    // SECURITY: Limit input to prevent local storage exhaustion (DoS)
-    if (newTaskTitle.length > 100) {
-      toast.error("Task title cannot exceed 100 characters");
-      return;
-    }
-
-    // SECURITY: Limit collection size to prevent local storage exhaustion (DoS)
-    if (tasks.length >= 100) {
       toast.error("Maximum of 100 tasks allowed. Please delete or archive old tasks.");
-      return;
-    }
-
-    // SECURITY: Prevent localStorage exhaustion and DoS by limiting task count and title length
-    if (tasks.length >= 100) {
-      toast.error("Maximum task limit (100) reached. Please delete some tasks first.");
-      return;
-    }
-    if (newTaskTitle.length > 200) {
-      toast.error("Task title exceeds maximum length of 200 characters.");
-      return;
-    }
-
-    // SECURITY: Prevent LocalStorage exhaustion and DoS by enforcing a collection-size limit
-    if (tasks.length >= 100) {
-      toast.error("Maximum task limit (100) reached. Please delete or archive old tasks.");
-      return;
-    }
-
-    // SECURITY: Prevent LocalStorage exhaustion by enforcing input length limit
-    if (newTaskTitle.length > 200) {
-      toast.error("Task title exceeds maximum length of 200 characters.");
       return;
     }
 
@@ -419,7 +316,7 @@ export default function TaskDashboard() {
               className="bg-zinc-900 border-zinc-700 text-zinc-100 focus:ring-purple-500"
               maxLength={200}
               autoFocus
-              maxLength={200}
+              maxLength={100}
             />
           </div>
           <div className="space-y-2">
