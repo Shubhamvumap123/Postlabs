@@ -128,7 +128,7 @@ const Contact = () => {
                 <textarea
                   id="message"
                   required
-                  maxLength={1000}
+                  maxLength={500}
                   placeholder="How can we help you?"
                   maxLength={1000}
                   className="flex min-h-[120px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 resize-none"
