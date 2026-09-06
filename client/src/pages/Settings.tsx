@@ -137,7 +137,7 @@ const Settings = () => {
                 </div>
               </div>
 
-              <div className="grid grid-cols-3 gap-4" role="group" aria-label="Theme preference">
+              <div className="grid grid-cols-3 gap-4" role="group" aria-label="Theme selector">
                 {['light', 'dark', 'system'].map((t) => (
                   <button
                     type="button"
@@ -148,7 +148,7 @@ const Settings = () => {
                     onClick={() => setTheme(t)}
                     aria-pressed={theme === t}
                     className={`
-                      flex flex-col items-center gap-2 p-4 rounded-lg border transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2
+                      flex flex-col items-center gap-2 p-4 rounded-lg border transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background
                       ${theme === t
                         ? 'border-primary bg-primary/5 ring-1 ring-primary'
                         : 'border-border hover:border-primary/50 hover:bg-accent/50'}
