@@ -54,9 +54,7 @@ const Navigation = () => {
                    <Link
                      key={item.path}
                      to={item.path}
-                     aria-label={item.name}
                      aria-current={isActive ? "page" : undefined}
-                     title={item.name}
                      className={cn(
                        "flex items-center gap-2 px-3 sm:px-4 py-2 rounded-full transition-all duration-300 text-sm font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400",
                        isActive
