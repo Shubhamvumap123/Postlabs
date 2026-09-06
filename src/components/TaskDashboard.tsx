@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Clock, Plus, Zap, Palette, Shield, Trash2, CheckCircle2, Circle, Archive } from 'lucide-react';
 import { cn } from '../lib/utils';
@@ -57,6 +57,7 @@ export default function TaskDashboard() {
   const [isNewTaskOpen, setIsNewTaskOpen] = useState(false);
   const [newTaskTitle, setNewTaskTitle] = useState("");
   const [newTaskCategory, setNewTaskCategory] = useState<FilterId>("performance");
+  const tabsRef = useRef<(HTMLButtonElement | null)[]>([]);
 
   // Save tasks to localStorage
   useEffect(() => {
@@ -129,6 +130,21 @@ export default function TaskDashboard() {
     toast.success("Task archived");
   };
 
+  const handleTabKeyDown = (e: React.KeyboardEvent<HTMLButtonElement>, index: number) => {
+    let newIndex = index;
+    if (e.key === 'ArrowRight') {
+      newIndex = (index + 1) % tabs.length;
+    } else if (e.key === 'ArrowLeft') {
+      newIndex = (index - 1 + tabs.length) % tabs.length;
+    } else {
+      return;
+    }
+
+    e.preventDefault();
+    setActiveTab(tabs[newIndex]);
+    tabsRef.current[newIndex]?.focus();
+  };
+
   const filteredTasks = useMemo(() => {
     return tasks.filter(task => {
       if (activeFilters.length > 0 && !activeFilters.includes(task.category)) return false;
@@ -148,13 +164,14 @@ export default function TaskDashboard() {
         <div role="tablist" aria-label="Task filters" className="flex p-1 bg-zinc-800/50 rounded-full overflow-x-auto no-scrollbar">
           {tabs.map((tab, index) => (
             <button
+              ref={el => tabsRef.current[index] = el}
               type="button"
               role="tab"
               aria-selected={activeTab === tab}
-              aria-controls={`panel-${tab}`}
-              id={`tab-${tab}`}
+              aria-controls={`panel-${tab.toLowerCase()}`}
+              id={`tab-${tab.toLowerCase()}`}
               tabIndex={activeTab === tab ? 0 : -1}
-              ref={(el) => (tabRefs.current[index] = el)}
+              onKeyDown={(e) => handleTabKeyDown(e, index)}
               key={tab}
               type="button"
               onClick={() => setActiveTab(tab)}
@@ -187,10 +204,11 @@ export default function TaskDashboard() {
 
       {/* Content Area */}
       <div
+        id={`panel-${activeTab.toLowerCase()}`}
         role="tabpanel"
-        id={`panel-${activeTab}`}
-        aria-labelledby={`tab-${activeTab}`}
-        className="min-h-[300px] bg-zinc-900/50 rounded-xl border border-zinc-800/50 overflow-hidden"
+        aria-labelledby={`tab-${activeTab.toLowerCase()}`}
+        tabIndex={0}
+        className="min-h-[300px] bg-zinc-900/50 rounded-xl border border-zinc-800/50 overflow-hidden outline-none focus-visible:ring-2 focus-visible:ring-purple-500"
       >
         {filteredTasks.length === 0 ? (
           <div className="flex flex-col items-center justify-center text-center p-8 h-[300px]">
@@ -237,7 +255,7 @@ export default function TaskDashboard() {
                       <span>{new Date(task.createdAt).toLocaleDateString()}</span>
                     </div>
                   </div>
-                  <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 focus-within:opacity-100 transition-opacity">
+                  <div className="flex items-center gap-2 opacity-0 focus-within:opacity-100 group-hover:opacity-100 transition-opacity">
                     {task.status !== 'Archived' && (
                       <button
                         onClick={() => archiveTask(task.id)}
@@ -343,7 +361,7 @@ export default function TaskDashboard() {
                 onClick={() => toggleFilter(id)}
                 aria-pressed={isActive}
                 className={cn(
-                  "flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium border transition-all duration-200 cursor-pointer focus-visible:ring-2 focus-visible:ring-purple-500 outline-none",
+                  "flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium border transition-all duration-200 cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-purple-500",
                   isActive
                     ? "bg-zinc-800 border-zinc-700 text-white shadow-sm"
                     : "bg-transparent border-zinc-800 text-zinc-400 hover:border-zinc-700 hover:text-zinc-300"
