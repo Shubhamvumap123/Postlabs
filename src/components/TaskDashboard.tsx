@@ -144,8 +144,7 @@ export default function TaskDashboard() {
               id={`tab-${tab}`}
               tabIndex={activeTab === tab ? 0 : -1}
               key={tab}
-              role="tab"
-              aria-selected={activeTab === tab}
+              type="button"
               onClick={() => setActiveTab(tab)}
               onKeyDown={(e) => {
                 let newIndex = index;
@@ -342,6 +341,7 @@ export default function TaskDashboard() {
                 type="button"
                 aria-pressed={isActive}
                 key={id}
+                type="button"
                 onClick={() => toggleFilter(id)}
                 aria-pressed={isActive}
                 className={cn(
