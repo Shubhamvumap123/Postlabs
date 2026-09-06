@@ -12,9 +12,9 @@ const About = () => {
     return () => clearTimeout(timer);
   }, []);
 
-  // PERFORMANCE: Memoize the split text generation to prevent recreating hundreds of
-  // inline-block <span> elements on every render.
-  const animatedTextSpans = useMemo(() => {
+  // ⚡ Bolt: Memoize the split text generation to prevent unnecessary DOM element
+  // recreation on every re-render (which would otherwise block the main thread)
+  const animatedText = useMemo(() => {
     return text.split('').map((char, index) => (
       <span
         key={index}
@@ -30,7 +30,7 @@ const About = () => {
         {char}
       </span>
     ));
-  }, [isVisible, text]);
+  }, [text, isVisible]);
 
   return (
     <section className="relative z-10 bg-cream-50 min-h-screen">
@@ -51,7 +51,7 @@ const About = () => {
           >
             <span className="sr-only">{text}</span>
             <span aria-hidden="true">
-              {animatedTextSpans}
+              {animatedText}
             </span>
           </p>
         </div>
