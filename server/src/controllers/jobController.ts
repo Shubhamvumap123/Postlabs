@@ -1,98 +1,60 @@
-import { Response } from 'express';
-import { AuthRequest } from '../middleware/auth';
-import Job from '../models/Job';
+import { Request, Response } from 'express';
+import Job from '../models/Job.js';
 
-export const getJobs = async (req: AuthRequest, res: Response): Promise<void> => {
+export const getJobs = async (req: any, res: Response) => {
   try {
-    const { status, search } = req.query;
-    let query: any = { user: req.user._id };
-
-    if (status && status !== 'all') {
-      query.status = status;
-    }
-
-    if (search) {
-      query.$or = [
-        { company: { $regex: search, $options: 'i' } },
-        { position: { $regex: search, $options: 'i' } }
-      ];
-    }
-
-    const jobs = await Job.find(query).sort({ createdAt: -1 });
-    res.json(jobs);
-  } catch (error: any) {
-    res.status(500).json({ message: error.message });
+    const jobs = await Job.find({ user: req.user._id }).sort({ createdAt: -1 });
+    res.status(200).json(jobs);
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching jobs' });
   }
 };
 
-export const getJobById = async (req: AuthRequest, res: Response): Promise<void> => {
+export const getJob = async (req: any, res: Response) => {
   try {
     const job = await Job.findOne({ _id: req.params.id, user: req.user._id });
-    if (!job) {
-      res.status(404).json({ message: 'Job not found' });
-      return;
-    }
-    res.json(job);
-  } catch (error: any) {
-    res.status(500).json({ message: error.message });
+    if (!job) return res.status(404).json({ message: 'Job not found' });
+    res.status(200).json(job);
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching job' });
   }
 };
 
-export const createJob = async (req: AuthRequest, res: Response): Promise<void> => {
+export const createJob = async (req: any, res: Response) => {
   try {
-    const { company, position, status, location, notes, dateApplied } = req.body;
-
-    const job = await Job.create({
-      user: req.user._id,
-      company,
-      position,
-      status: status || 'Applied',
-      location,
-      notes,
-      dateApplied: dateApplied || Date.now()
-    });
-
+    const job = new Job({ ...req.body, user: req.user._id });
+    await job.save();
     res.status(201).json(job);
-  } catch (error: any) {
-    res.status(400).json({ message: error.message });
+  } catch (error) {
+    res.status(500).json({ message: 'Error creating job' });
   }
 };
 
-export const updateJob = async (req: AuthRequest, res: Response): Promise<void> => {
+export const updateJob = async (req: any, res: Response) => {
   try {
     const job = await Job.findOneAndUpdate(
       { _id: req.params.id, user: req.user._id },
       req.body,
       { new: true, runValidators: true }
     );
-
-    if (!job) {
-      res.status(404).json({ message: 'Job not found' });
-      return;
-    }
-
-    res.json(job);
-  } catch (error: any) {
-    res.status(400).json({ message: error.message });
+    if (!job) return res.status(404).json({ message: 'Job not found' });
+    res.status(200).json(job);
+  } catch (error) {
+    res.status(500).json({ message: 'Error updating job' });
   }
 };
 
-export const deleteJob = async (req: AuthRequest, res: Response): Promise<void> => {
+export const deleteJob = async (req: any, res: Response) => {
   try {
     const job = await Job.findOneAndDelete({ _id: req.params.id, user: req.user._id });
-
-    if (!job) {
-      res.status(404).json({ message: 'Job not found' });
-      return;
-    }
-
-    res.json({ message: 'Job removed' });
-  } catch (error: any) {
-    res.status(500).json({ message: error.message });
+    if (!job) return res.status(404).json({ message: 'Job not found' });
+    res.status(200).json({ message: 'Job deleted successfully' });
+  } catch (error) {
+    res.status(500).json({ message: 'Error deleting job' });
   }
 };
 
-export const getJobStats = async (req: AuthRequest, res: Response): Promise<void> => {
+export const getJobStats = async (req: any, res: Response) => {
   try {
     const stats = await Job.aggregate([
       { $match: { user: req.user._id } },
@@ -102,17 +64,10 @@ export const getJobStats = async (req: AuthRequest, res: Response): Promise<void
     const formattedStats = stats.reduce((acc, curr) => {
       acc[curr._id] = curr.count;
       return acc;
-    }, {});
+    }, { Applied: 0, Interview: 0, Offer: 0, Rejected: 0 });
 
-    const defaultStats = {
-      Applied: formattedStats.Applied || 0,
-      Interview: formattedStats.Interview || 0,
-      Offer: formattedStats.Offer || 0,
-      Rejected: formattedStats.Rejected || 0,
-    };
-
-    res.json(defaultStats);
-  } catch (error: any) {
-    res.status(500).json({ message: error.message });
+    res.status(200).json(formattedStats);
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching stats' });
   }
 };

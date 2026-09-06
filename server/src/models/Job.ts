@@ -10,8 +10,9 @@ const jobSchema = new mongoose.Schema({
     default: 'Applied'
   },
   location: { type: String },
+  salary: { type: String },
+  notes: { type: String },
   dateApplied: { type: Date, default: Date.now },
-  notes: { type: String }
 }, { timestamps: true });
 
 export default mongoose.model('Job', jobSchema);

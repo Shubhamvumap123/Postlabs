@@ -1,98 +1,69 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { Button } from "../components/ui/button";
-import { Input } from "../components/ui/input";
-import { useToast } from "../components/ui/use-toast";
-
-const API_URL = import.meta.env.VITE_API_URL || '/api';
+import { useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+import api from '../lib/axios';
 
 const Login = () => {
-  const [isLogin, setIsLogin] = useState(true);
-  const [formData, setFormData] = useState({ name: '', email: '', password: '' });
-  const { toast } = useToast();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const { login } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsLoading(true);
+    setError('');
+
     try {
-      const endpoint = isLogin ? '/auth/login' : '/auth/register';
-      const body = isLogin
-        ? { email: formData.email, password: formData.password }
-        : formData;
-
-      const res = await fetch(`${API_URL}${endpoint}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body)
-      });
-
-      const data = await res.json();
-
-      if (res.ok) {
-        localStorage.setItem('token', data.token);
-        localStorage.setItem('user', JSON.stringify(data));
-        toast({ title: "Success!", variant: "default" });
-        navigate('/dashboard');
-      } else {
-        toast({ title: data.message || "Authentication failed", variant: "destructive" });
-      }
-    } catch (error) {
-      console.error(error);
-      toast({ title: "Network error", variant: "destructive" });
+      const res = await api.post('/auth/login', { email, password });
+      login(res.data.token, res.data.user);
+      navigate('/dashboard');
+    } catch (err) {
+      const error = err as { response?: { data?: { message?: string } } };
+      setError(error.response?.data?.message || 'Login failed');
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-zinc-950 p-4">
-      <div className="w-full max-w-md bg-zinc-900 border border-zinc-800 rounded-2xl p-8 shadow-xl">
-        <div className="text-center mb-8">
-          <h1 className="text-2xl font-bold text-white mb-2">{isLogin ? 'Welcome Back' : 'Create Account'}</h1>
-          <p className="text-zinc-400 text-sm">Job Tracker SaaS Platform</p>
-        </div>
-
+    <div className="flex min-h-screen items-center justify-center bg-background">
+      <div className="w-full max-w-md rounded-lg border bg-card p-8 shadow-sm">
+        <h2 className="mb-6 text-2xl font-bold text-center">Login to Job Tracker</h2>
+        {error && <div className="mb-4 text-sm text-red-500 text-center">{error}</div>}
         <form onSubmit={handleSubmit} className="space-y-4">
-          {!isLogin && (
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-zinc-300">Name</label>
-              <Input
-                required
-                value={formData.name}
-                onChange={(e) => setFormData({...formData, name: e.target.value})}
-                className="bg-zinc-950 border-zinc-800"
-              />
-            </div>
-          )}
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-zinc-300">Email</label>
-            <Input
+          <div>
+            <label className="block text-sm font-medium mb-1">Email</label>
+            <input
               type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full rounded-md border bg-background px-3 py-2"
               required
-              value={formData.email}
-              onChange={(e) => setFormData({...formData, email: e.target.value})}
-              className="bg-zinc-950 border-zinc-800"
             />
           </div>
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-zinc-300">Password</label>
-            <Input
+          <div>
+            <label className="block text-sm font-medium mb-1">Password</label>
+            <input
               type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full rounded-md border bg-background px-3 py-2"
               required
-              value={formData.password}
-              onChange={(e) => setFormData({...formData, password: e.target.value})}
-              className="bg-zinc-950 border-zinc-800"
             />
           </div>
-
-          <Button type="submit" className="w-full bg-purple-600 hover:bg-purple-500 text-white mt-6">
-            {isLogin ? 'Sign In' : 'Sign Up'}
-          </Button>
-        </form>
-
-        <div className="mt-6 text-center text-sm text-zinc-400">
-          {isLogin ? "Don't have an account? " : "Already have an account? "}
-          <button onClick={() => setIsLogin(!isLogin)} className="text-purple-400 hover:text-purple-300 font-medium">
-            {isLogin ? 'Sign Up' : 'Sign In'}
+          <button
+            type="submit"
+            disabled={isLoading}
+            className="w-full rounded-md bg-primary px-4 py-2 text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
+          >
+            {isLoading ? 'Loading...' : 'Login'}
           </button>
+        </form>
+        <div className="mt-4 text-center text-sm">
+          Don't have an account? <Link to="/signup" className="text-blue-500 hover:underline">Sign up</Link>
         </div>
       </div>
     </div>

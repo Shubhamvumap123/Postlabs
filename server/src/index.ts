@@ -1,9 +1,9 @@
 import express from 'express';
-import mongoose from 'mongoose';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import authRoutes from './routes/authRoutes';
-import jobRoutes from './routes/jobRoutes';
+import mongoose from 'mongoose';
+import authRoutes from './routes/authRoutes.js';
+import jobRoutes from './routes/jobRoutes.js';
 
 dotenv.config();
 
@@ -17,14 +17,13 @@ app.use(express.json());
 app.use('/api/auth', authRoutes);
 app.use('/api/jobs', jobRoutes);
 
-// Error Handler
-app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
-  console.error(err.stack);
-  res.status(500).json({ message: 'Internal server error' });
+// Basic route
+app.get('/', (req, res) => {
+  res.json({ message: 'Job Tracker API is running' });
 });
 
 // Database connection
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/jobtracker';
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/job-tracker';
 
 mongoose.connect(MONGODB_URI)
   .then(() => {
@@ -34,5 +33,5 @@ mongoose.connect(MONGODB_URI)
     });
   })
   .catch((error) => {
-    console.error('Error connecting to MongoDB:', error);
+    console.error('MongoDB connection error:', error);
   });
