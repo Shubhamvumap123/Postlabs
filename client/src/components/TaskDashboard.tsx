@@ -48,9 +48,7 @@ export default function TaskDashboard() {
       const savedTasks = globalThis.localStorage.getItem('tasks');
       if (savedTasks) {
         const parsed = JSON.parse(savedTasks);
-        if (Array.isArray(parsed)) {
-          return parsed;
-        }
+        return Array.isArray(parsed) ? parsed : [];
       }
       return [];
     } catch (e) {
