@@ -63,7 +63,7 @@ export default function Footer() {
       console.error(error);
       toast.error("Error signing up. Please try again later.");
     } finally {
-      setIsLoading(false);
+      setIsSubmitting(false);
     }
   };
 
@@ -169,11 +169,11 @@ export default function Footer() {
             />
             <button
               type="submit"
-              disabled={isLoading}
+              disabled={isSubmitting}
               aria-label="Subscribe to newsletter"
-              className="min-w-[56px] flex items-center justify-center bg-white text-black rounded-md font-medium outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="min-w-[56px] flex items-center justify-center bg-white text-black rounded-md font-medium outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 disabled:opacity-70"
             >
-              {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : "→"}
+              {isSubmitting ? <Loader2 className="w-5 h-5 animate-spin" /> : "→"}
             </button>
           </form>
         </div>
