@@ -60,6 +60,22 @@ export default function TaskDashboard() {
   const [newTaskCategory, setNewTaskCategory] = useState<FilterId>("performance");
   const tabsRef = useRef<(HTMLButtonElement | null)[]>([]);
 
+  const handleTabKeyDown = (e: KeyboardEvent<HTMLButtonElement>, index: number) => {
+    let newIndex = index;
+    if (e.key === 'ArrowRight') {
+      newIndex = (index + 1) % tabs.length;
+      e.preventDefault();
+    } else if (e.key === 'ArrowLeft') {
+      newIndex = (index - 1 + tabs.length) % tabs.length;
+      e.preventDefault();
+    }
+
+    if (newIndex !== index) {
+      setActiveTab(tabs[newIndex]);
+      tabRefs.current[newIndex]?.focus();
+    }
+  };
+
   // Save tasks to localStorage
   useEffect(() => {
     globalThis.localStorage.setItem('tasks', JSON.stringify(tasks));
@@ -147,23 +163,7 @@ export default function TaskDashboard() {
     <div className="w-full max-w-2xl mx-auto p-4 sm:p-6 bg-zinc-900 rounded-xl border border-zinc-800 text-zinc-100 shadow-xl">
       {/* Top Navigation */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
-        <div role="tablist" aria-label="Task filters" className="flex p-1 bg-zinc-800/50 rounded-full overflow-x-auto no-scrollbar"
-          onKeyDown={(e: KeyboardEvent<HTMLDivElement>) => {
-            const currentIndex = tabs.indexOf(activeTab);
-            let nextIndex = currentIndex;
-            if (e.key === 'ArrowRight') {
-              nextIndex = (currentIndex + 1) % tabs.length;
-            } else if (e.key === 'ArrowLeft') {
-              nextIndex = (currentIndex - 1 + tabs.length) % tabs.length;
-            }
-
-            if (nextIndex !== currentIndex) {
-              const nextTab = tabs[nextIndex];
-              setActiveTab(nextTab);
-              tabRefs.current[nextIndex]?.focus();
-            }
-          }}
-        >
+        <div role="tablist" aria-label="Task filters" className="flex p-1 bg-zinc-800/50 rounded-full overflow-x-auto no-scrollbar">
           {tabs.map((tab, index) => (
             <button
               ref={el => tabsRef.current[index] = el}
@@ -172,10 +172,11 @@ export default function TaskDashboard() {
               id={`${tab}-tab`}
               aria-selected={activeTab === tab}
               aria-controls="task-panel"
-              id={`tab-${tab}`}
               tabIndex={activeTab === tab ? 0 : -1}
+              ref={(el) => { tabRefs.current[index] = el; }}
+              onKeyDown={(e) => handleTabKeyDown(e, index)}
               key={tab}
-              ref={(el) => (tabRefs.current[index] = el)}
+              id={`${tab}-tab`}
               onClick={() => setActiveTab(tab)}
               onKeyDown={(e) => handleKeyDown(e, index)}
               className={cn(
@@ -205,7 +206,7 @@ export default function TaskDashboard() {
       </div>
 
       {/* Content Area */}
-      <div id="task-panel" role="tabpanel" aria-labelledby={`tab-${activeTab}`} className="min-h-[300px] bg-zinc-900/50 rounded-xl border border-zinc-800/50 overflow-hidden">
+      <div id="task-panel" role="tabpanel" aria-labelledby={`${activeTab}-tab`} className="min-h-[300px] bg-zinc-900/50 rounded-xl border border-zinc-800/50 overflow-hidden">
         {filteredTasks.length === 0 ? (
           <div className="flex flex-col items-center justify-center text-center p-8 h-[300px]">
             <div className="w-16 h-16 mb-4 rounded-full bg-zinc-800/50 flex items-center justify-center">
@@ -229,7 +230,7 @@ export default function TaskDashboard() {
                     role="checkbox"
                     aria-checked={task.status === 'Completed'}
                     onClick={() => toggleTaskStatus(task.id)}
-                    className="flex-shrink-0 text-zinc-400 hover:text-purple-400 transition-colors"
+                    className="flex-shrink-0 text-zinc-400 hover:text-purple-400 transition-colors focus-visible:ring-2 focus-visible:outline-none"
                     aria-label={task.status === 'Completed' ? "Mark as incomplete" : "Mark as complete"}
                   >
                     {task.status === 'Completed' ? (
@@ -255,7 +256,7 @@ export default function TaskDashboard() {
                     {task.status !== 'Archived' && (
                       <button
                         onClick={() => archiveTask(task.id)}
-                        className="p-1.5 text-zinc-400 hover:text-zinc-300 rounded hover:bg-zinc-800 outline-none focus-visible:ring-2 focus-visible:ring-purple-500"
+                        className="p-1.5 text-zinc-400 hover:text-zinc-300 rounded hover:bg-zinc-800 focus-visible:ring-2 focus-visible:outline-none"
                         title="Archive"
                         aria-label={`Archive task: ${task.title}`}
                       >
@@ -264,7 +265,7 @@ export default function TaskDashboard() {
                     )}
                     <button
                       onClick={() => deleteTask(task.id)}
-                      className="p-1.5 text-zinc-400 hover:text-red-400 rounded hover:bg-zinc-800 outline-none focus-visible:ring-2 focus-visible:ring-red-500"
+                      className="p-1.5 text-zinc-400 hover:text-red-400 rounded hover:bg-zinc-800 focus-visible:ring-2 focus-visible:outline-none"
                       title="Delete"
                       aria-label={`Delete task: ${task.title}`}
                     >
@@ -360,7 +361,7 @@ export default function TaskDashboard() {
                   "flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium border transition-all duration-200 cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-purple-500",
                   isActive
                     ? "bg-zinc-800 border-zinc-700 text-white shadow-sm"
-                    : "bg-transparent border-zinc-800 text-zinc-400 hover:border-zinc-700 hover:text-zinc-300"
+                    : "bg-transparent border-zinc-800 text-zinc-400 hover:border-zinc-700"
                 )}
               >
                 <Icon className={cn("w-4 h-4", isActive ? "text-purple-400" : "text-current")} />
