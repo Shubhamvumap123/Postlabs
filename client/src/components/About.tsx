@@ -1,8 +1,6 @@
 import { useEffect, useState, useMemo } from 'react';
 
-import { useEffect, useState, useMemo } from 'react';
-
-const text = "Post Labs is rethinking how digital media works for Canadians. Our mission is simple: make journalism profitable, sustainable, and trusted – built for Canadians, by Canadians.";
+const TEXT = "Post Labs is rethinking how digital media works for Canadians. Our mission is simple: make journalism profitable, sustainable, and trusted – built for Canadians, by Canadians.";
 
 const About = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -13,13 +11,11 @@ const About = () => {
     return () => clearTimeout(timer);
   }, []);
 
-  // PERFORMANCE: Memoize the split text elements to prevent recreating the array
-  // and React elements on every render. Use CSS selectors for toggling visibility.
-  const splitTextElements = useMemo(() => {
-    return text.split('').map((char, index) => (
+  const memoizedSpans = useMemo(() => {
+    return TEXT.split('').map((char, index) => (
       <span
         key={index}
-        className={`inline-block transition-all duration-700 ease-out opacity-0 translate-y-4 group-data-[visible=true]:opacity-100 group-data-[visible=true]:translate-y-0`}
+        className="inline-block transition-all duration-700 ease-out opacity-0 translate-y-4 group-data-[visible=true]:opacity-100 group-data-[visible=true]:translate-y-0"
         style={{
           transitionDelay: `${index * 50}ms`,
           whiteSpace: char === ' ' ? 'pre' : 'normal',
@@ -50,13 +46,13 @@ const About = () => {
               - This prevents a massive re-render of all text nodes when `isVisible` state changes, significantly improving animation performance.
           */}
           <p
-            className="group text-center max-w-[594px] mx-auto mb-0 text-5xl lg:text-4xl md:text-3xl sm:text-2xl leading-[115%] font-medium text-gray-800 tracking-tight"
-            aria-label={STATIC_TEXT}
+            className="text-center max-w-[594px] mx-auto mb-0 text-5xl lg:text-4xl md:text-3xl sm:text-2xl leading-[115%] font-medium text-gray-800 tracking-tight group"
+            aria-label={TEXT}
             data-visible={isVisible}
           >
-            <span className="sr-only">{text}</span>
-            <span aria-hidden="true" className="group" data-visible={isVisible}>
-              {splitTextElements}
+            <span className="sr-only">{TEXT}</span>
+            <span aria-hidden="true">
+              {memoizedSpans}
             </span>
           </p>
         </div>
