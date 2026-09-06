@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from "react";
-import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { useInView } from "framer-motion";
 import { Loader2 } from "lucide-react";
@@ -168,11 +167,11 @@ export default function Footer() {
             />
             <button
               type="submit"
-              aria-label="Subscribe to newsletter"
               disabled={isSubmitting}
-              className="px-5 bg-white text-black rounded-md font-medium outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed min-w-[3.5rem] flex items-center justify-center"
+              aria-label="Subscribe to newsletter"
+              className="px-5 bg-white text-black rounded-md font-medium outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center min-w-[60px]"
             >
-              {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" aria-hidden="true" /> : "→"}
+              {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin text-black" aria-hidden="true" /> : "→"}
             </button>
           </form>
         </div>
