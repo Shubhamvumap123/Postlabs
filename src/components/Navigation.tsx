@@ -68,7 +68,7 @@ const Navigation = () => {
                          : "text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800/50"
                      )}
                    >
-                     <item.icon className="w-4 h-4" aria-hidden="true" />
+                     <item.icon className="w-4 h-4" />
                      <span className="sr-only sm:not-sr-only sm:inline">{item.name}</span>
                    </Link>
                )
