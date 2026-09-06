@@ -13,10 +13,11 @@ const About = () => {
     return () => clearTimeout(timer);
   }, []);
 
-  // PERFORMANCE: Memoize span generation and use parent CSS attribute selectors
-  // to toggle visibility, preventing main thread blocking from re-rendering
-  // a large array of elements on state change.
-  const memoizedSpans = useMemo(() => {
+  // OPTIMIZATION: Extract static text and memoize the generation of the >160 span elements.
+  // Instead of recalculating classes using React state (which forces reconciliation),
+  // we rely on pure CSS descendant selectors `group-data-[visible=true]`
+  // on a parent container to toggle opacity/transform, completely bypassing React tree updates.
+  const animatedText = useMemo(() => {
     return TEXT.split('').map((char, index) => (
       <span
         key={index}
@@ -57,7 +58,7 @@ const About = () => {
           >
             <span className="sr-only">{TEXT}</span>
             <span aria-hidden="true">
-              {memoizedSpans}
+              {animatedText}
             </span>
           </p>
         </div>
