@@ -1,14 +1,15 @@
 import { Navigate, Outlet } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import LoadingFallback from './LoadingFallback';
 
 const ProtectedRoute = () => {
-  const { isAuthenticated } = useAuth();
+  const { user, isLoading } = useAuth();
 
-  if (!isAuthenticated) {
-    return <Navigate to="/login" replace />;
+  if (isLoading) {
+    return <LoadingFallback />;
   }
 
-  return <Outlet />;
+  return user ? <Outlet /> : <Navigate to="/login" replace />;
 };
 
 export default ProtectedRoute;

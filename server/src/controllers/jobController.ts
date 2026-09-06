@@ -1,65 +1,64 @@
 import { Response } from 'express';
-import { AuthRequest } from '../middleware/authMiddleware';
-import JobApplication from '../models/JobApplication';
+import Job from '../models/Job';
+import { AuthRequest } from '../middleware/auth';
 
 export const getJobs = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
-    const userId = typeof req.user === 'object' && req.user !== null && 'userId' in req.user ? req.user.userId : null;
-    const jobs = await JobApplication.find({ userId }).sort({ createdAt: -1 });
-    res.status(200).json(jobs);
+    const jobs = await Job.find({ userId: req.user?.id }).sort({ createdAt: -1 });
+    res.json(jobs);
   } catch (_error) {
-    res.status(500).json({ message: 'Error fetching jobs' });
+    res.status(500).json({ message: 'Server Error' });
   }
 };
 
 export const createJob = async (req: AuthRequest, res: Response): Promise<void> => {
+  const { company, position, status, location } = req.body;
   try {
-    const { company, position, status, salary, notes } = req.body;
-    const userId = typeof req.user === 'object' && req.user !== null && 'userId' in req.user ? req.user.userId : null;
-    const newJob = await JobApplication.create({
-      userId,
+    const job = await Job.create({
+      userId: req.user?.id,
       company,
       position,
-      status,
-      salary,
-      notes,
+      status: status || 'Applied',
+      location,
     });
-    res.status(201).json(newJob);
+    res.status(201).json(job);
   } catch (_error) {
-    res.status(500).json({ message: 'Error creating job application' });
+    res.status(500).json({ message: 'Server Error' });
   }
 };
 
 export const updateJob = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
-    const { id } = req.params;
-    const userId = typeof req.user === 'object' && req.user !== null && 'userId' in req.user ? req.user.userId : null;
-    const updatedJob = await JobApplication.findOneAndUpdate(
-      { _id: id, userId },
-      req.body,
-      { new: true }
-    );
-    if (!updatedJob) {
+    const job = await Job.findById(req.params.id);
+    if (!job) {
       res.status(404).json({ message: 'Job not found' });
       return;
     }
-    res.status(200).json(updatedJob);
+    if (job.userId.toString() !== req.user?.id) {
+      res.status(401).json({ message: 'User not authorized' });
+      return;
+    }
+    const updatedJob = await Job.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    res.json(updatedJob);
   } catch (_error) {
-    res.status(500).json({ message: 'Error updating job application' });
+    res.status(500).json({ message: 'Server Error' });
   }
 };
 
 export const deleteJob = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
-    const { id } = req.params;
-    const userId = typeof req.user === 'object' && req.user !== null && 'userId' in req.user ? req.user.userId : null;
-    const deletedJob = await JobApplication.findOneAndDelete({ _id: id, userId });
-    if (!deletedJob) {
+    const job = await Job.findById(req.params.id);
+    if (!job) {
       res.status(404).json({ message: 'Job not found' });
       return;
     }
-    res.status(200).json({ message: 'Job deleted successfully' });
+    if (job.userId.toString() !== req.user?.id) {
+      res.status(401).json({ message: 'User not authorized' });
+      return;
+    }
+    await Job.deleteOne({ _id: req.params.id });
+    res.json({ id: req.params.id });
   } catch (_error) {
-    res.status(500).json({ message: 'Error deleting job application' });
+    res.status(500).json({ message: 'Server Error' });
   }
 };
