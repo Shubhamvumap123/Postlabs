@@ -1,108 +1,123 @@
-# JobTracker SaaS Fullstack
+# Full Stack Job Tracker Application
 
-A production-ready fullstack Job Tracker application.
+A production-ready full-stack SaaS application for tracking job applications, managing statuses, and viewing analytics. Built with a modern React frontend and a robust Node.js/Express backend.
 
-## Features
+## 🚀 Features
 
-- **User Authentication:** Secure JWT-based signup, login, and protected routes.
-- **Job Management:** Full CRUD operations (Create, Read, Update, Delete) for job applications.
+- **User Authentication:** Secure signup, login, and logout using JSON Web Tokens (JWT).
+- **Job Management:** Complete CRUD operations (Create, Read, Update, Delete) for job applications.
 - **Status Tracking:** Track applications across stages (Applied, Interview, Offer, Rejected).
-- **Dashboard Analytics:** Visual overview of application statuses.
-- **Responsive UI:** Built with React, Tailwind CSS, and Framer Motion.
+- **Search & Filter:** Easily find specific applications by company, position, or status.
+- **Analytics Dashboard:** Visual insights into your application success rate using Recharts.
+- **Protected Routes:** Ensure sensitive data and routes are only accessible to authenticated users.
+- **Responsive UI:** A beautiful, dark-mode focused UI built with Tailwind CSS.
 
-## Tech Stack
+## 🛠️ Tech Stack
 
-- **Frontend:** React.js, Vite, Tailwind CSS, Axios, React Router, Framer Motion
-- **Backend:** Node.js, Express.js, MongoDB (Mongoose), JWT, BcryptJS
+**Frontend:**
+- React.js / Next.js (Vite)
+- TypeScript
+- Tailwind CSS
+- Recharts (Analytics)
+- React Router DOM
+- Axios (HTTP Client)
+- Sonner (Toast notifications)
 
-## Folder Structure
+**Backend:**
+- Node.js
+- Express.js
+- MongoDB (Database)
+- Mongoose (ODM)
+- JWT (Authentication)
+- bcryptjs (Password Hashing)
 
-```
-├── client/          # React frontend
-│   ├── src/
-│   │   ├── components/  # Reusable UI components
-│   │   ├── context/     # React Context (Auth)
-│   │   ├── lib/         # Utilities and API config
-│   │   └── pages/       # Application routes
-├── server/          # Node.js/Express backend
-│   ├── config/      # DB and config files
-│   ├── controllers/ # Request handlers
-│   ├── middleware/  # Express middlewares (Auth)
-│   ├── models/      # Mongoose schemas
-│   └── routes/      # API route definitions
-└── README.md
-```
+## 📸 Screenshots
 
-## Setup Instructions
+*(Placeholders for screenshots)*
+- [Dashboard View](https://placehold.co/800x400?text=Dashboard+Analytics)
+- [Job List](https://placehold.co/800x400?text=Job+List+View)
+- [Add/Edit Job Modal](https://placehold.co/800x400?text=Add+Job+Modal)
 
-### Backend Setup
+## ⚙️ Setup Instructions
 
-1. Navigate to the `server/` directory:
+### Prerequisites
+- Node.js (v18 or higher)
+- MongoDB (Local instance or MongoDB Atlas)
+
+### Local Development Setup
+
+1. **Clone the repository:**
    ```bash
-   cd server
-   ```
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
-3. Copy `.env.example` to `.env` and fill in your MongoDB URI and JWT Secret:
-   ```bash
-   cp .env.example .env
-   ```
-4. Start the development server:
-   ```bash
-   node server.js
+   git clone <repository-url>
+   cd postlabs
    ```
 
-### Frontend Setup
-
-1. Navigate to the `client/` directory:
-   ```bash
-   cd client
-   ```
-2. Install dependencies:
+2. **Install Frontend Dependencies:**
    ```bash
    npm install
    ```
-3. Copy `.env.example` to `.env` (adjust `VITE_API_URL` if needed):
+
+3. **Install Backend Dependencies:**
+   Navigate to the `server/` directory (if applicable) or ensure the root `package.json` includes the backend dependencies, and run:
    ```bash
-   cp .env.example .env
+   npm install
    ```
-4. Start the frontend development server:
+   *(Note: In this specific setup, dependencies are shared in the root `package.json`)*
+
+4. **Environment Variables:**
+   Create a `.env` file in the root directory and add the following:
+   ```env
+   PORT=5000
+   MONGODB_URI=mongodb://127.0.0.1:27017/jobtracker
+   JWT_SECRET=your_super_secret_jwt_key
+   ```
+
+5. **Run the Backend Server:**
+   You can start the backend server by running:
+   ```bash
+   node server/index.js
+   ```
+
+6. **Run the Frontend Development Server:**
+   In a separate terminal, start the Vite development server:
    ```bash
    npm run dev
    ```
 
-## Deployment
+7. **Access the Application:**
+   Open your browser and navigate to `http://localhost:5173`. The backend runs on `http://localhost:5000` and is proxied by Vite.
 
-### Frontend (Vercel)
+## 🚀 Deployment Steps
 
-1. Connect your repository to Vercel.
-2. Set the root directory to `client`.
-3. Vercel will automatically detect the Vite preset.
-4. Add the `VITE_API_URL` environment variable pointing to your deployed backend URL.
-5. Deploy!
+### Deploying the Backend (Render)
 
-### Backend (Render / Heroku)
+1. Create a new Web Service on [Render](https://render.com/).
+2. Connect your GitHub repository.
+3. Configure the settings:
+   - **Build Command:** `npm install`
+   - **Start Command:** `node server/index.js`
+4. Add your Environment Variables (`MONGODB_URI` pointing to MongoDB Atlas, `JWT_SECRET`, etc.).
+5. Deploy the service and note the deployed URL.
 
-1. Create a new Web Service on Render.
-2. Connect your repository and set the root directory to `server`.
-3. Build Command: `npm install`
-4. Start Command: `node server.js`
-5. Add environment variables: `MONGO_URI` and `JWT_SECRET`.
-6. Deploy!
+### Deploying the Frontend (Vercel)
 
-## Screenshots
+1. Import your project into [Vercel](https://vercel.com/).
+2. Ensure the Framework Preset is set to Vite.
+3. **Important:** Since the frontend and backend are deployed separately in production, you need to configure Axios base URL or environment variables for the production backend API URL instead of relying on the Vite proxy.
+   - Example: Create a `.env.production` file:
+     ```env
+     VITE_API_URL=https://your-render-backend-url.onrender.com
+     ```
+   - Update Axios setup (e.g., in `src/main.tsx` or `src/App.tsx`):
+     ```javascript
+     axios.defaults.baseURL = import.meta.env.VITE_API_URL || '';
+     ```
+4. Deploy the frontend application.
 
-*(Placeholder for Screenshots)*
-- Dashboard Overview
-- Add/Edit Job Modal
-- Authentication Pages
+## 🏛️ Architecture & Scalability Improvements
 
-## Architecture & Scalability Improvements
-
-- **Pagination:** For users with many applications, implement server-side pagination for the `/api/jobs` endpoint to reduce load times and bandwidth usage.
-- **Caching:** Integrate a caching layer (like Redis) or utilize `react-query` on the frontend more thoroughly to cache job analytics and lists, reducing database reads.
-- **Input Validation:** Implement a schema validation library like `Joi` or `Zod` on the backend to thoroughly validate incoming request bodies before they reach the controller logic.
-- **Rate Limiting:** Add a rate limiting middleware (like `express-rate-limit`) to authentication routes to protect against brute-force attacks.
-- **Indexes:** Ensure MongoDB indexes are properly set up for commonly queried fields like `user`, `status`, and fields used in search (`company`, `position`).
+- **Separation of Concerns:** Keep controllers, models, and routes strictly separated.
+- **Validation:** Implement stricter request validation using libraries like Joi or Zod before hitting controllers.
+- **Error Handling:** Create a centralized error handling middleware to standardize API error responses.
+- **Pagination:** Implement pagination for the `/api/jobs` endpoint to handle users with thousands of applications efficiently.
+- **State Management:** For larger applications, consider moving from Context API to Redux Toolkit or Zustand for more robust global state management.
