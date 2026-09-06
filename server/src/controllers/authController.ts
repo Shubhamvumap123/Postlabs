@@ -1,75 +1,46 @@
 import { Request, Response } from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import process from 'node:process';
 import User from '../models/User';
 
-export const register = async (req: Request, res: Response) => {
+export const register = async (req: Request, res: Response): Promise<void> => {
   try {
     const { email, password } = req.body;
-
-    let user = await User.findOne({ email });
-    if (user) {
-      return res.status(400).json({ message: 'User already exists' });
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      res.status(400).json({ message: 'User already exists' });
+      return;
     }
-
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
-
-    user = new User({
-      email,
-      password: hashedPassword,
-    });
-
-    await user.save();
-
-    const payload = {
-      id: user.id,
-      role: user.role,
-    };
-
-    const token = jwt.sign(payload, process.env.JWT_SECRET || 'fallback_secret', { expiresIn: '1h' });
-
-    res.json({ token, user: { id: user.id, email: user.email, role: user.role } });
-  } catch (err) {
-    console.error(err);
-    res.status(500).send('Server error');
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const user = await User.create({ email, password: hashedPassword });
+    const token = jwt.sign({ userId: user._id, role: user.role }, process.env.JWT_SECRET || 'secret', { expiresIn: '1d' });
+    res.status(201).json({ token, user: { id: user._id, email: user.email, role: user.role } });
+  } catch (_error) {
+    res.status(500).json({ message: 'Error creating user' });
   }
 };
 
-export const login = async (req: Request, res: Response) => {
+export const login = async (req: Request, res: Response): Promise<void> => {
   try {
     const { email, password } = req.body;
-
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(400).json({ message: 'Invalid Credentials' });
+      res.status(400).json({ message: 'Invalid credentials' });
+      return;
     }
-
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      return res.status(400).json({ message: 'Invalid Credentials' });
+      res.status(400).json({ message: 'Invalid credentials' });
+      return;
     }
-
-    const payload = {
-      id: user.id,
-      role: user.role,
-    };
-
-    const token = jwt.sign(payload, process.env.JWT_SECRET || 'fallback_secret', { expiresIn: '1h' });
-
-    res.json({ token, user: { id: user.id, email: user.email, role: user.role } });
-  } catch (err) {
-    console.error(err);
-    res.status(500).send('Server error');
+    const token = jwt.sign({ userId: user._id, role: user.role }, process.env.JWT_SECRET || 'secret', { expiresIn: '1d' });
+    res.status(200).json({ token, user: { id: user._id, email: user.email, role: user.role } });
+  } catch (_error) {
+    res.status(500).json({ message: 'Error logging in' });
   }
 };
 
-export const getUser = async (req: any, res: Response) => {
-  try {
-    const user = await User.findById(req.user.id).select('-password');
-    res.json(user);
-  } catch (err) {
-    console.error(err);
-    res.status(500).send('Server error');
-  }
+export const logout = (_req: Request, res: Response): void => {
+  res.status(200).json({ message: 'Logged out successfully' });
 };

@@ -1,95 +1,65 @@
-import { Request, Response } from 'express';
-import Job from '../models/Job';
-import { AuthRequest } from '../middleware/auth';
+import { Response } from 'express';
+import { AuthRequest } from '../middleware/authMiddleware';
+import JobApplication from '../models/JobApplication';
 
-export const getJobs = async (req: AuthRequest, res: Response) => {
+export const getJobs = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
-    const jobs = await Job.find({ user: req.user?.id }).sort({ appliedDate: -1 });
-    res.json(jobs);
-  } catch (err) {
-    console.error(err);
-    res.status(500).send('Server Error');
+    const userId = typeof req.user === 'object' && req.user !== null && 'userId' in req.user ? req.user.userId : null;
+    const jobs = await JobApplication.find({ userId }).sort({ createdAt: -1 });
+    res.status(200).json(jobs);
+  } catch (_error) {
+    res.status(500).json({ message: 'Error fetching jobs' });
   }
 };
 
-export const addJob = async (req: AuthRequest, res: Response) => {
+export const createJob = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
-    const { title, company, status, location, appliedDate } = req.body;
-
-    const newJob = new Job({
-      user: req.user?.id,
-      title,
+    const { company, position, status, salary, notes } = req.body;
+    const userId = typeof req.user === 'object' && req.user !== null && 'userId' in req.user ? req.user.userId : null;
+    const newJob = await JobApplication.create({
+      userId,
       company,
+      position,
       status,
-      location,
-      appliedDate: appliedDate || Date.now(),
+      salary,
+      notes,
     });
-
-    const job = await newJob.save();
-    res.json(job);
-  } catch (err) {
-    console.error(err);
-    res.status(500).send('Server Error');
+    res.status(201).json(newJob);
+  } catch (_error) {
+    res.status(500).json({ message: 'Error creating job application' });
   }
 };
 
-export const updateJob = async (req: AuthRequest, res: Response) => {
+export const updateJob = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
-    const { title, company, status, location, appliedDate } = req.body;
-
-    let job = await Job.findById(req.params.id);
-
-    if (!job) {
-      return res.status(404).json({ message: 'Job not found' });
-    }
-
-    if (job.user.toString() !== req.user?.id) {
-      return res.status(401).json({ message: 'Not authorized' });
-    }
-
-    job = await Job.findByIdAndUpdate(
-      req.params.id,
-      { $set: { title, company, status, location, appliedDate } },
+    const { id } = req.params;
+    const userId = typeof req.user === 'object' && req.user !== null && 'userId' in req.user ? req.user.userId : null;
+    const updatedJob = await JobApplication.findOneAndUpdate(
+      { _id: id, userId },
+      req.body,
       { new: true }
     );
-
-    res.json(job);
-  } catch (err) {
-    console.error(err);
-    res.status(500).send('Server Error');
+    if (!updatedJob) {
+      res.status(404).json({ message: 'Job not found' });
+      return;
+    }
+    res.status(200).json(updatedJob);
+  } catch (_error) {
+    res.status(500).json({ message: 'Error updating job application' });
   }
 };
 
-export const deleteJob = async (req: AuthRequest, res: Response) => {
+export const deleteJob = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
-    const job = await Job.findById(req.params.id);
-
-    if (!job) {
-      return res.status(404).json({ message: 'Job not found' });
+    const { id } = req.params;
+    const userId = typeof req.user === 'object' && req.user !== null && 'userId' in req.user ? req.user.userId : null;
+    const deletedJob = await JobApplication.findOneAndDelete({ _id: id, userId });
+    if (!deletedJob) {
+      res.status(404).json({ message: 'Job not found' });
+      return;
     }
-
-    if (job.user.toString() !== req.user?.id) {
-      return res.status(401).json({ message: 'Not authorized' });
-    }
-
-    await Job.findByIdAndDelete(req.params.id);
-
-    res.json({ message: 'Job removed' });
-  } catch (err) {
-    console.error(err);
-    res.status(500).send('Server Error');
-  }
-};
-
-export const getJobAnalytics = async (req: AuthRequest, res: Response) => {
-  try {
-    const stats = await Job.aggregate([
-      { $match: { user: req.user?.id } },
-      { $group: { _id: '$status', count: { $sum: 1 } } }
-    ]);
-    res.json(stats);
-  } catch (err) {
-    console.error(err);
-    res.status(500).send('Server Error');
+    res.status(200).json({ message: 'Job deleted successfully' });
+  } catch (_error) {
+    res.status(500).json({ message: 'Error deleting job application' });
   }
 };

@@ -1,86 +1,68 @@
 # Full Stack Job Tracker SaaS
 
-A production-ready Full Stack Job Tracker application built to help users manage their job applications effectively.
+A production-ready Job Tracking application built with the MERN stack (MongoDB, Express, React, Node.js) + TailwindCSS.
 
 ## Features
 
 - **User Authentication:** Secure signup, login, and logout using JWT.
-- **Job Application Management:** Full CRUD (Create, Read, Update, Delete) operations for job applications.
-- **Job Status Tracking:** Track applications through different stages (Applied, Interview, Offer, Rejected).
-- **Search & Filtering:** View all job applications with status color-coding.
-- **Analytics Dashboard:** Visualize application statuses using a Pie Chart (powered by Recharts).
-- **Protected Routes:** Ensure user data privacy and security.
+- **Job Application Tracking:** Full CRUD operations for job applications.
+- **Status Management:** Track applications through stages (Applied, Interview, Offer, Rejected).
+- **Search & Filter:** Easily find jobs by company or position, and filter by status.
+- **Analytics Dashboard:** Visual representation of application statuses using Recharts.
+- **Protected Routes:** Ensure only authenticated users can access their dashboard.
+- **Responsive UI:** Modern, accessible interface built with Tailwind CSS, Framer Motion, and Radix UI.
 
 ## Tech Stack
 
-- **Frontend:** React.js (v19), Vite, TailwindCSS, Recharts, Axios, Lucide React
-- **Backend:** Node.js, Express.js, TypeScript
-- **Database:** MongoDB (via Mongoose)
-- **Authentication:** JSON Web Tokens (JWT), bcryptjs
-
-## Folder Structure
-
-```
-├── client/
-│   ├── src/
-│   │   ├── components/  # React components (e.g., JobDashboard)
-│   │   ├── pages/       # Route pages (Login, Signup, Dashboard)
-│   │   ├── lib/         # AuthContext and utils
-│   │   └── ...
-├── server/
-│   ├── src/
-│   │   ├── controllers/ # Route logic (auth, jobs)
-│   │   ├── middleware/  # JWT authentication middleware
-│   │   ├── models/      # Mongoose schemas (User, Job)
-│   │   ├── routes/      # Express routes
-│   │   └── index.ts     # Entry point
-└── package.json         # Workspace configuration (concurrently)
-```
+- **Frontend:** React 19, React Router v7, Tailwind CSS, Recharts, Framer Motion, Axios, Vite.
+- **Backend:** Node.js, Express, MongoDB (Mongoose), JWT, Bcryptjs.
 
 ## Setup Instructions
 
-1. **Prerequisites:** Ensure you have Node.js and `pnpm` installed. You will also need a MongoDB database (local or MongoDB Atlas).
-2. **Install Dependencies:**
-   From the root directory, run:
-   ```bash
-   pnpm run install:all
-   ```
-3. **Environment Variables:**
-   Create a `.env` file in the `server/` directory and add:
+### Prerequisites
+- Node.js (v18+)
+- MongoDB instance (local or MongoDB Atlas)
+- pnpm
+
+### Backend Setup
+1. Navigate to the `server/` directory: `cd server`
+2. Install dependencies: `pnpm install`
+3. Create a `.env` file in the `server` root and add:
    ```env
    PORT=5000
-   MONGODB_URI=your_mongodb_connection_string
-   JWT_SECRET=your_jwt_secret
+   MONGO_URI=your_mongodb_connection_string
+   JWT_SECRET=your_super_secret_jwt_key
    ```
-4. **Run the Application:**
-   From the root directory, start both client and server concurrently:
-   ```bash
-   pnpm run dev
+4. Start the server: `pnpm exec ts-node src/index.ts` (or build and run `dist/index.js`).
+
+### Frontend Setup
+1. Navigate to the `client/` directory: `cd client`
+2. Install dependencies: `pnpm install`
+3. Create a `.env` file in the `client` root and add:
+   ```env
+   VITE_API_URL=http://localhost:5000/api
    ```
-   - Client runs on `http://localhost:5173`
-   - Server runs on `http://localhost:5000`
+4. Start the dev server: `pnpm dev`
 
-## Scalability & Clean Architecture Suggestions
+## Deployment Guidelines
 
-- **Pagination & Caching:** Implement pagination for the jobs API and integrate React Query for efficient frontend caching.
-- **Microservices:** As the application grows, consider splitting the backend into microservices (e.g., Auth Service, Job Service).
-- **Global Error Handling:** Implement a centralized error-handling middleware in Express.
-- **Validation:** Use a schema validation library like `Zod` or `Joi` for API payload validation.
-
-## Deployment Steps
-
-### Frontend (Vercel)
+### Deploying the Backend (Render)
 1. Push your code to GitHub.
-2. Import the project into Vercel.
-3. Set the Root Directory to `client`.
-4. Configure Build Command: `pnpm run build` and Output Directory: `dist`.
+2. Go to Render.com and create a new **Web Service**.
+3. Connect your repository and set the Root Directory to `server`.
+4. Set the Build Command to `pnpm install && pnpm run build` (ensure you add a build script in `package.json` like `"build": "tsc"`).
+5. Set the Start Command to `node dist/index.js`.
+6. Add your Environment Variables (`MONGO_URI`, `JWT_SECRET`).
+
+### Deploying the Frontend (Vercel)
+1. Go to Vercel.com and create a new Project.
+2. Import your repository and set the Root Directory to `client`.
+3. Vercel should auto-detect the Vite framework.
+4. Add the `VITE_API_URL` environment variable pointing to your deployed Render backend URL.
 5. Deploy!
 
-### Backend (Render)
-1. Push your code to GitHub.
-2. Create a new Web Service on Render.
-3. Set the Root Directory to `server`.
-4. Configure Build Command: `pnpm install && pnpm run build`
-5. Configure Start Command: `node dist/index.js`
-6. Add necessary Environment Variables (`MONGODB_URI`, `JWT_SECRET`).
-7. Deploy!
+## Screenshots
+*(Add screenshot placeholders here)*
+- [Dashboard View](#)
+- [Login/Register View](#)
+- [Analytics View](#)
