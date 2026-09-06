@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useScroll, useMotionValueEvent } from 'framer-motion';
 import { Link, useLocation } from 'react-router-dom';
 import { useScroll, useMotionValueEvent } from 'framer-motion';
 import { ThemeToggle } from './ThemeToggle';
@@ -19,9 +20,12 @@ const Navigation = () => {
   const location = useLocation();
   const { scrollY } = useScroll();
 
-  // PERFORMANCE: Use framer-motion's useMotionValueEvent instead of native scroll
-  // listeners to leverage centralized read/write batching and prevent layout thrashing.
-  useMotionValueEvent(scrollY, "change", (latest) => {
+  // ⚡ Bolt: Use framer-motion's useScroll/useMotionValueEvent for centralized,
+  // batched read/write scroll tracking instead of unoptimized React state updates
+  // inside a manual 'scroll' event listener (even if throttled).
+  const { scrollY } = useScroll();
+
+  useMotionValueEvent(scrollY, 'change', (latest) => {
     setIsVisible(latest > 100);
   });
 
