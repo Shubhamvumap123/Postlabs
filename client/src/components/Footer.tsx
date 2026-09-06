@@ -44,6 +44,7 @@ export default function Footer() {
     const form = e.currentTarget;
     setIsSubmitting(true);
 
+    setIsSubmitting(true);
     try {
       setIsSubmitting(true);
       // SECURITY: In a real production app, never call the Mailchimp API directly from the client.
@@ -167,11 +168,10 @@ export default function Footer() {
             <button
               type="submit"
               disabled={isSubmitting}
-              aria-label="Subscribe to newsletter"
-              disabled={isSubmitting}
-              className="px-5 bg-white text-black rounded-md font-medium outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center min-w-[56px]"
+              aria-label={isSubmitting ? "Subscribing to newsletter" : "Subscribe to newsletter"}
+              className="flex items-center justify-center px-5 py-2 bg-white text-black rounded-md font-medium outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed min-w-[56px]"
             >
-              {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : '→'}
+              {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" aria-hidden="true" /> : "→"}
             </button>
           </form>
         </div>
