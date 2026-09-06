@@ -73,6 +73,7 @@ const Settings = () => {
                     onChange={(e) => setName(e.target.value)}
                     autoComplete="name"
                     placeholder="Enter your name"
+                    maxLength={50}
                     autoComplete="name"
                   />
                 </div>
