@@ -12,9 +12,7 @@ const About = () => {
     return () => clearTimeout(timer);
   }, []);
 
-  // PERFORMANCE: Memoize large DOM generation and use CSS attribute selectors for animation
-  // to prevent re-computation and main thread jank when visibility state changes.
-  const memoizedSpans = useMemo(() => {
+  const splitTextNodes = useMemo(() => {
     return text.split('').map((char, index) => (
       <span
         key={index}
@@ -43,6 +41,11 @@ const About = () => {
       {/* Main Content Container */}
       <div className="container mx-auto px-10 py-96 lg:py-80 md:py-60 sm:py-40">
         <div className="flex justify-center items-center min-h-full">
+          {/* BOLT OPTIMIZATION:
+              - Memoized the generation of the numerous <span> elements using useMemo so they are only calculated once.
+              - Delegated visibility toggle to the parent <p> using a Tailwind data attribute group selector (group-data-[visible=true]:...)
+              - This prevents a massive re-render of all text nodes when `isVisible` state changes, significantly improving animation performance.
+          */}
           <p
             className="group text-center max-w-[594px] mx-auto mb-0 text-5xl lg:text-4xl md:text-3xl sm:text-2xl leading-[115%] font-medium text-gray-800 tracking-tight"
             aria-label={text}
@@ -50,7 +53,7 @@ const About = () => {
           >
             <span className="sr-only">{text}</span>
             <span aria-hidden="true">
-              {memoizedSpans}
+              {splitTextNodes}
             </span>
           </p>
         </div>
