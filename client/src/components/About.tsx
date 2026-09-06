@@ -1,6 +1,8 @@
 import { useEffect, useState, useMemo } from 'react';
 
-const TEXT = "Post Labs is rethinking how digital media works for Canadians. Our mission is simple: make journalism profitable, sustainable, and trusted – built for Canadians, by Canadians.";
+import { useEffect, useState, useMemo } from 'react';
+
+const TEXT_CONTENT = "Post Labs is rethinking how digital media works for Canadians. Our mission is simple: make journalism profitable, sustainable, and trusted – built for Canadians, by Canadians.";
 
 const About = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -11,8 +13,10 @@ const About = () => {
     return () => clearTimeout(timer);
   }, []);
 
-  const memoizedSpans = useMemo(() => {
-    return TEXT.split('').map((char, index) => (
+  // PERFORMANCE: Memoize character spans to prevent O(N) element recreation on every render
+  // and offload animation triggers to CSS using parent data-visible attribute
+  const animatedTextSpans = useMemo(() => {
+    return TEXT_CONTENT.split('').map((char, index) => (
       <span
         key={index}
         className="inline-block transition-all duration-700 ease-out opacity-0 translate-y-4 group-data-[visible=true]:opacity-100 group-data-[visible=true]:translate-y-0"
@@ -46,13 +50,12 @@ const About = () => {
               - This prevents a massive re-render of all text nodes when `isVisible` state changes, significantly improving animation performance.
           */}
           <p
-            className="text-center max-w-[594px] mx-auto mb-0 text-5xl lg:text-4xl md:text-3xl sm:text-2xl leading-[115%] font-medium text-gray-800 tracking-tight group"
-            aria-label={TEXT}
-            data-visible={isVisible}
+            className="text-center max-w-[594px] mx-auto mb-0 text-5xl lg:text-4xl md:text-3xl sm:text-2xl leading-[115%] font-medium text-gray-800 tracking-tight"
+            aria-label={TEXT_CONTENT}
           >
-            <span className="sr-only">{TEXT}</span>
-            <span aria-hidden="true">
-              {memoizedSpans}
+            <span className="sr-only">{TEXT_CONTENT}</span>
+            <span aria-hidden="true" className="group" data-visible={isVisible}>
+              {animatedTextSpans}
             </span>
           </p>
         </div>
