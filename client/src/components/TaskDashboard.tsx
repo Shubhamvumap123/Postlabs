@@ -311,11 +311,12 @@ export default function TaskDashboard() {
             <label htmlFor="title" className="text-sm font-medium text-zinc-300">
               Task Title
             </label>
+            {/* SECURITY: Added maxLength to prevent DoS via excessively large input */}
             <Input
               id="title"
               maxLength={100}
               value={newTaskTitle}
-              maxLength={100}
+              maxLength={150}
               onChange={(e) => setNewTaskTitle(e.target.value)}
               maxLength={100}
               placeholder="e.g. Review system performance"

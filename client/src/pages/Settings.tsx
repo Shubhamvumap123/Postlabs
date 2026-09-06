@@ -63,12 +63,12 @@ const Settings = () => {
                   <label htmlFor="name" className="text-sm font-medium text-foreground">
                     Display Name
                   </label>
-                  {/* PERFORMANCE: Synchronous lazy initialization prevents redundant initial renders */}
+                  {/* SECURITY: Added maxLength to prevent DoS via excessively large input */}
                   <Input
                     id="name"
                     autoComplete="name"
                     value={name}
-                    maxLength={50}
+                    maxLength={100}
                     onChange={(e) => setName(e.target.value)}
                     autoComplete="name"
                     placeholder="Enter your name"
