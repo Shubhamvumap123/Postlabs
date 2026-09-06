@@ -106,17 +106,11 @@ export default function TaskDashboard() {
 
   const addTask = (e: React.FormEvent) => {
     e.preventDefault();
-    // SECURITY: Limit input length to prevent potential local storage exhaustion (DoS)
-    if (!newTaskTitle.trim() || newTaskTitle.length > 100) return;
+    const trimmedTitle = newTaskTitle.trim();
+    if (!trimmedTitle) return;
 
-    // SECURITY: Limit the maximum number of tasks to prevent storage overflow
-    if (tasks.length >= 100) {
-      toast.error("Maximum limit of 100 tasks reached. Please delete some tasks to add more.");
-      return;
-    }
-
-    if (newTaskTitle.length > 100) {
-      toast.error("Task title cannot exceed 100 characters");
+    if (trimmedTitle.length > 200) {
+      toast.error("Task title cannot exceed 200 characters");
       return;
     }
 
@@ -125,15 +119,9 @@ export default function TaskDashboard() {
       return;
     }
 
-    if (tasks.length >= 100) {
-      toast.error("Maximum limit of 100 tasks reached. Please delete old tasks to add more.");
-      return;
-    }
-
     const newTask: Task = {
       id: crypto.randomUUID(),
-      // Enforce server-side limit check (fallback for maxLength)
-      title: newTaskTitle.slice(0, 100),
+      title: trimmedTitle,
       status: 'Scheduled',
       category: newTaskCategory,
       createdAt: Date.now(),
