@@ -12,6 +12,6 @@
 **Learning:** When using list actions (like complete, archive, delete) for specific items in a list, generic `aria-label`s like 'Mark as complete' or 'Archive' create ambiguity for screen reader users as they do not indicate *which* item is being affected. Using action verbs with checkboxes can also be confusing.
 **Action:** When implementing item-specific actions in a list, always include the item's title in the `aria-label` (e.g., `Archive task: ${task.title}`). For completion toggles, use `role="checkbox"`, `aria-checked`, and an `aria-label` that concisely describes the item (e.g., `Complete task: ${task.title}`) instead of action-oriented verbs.
 
-## Navigation Accessibility
-**Learning:** Main navigation links that hide their text on mobile devices act as icon-only buttons for screen readers, and they often lack indication of the current active page.
-**Action:** Always provide an explicit `aria-label` on responsive navigation links, use `aria-hidden="true"` on decorative icons, and dynamically set `aria-current="page"` on the active route link.
+## Hidden utility class removes accessible name
+**Learning:** Using Tailwind's `hidden` class (display: none) to visually hide text on mobile inadvertently removes the text from the accessibility tree, leaving icon-only links without an accessible name.
+**Action:** Always provide an explicit `aria-label` on links/buttons when their text content might be visually hidden at certain breakpoints.
