@@ -171,9 +171,13 @@ export default function Footer() {
               type="submit"
               disabled={isSubmitting}
               aria-label="Subscribe to newsletter"
-              className="min-w-[56px] flex items-center justify-center bg-white text-black rounded-md font-medium outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 disabled:opacity-50"
+              className="min-w-[56px] flex items-center justify-center bg-white text-black rounded-md font-medium outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 disabled:opacity-70 disabled:cursor-not-allowed"
             >
-              {isSubmitting ? <Loader2 className="w-5 h-5 animate-spin" /> : "→"}
+              {isSubmitting ? (
+                <div className="w-4 h-4 border-2 border-black/20 border-t-black rounded-full animate-spin" />
+              ) : (
+                "→"
+              )}
             </button>
           </form>
         </div>
