@@ -275,6 +275,8 @@ export default function TaskDashboard() {
                     role="checkbox"
                     aria-checked={task.status === 'Completed'}
                     onClick={() => toggleTaskStatus(task.id)}
+                    role="checkbox"
+                    aria-checked={task.status === 'Completed'}
                     className="flex-shrink-0 text-zinc-400 hover:text-purple-400 transition-colors rounded-full outline-none focus-visible:ring-2 focus-visible:ring-purple-500"
                     aria-label={`Complete task: ${task.title}`}
                   >
