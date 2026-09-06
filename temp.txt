@@ -277,7 +277,7 @@ export default function TaskDashboard() {
             <label htmlFor="title" className="text-sm font-medium text-zinc-300">
               Task Title
             </label>
-            {/* SECURITY: Added maxLength to prevent huge strings from filling up localStorage */}
+            {/* SECURITY: Added maxLength limit to prevent extremely long titles (DoS risk) */}
             <Input
               id="title"
               value={newTaskTitle}
