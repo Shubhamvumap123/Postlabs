@@ -103,13 +103,13 @@ const Contact = () => {
                   <label htmlFor="firstName" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
                     First Name
                   </label>
-                  <Input id="firstName" required placeholder="John" disabled={loading} autoComplete="given-name" />
+                  <Input id="firstName" required placeholder="John" autoComplete="given-name" disabled={loading} />
                 </div>
                 <div className="space-y-2">
                   <label htmlFor="lastName" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
                     Last Name
                   </label>
-                  <Input id="lastName" required placeholder="Doe" disabled={loading} autoComplete="family-name" />
+                  <Input id="lastName" required placeholder="Doe" autoComplete="family-name" disabled={loading} />
                 </div>
               </div>
 
@@ -117,7 +117,7 @@ const Contact = () => {
                 <label htmlFor="email" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
                   Email
                 </label>
-                <Input id="email" type="email" required placeholder="john@example.com" disabled={loading} autoComplete="email" />
+                <Input id="email" type="email" required placeholder="john@example.com" autoComplete="email" disabled={loading} />
               </div>
 
               <div className="space-y-2">
@@ -136,7 +136,7 @@ const Contact = () => {
               </div>
 
               <Button type="submit" className="w-full relative" disabled={loading}>
-                <span className={loading ? "opacity-0" : "opacity-100 flex items-center"}>
+                <span className={`flex items-center justify-center ${loading ? 'opacity-0' : 'opacity-100'}`}>
                   Send Message <Send className="w-4 h-4 ml-2" />
                 </span>
                 {loading && (
