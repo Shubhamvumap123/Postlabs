@@ -321,7 +321,7 @@ export default function TaskDashboard() {
               className="bg-zinc-900 border-zinc-700 text-zinc-100 focus:ring-purple-500"
               maxLength={100}
               autoFocus
-              maxLength={100}
+              maxLength={200}
             />
           </div>
           <div className="space-y-2">

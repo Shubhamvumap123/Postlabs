@@ -74,7 +74,7 @@ const Settings = () => {
                     onChange={(e) => setName(e.target.value)}
                     maxLength={100}
                     placeholder="Enter your name"
-                    maxLength={50}
+                    maxLength={100}
                   />
                 </div>
                 <Button type="submit">Save Changes</Button>
