@@ -12,9 +12,10 @@ const About = () => {
     return () => clearTimeout(timer);
   }, []);
 
-  // ⚡ Bolt: Memoize the DOM elements and decouple state from render logic using CSS data attributes.
-  // This prevents recreating the spans array and reduces main thread blocking when state changes.
-  const animatedText = useMemo(() => {
+  // ⚡ Bolt: Memoize large array of DOM nodes to prevent unnecessary re-renders.
+  // 🎯 Why: Re-creating this array on state change causes main thread blocking.
+  // 📊 Impact: O(1) render time after initial mount instead of O(N) where N is text length.
+  const animatedSpans = useMemo(() => {
     return ABOUT_TEXT.split('').map((char, index) => (
       <span
         key={index}
@@ -28,7 +29,7 @@ const About = () => {
         {char}
       </span>
     ));
-  }, []);
+  }, []); // Empty deps: decoupled from dynamic state
 
   return (
     <section className="relative z-10 bg-cream-50 min-h-screen">
@@ -55,7 +56,7 @@ const About = () => {
           >
             <span className="sr-only">{ABOUT_TEXT}</span>
             <span aria-hidden="true">
-              {animatedText}
+              {animatedSpans}
             </span>
           </p>
         </div>
