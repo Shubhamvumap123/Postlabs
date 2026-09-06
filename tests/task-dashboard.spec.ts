@@ -29,8 +29,25 @@ test('TaskDashboard component functionality', async ({ page }) => {
   await expect(container).toHaveClass(/bg-zinc-900/);
   await expect(container).toHaveClass(/border-zinc-800/);
 
-  // Verify empty state text
-  await expect(page.getByText('No scheduled tasks found')).toBeVisible();
+  // Verify empty state text for 'All' tab
+  await expect(page.getByText('No tasks found')).toBeVisible();
+
+  // Verify 'Scheduled' tab empty state
+  await scheduledTab.click();
+  await expect(page.getByText('No scheduled tasks yet')).toBeVisible();
+
+  // Verify 'Completed' tab empty state
+  const completedTab = page.getByRole('tab', { name: 'Completed' });
+  await completedTab.click();
+  await expect(page.getByText('No completed tasks yet')).toBeVisible();
+
+  // Verify 'Archived' tab empty state
+  const archivedTab = page.getByRole('tab', { name: 'Archived' });
+  await archivedTab.click();
+  await expect(page.getByText('No archived tasks')).toBeVisible();
+
+  // Switch back to 'All' tab
+  await allTab.click();
 
   // Verify filter chips existence
   const performanceChip = page.getByRole('button', { name: 'Performance', exact: true });
@@ -80,8 +97,9 @@ test('TaskDashboard component functionality', async ({ page }) => {
   // Click the check circle button
   await taskToCompleteRow.getByRole('checkbox', { name: 'Complete task: Task to Complete' }).click();
 
-  // 2. Verify it is visible when no filters are active
-  await expect(page.getByText('Design Task')).toBeVisible();
+  // Go to "Completed" tab
+  await completedTab.click();
+  await expect(page.getByText('Task to Complete')).toBeVisible();
 
   // 3. Activate "Performance" filter and verify the task becomes hidden
   await performanceChip.click();
@@ -109,7 +127,6 @@ test('TaskDashboard component functionality', async ({ page }) => {
   await expect(page.getByText('Task to Archive')).toBeHidden();
 
   // Go to "Archived" tab
-  const archivedTab = page.getByRole('tab', { name: 'Archived' });
   await archivedTab.click();
   await expect(page.getByText('Task to Archive')).toBeVisible();
 

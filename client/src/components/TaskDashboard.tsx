@@ -243,19 +243,18 @@ export default function TaskDashboard() {
               )}
             </div>
             <p className="text-zinc-400 font-medium mb-4">
-              {activeTab === 'Completed'
-                ? "No completed tasks yet"
-                : activeTab === 'Archived'
-                ? "No archived tasks"
-                : "No scheduled tasks found"}
+              {activeTab === 'All' ? "No tasks found" :
+               activeTab === 'Scheduled' ? "No scheduled tasks yet" :
+               activeTab === 'Completed' ? "No completed tasks yet" :
+               "No archived tasks"}
             </p>
-            {activeTab !== 'Completed' && activeTab !== 'Archived' && (
+            {activeTab !== 'Archived' && (
               <Button
                 onClick={() => setIsNewTaskOpen(true)}
                 variant="outline"
-                className="bg-transparent border-zinc-700 text-zinc-300 hover:text-white hover:bg-zinc-800"
+                className="bg-transparent border-zinc-700 text-zinc-300 hover:bg-zinc-800 hover:text-white"
               >
-                Create Task
+                Create a task
               </Button>
             )}
           </div>
