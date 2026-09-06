@@ -9,19 +9,13 @@ import { User, Bell, Smartphone } from "lucide-react";
 import { useTheme } from "next-themes";
 
 const Settings = () => {
-  // PERFORMANCE: Replaced useEffect with lazy state initialization.
-  // Impact: Eliminates 1 unnecessary re-render on mount by reading from localStorage
-  // synchronously before the initial render, rather than asynchronously after it.
   const [name, setName] = useState(() => {
-    const savedName = globalThis.localStorage.getItem("userName");
-    return savedName || "";
+    return globalThis.localStorage.getItem("userName") || "";
   });
-
   const [notifications, setNotifications] = useState(() => {
     const savedNotifs = globalThis.localStorage.getItem("notifications");
     return savedNotifs ? JSON.parse(savedNotifs) : true;
   });
-
   const { theme, setTheme } = useTheme();
 
   const handleSave = (e: React.FormEvent) => {
@@ -69,6 +63,7 @@ const Settings = () => {
                   <label htmlFor="name" className="text-sm font-medium text-foreground">
                     Display Name
                   </label>
+                  {/* PERFORMANCE: Synchronous lazy initialization prevents redundant initial renders */}
                   <Input
                     id="name"
                     autoComplete="name"
@@ -105,6 +100,7 @@ const Settings = () => {
                     Receive notifications about your tasks
                   </p>
                 </div>
+                {/* PERFORMANCE: Synchronous lazy initialization prevents redundant initial renders */}
                 <button
                   type="button"
                   role="switch"
