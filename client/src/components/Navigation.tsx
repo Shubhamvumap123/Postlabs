@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { useScroll, useMotionValueEvent } from 'framer-motion';
 import { Link, useLocation } from 'react-router-dom';
 import { useScroll, useMotionValueEvent } from 'framer-motion';
 import { ThemeToggle } from './ThemeToggle';
@@ -21,7 +20,7 @@ const Navigation = () => {
   const location = useLocation();
   const { scrollY } = useScroll();
 
-  // ⚡ Bolt: Replaced independent DOM scroll listener with framer-motion's useScroll and useMotionValueEvent to leverage centralized read/write batching and prevent layout thrashing
+  // ⚡ Bolt: Replaced DOM scroll listener with framer-motion's useMotionValueEvent for centralized read/write batching to prevent layout thrashing
   useMotionValueEvent(scrollY, "change", (latest) => {
     setIsVisible(latest > 100);
   });
