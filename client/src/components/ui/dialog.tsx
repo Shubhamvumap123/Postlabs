@@ -1,119 +1,43 @@
-import React, { useEffect, useState, useId } from "react";
-import { createPortal } from "react-dom";
-import { motion, AnimatePresence } from "framer-motion";
-import { X } from "lucide-react";
-import { cn } from "../../lib/utils.ts";
+import * as React from 'react';
+import { X } from 'lucide-react';
+import { AnimatePresence, motion } from 'framer-motion';
 
-interface DialogProps {
-  isOpen: boolean;
-  onClose: () => void;
-  title?: string;
-  description?: string;
-  children: React.ReactNode;
-  className?: string;
-}
+export function Dialog({ isOpen, onClose, title, description, children }: { isOpen: boolean, onClose: () => void, title: string, description?: string, children: React.ReactNode }) {
+  if (!isOpen) return null;
 
-export const Dialog: React.FC<DialogProps> = ({
-  isOpen,
-  onClose,
-  title,
-  description,
-  children,
-  className,
-}) => {
-  const [mounted, setMounted] = useState(false);
-  const titleId = React.useId();
-  const descriptionId = React.useId();
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "unset";
-    }
-    return () => {
-      document.body.style.overflow = "unset";
-    };
-  }, [isOpen]);
-
-  useEffect(() => {
-    if (!isOpen) return;
-
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        onClose();
-      }
-    };
-
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [isOpen, onClose]);
-
-  if (!mounted) return null;
-
-  return createPortal(
+  return (
     <AnimatePresence>
-      {isOpen && (
-        <>
-          <motion.div
-            key="backdrop"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={onClose}
-            className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm"
-          />
-          <motion.div
-            key="dialog-wrapper"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 pointer-events-none"
-          >
-            <motion.div
-              role="dialog"
-              aria-modal="true"
-              aria-labelledby={title ? titleId : undefined}
-              aria-describedby={description ? descriptionId : undefined}
-              initial={{ scale: 0.95, y: 20 }}
-              animate={{ scale: 1, y: 0 }}
-              exit={{ scale: 0.95, y: 20 }}
-              transition={{ duration: 0.2 }}
-              className={cn(
-                "w-full max-w-lg bg-zinc-950 border border-zinc-800 rounded-xl shadow-2xl pointer-events-auto overflow-hidden",
-                className
-              )}
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          onClick={onClose}
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm"
+        />
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95, y: 10 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          exit={{ opacity: 0, scale: 0.95, y: 10 }}
+          className="relative w-full max-w-lg bg-zinc-950 border border-zinc-800 rounded-xl shadow-2xl overflow-hidden z-10"
+        >
+          <div className="flex items-center justify-between p-4 border-b border-zinc-800">
+            <div>
+              <h2 className="text-lg font-semibold text-white">{title}</h2>
+              {description && <p className="text-sm text-zinc-400 mt-1">{description}</p>}
+            </div>
+            <button
+              onClick={onClose}
+              className="p-1.5 text-zinc-400 hover:text-white rounded-md hover:bg-zinc-800 transition-colors"
             >
-              <div className="flex items-center justify-between p-6 border-b border-zinc-800">
-                <div>
-                  {title && (
-                    <h2 id={titleId} className="text-lg font-semibold text-zinc-100">
-                      {title}
-                    </h2>
-                  )}
-                  {description && (
-                    <p id={descriptionId} className="text-sm text-zinc-400 mt-1">{description}</p>
-                  )}
-                </div>
-                <button
-                  type="button"
-                  onClick={onClose}
-                  aria-label="Close dialog"
-                  className="p-2 text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800 rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-                >
-                  <X className="w-5 h-5" />
-                </button>
-              </div>
-              <div className="p-6">{children}</div>
-            </motion.div>
-          </motion.div>
-        </>
-      )}
-    </AnimatePresence>,
-    document.body
+              <X className="w-5 h-5" />
+            </button>
+          </div>
+          <div className="p-4 overflow-y-auto max-h-[calc(100vh-200px)]">
+            {children}
+          </div>
+        </motion.div>
+      </div>
+    </AnimatePresence>
   );
-};
+}

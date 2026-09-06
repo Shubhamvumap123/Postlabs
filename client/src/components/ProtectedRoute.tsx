@@ -1,15 +1,13 @@
 import { Navigate, Outlet } from 'react-router-dom';
-import { useAuth } from '../hooks/useAuth';
-import LoadingFallback from './LoadingFallback';
 
 const ProtectedRoute = () => {
-  const { user, loading } = useAuth();
+  const token = localStorage.getItem('token');
 
-  if (loading) {
-    return <LoadingFallback />;
+  if (!token) {
+    return <Navigate to="/login" replace />;
   }
 
-  return user ? <Outlet /> : <Navigate to="/login" replace />;
+  return <Outlet />;
 };
 
 export default ProtectedRoute;
