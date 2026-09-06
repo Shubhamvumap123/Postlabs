@@ -7,7 +7,6 @@
 ## 2025-05-18 - Custom Toggle Switch Accessibility
 **Learning:** Building custom toggle switches using `<div>` elements with `onClick` handlers removes keyboard accessibility and screen reader support. Users navigating via keyboard cannot focus or activate the toggle, and screen readers do not recognize its state or purpose.
 **Action:** When creating custom interactive elements like toggles, always use a native interactive element (e.g., `<button type="button">`) with the appropriate ARIA roles (e.g., `role="switch"`), state attributes (e.g., `aria-checked`), and associated labels (`aria-labelledby` or `aria-label`). Ensure the element has clear `:focus-visible` styles for keyboard navigation.
-
-## 2025-06-03 - Toggle Button ARIA Labels
-**Learning:** When implementing task completion toggles, combining `role="checkbox"` (which announces state via `aria-checked`) with dynamic action-oriented verbs in `aria-label` (like "Mark as complete" or "Mark as incomplete") creates redundant and confusing screen reader output. The label should describe the item, while the state handles the current status.
-**Action:** Always implement toggle buttons with `role="checkbox"` or `role="switch"`, use `aria-checked` to manage state, and provide a static, descriptive `aria-label` (e.g., "Complete task: [Title]") rather than action verbs that change based on state.
+## 2025-05-18 - Dynamic ARIA Labels in Lists
+**Learning:** When using action buttons in mapped lists (like task items), static aria-labels (e.g. 'Delete') lack sufficient context for screen reader users and may cause ambiguity when multiple identical labels exist. Additionally, toggle action buttons should use semantic roles like `role="checkbox"` and `aria-checked` rather than changing the aria-label text between verb states.
+**Action:** Always include the dynamic item title within the `aria-label` of list item actions (e.g., `Delete task: ${task.title}`), and use `role="checkbox"` and `aria-checked` for toggle buttons rather than stateful verb labels.
