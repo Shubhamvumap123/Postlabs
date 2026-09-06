@@ -12,7 +12,10 @@ const About = () => {
     return () => clearTimeout(timer);
   }, []);
 
-  const splitText = useMemo(() => {
+  // Performance Optimization: ⚡ Bolt
+  // Memoize large DOM array to prevent re-generation on re-renders,
+  // relying on parent data attributes for animation state to decouple from React state.
+  const animatedText = useMemo(() => {
     return TEXT.split('').map((char, index) => (
       <span
         key={index}
@@ -53,7 +56,7 @@ const About = () => {
           >
             <span className="sr-only">{TEXT}</span>
             <span aria-hidden="true">
-              {splitText}
+              {animatedText}
             </span>
           </p>
         </div>
