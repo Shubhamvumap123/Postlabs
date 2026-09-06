@@ -318,6 +318,7 @@ export default function TaskDashboard() {
               onChange={(e) => setNewTaskTitle(e.target.value)}
               maxLength={100}
               placeholder="e.g. Review system performance"
+              maxLength={100}
               className="bg-zinc-900 border-zinc-700 text-zinc-100 focus:ring-purple-500"
               maxLength={100}
               autoFocus
