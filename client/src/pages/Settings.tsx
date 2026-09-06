@@ -68,7 +68,7 @@ const Settings = () => {
                   </label>
                   <Input
                     id="name"
-                    maxLength={50}
+                    autoComplete="name"
                     value={name}
                     maxLength={50}
                     onChange={(e) => setName(e.target.value)}
