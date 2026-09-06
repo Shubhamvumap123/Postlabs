@@ -7,6 +7,6 @@
 ## 2025-05-18 - Custom Toggle Switch Accessibility
 **Learning:** Building custom toggle switches using `<div>` elements with `onClick` handlers removes keyboard accessibility and screen reader support. Users navigating via keyboard cannot focus or activate the toggle, and screen readers do not recognize its state or purpose.
 **Action:** When creating custom interactive elements like toggles, always use a native interactive element (e.g., `<button type="button">`) with the appropriate ARIA roles (e.g., `role="switch"`), state attributes (e.g., `aria-checked`), and associated labels (`aria-labelledby` or `aria-label`). Ensure the element has clear `:focus-visible` styles for keyboard navigation.
-## 2026-04-28 - Prevent Visual Jumping in Async Buttons
-**Learning:** When adding loading spinners to buttons, the button dimensions often shrink or jump if the text is replaced entirely, causing a jarring layout shift.
-**Action:** Use absolute positioning for the spinner and render the original button text with `opacity-0` during loading to seamlessly preserve the element's exact width and height.
+## 2025-05-18 - Form Submission Loading States Accessibility
+**Learning:** During asynchronous form submissions, interactive elements like inputs and textareas should be explicitly disabled to prevent accidental duplicate submissions and clearly communicate state to screen readers. Further, replacing button text with "Sending..." changes its width causing layout shifts; using a spinner (`Loader2`) absolutely positioned over `opacity-0` text maintains button dimension constraints.
+**Action:** When implementing forms, always explicitly add `disabled={isLoading}` to all interactive inputs/fields inside the form. Maintain stable submit button dimensions by using a visual spinner centered inside the button while hiding its text, rather than dynamically changing the text content.

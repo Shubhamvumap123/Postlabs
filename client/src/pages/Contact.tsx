@@ -140,10 +140,9 @@ const Contact = () => {
                 {loading && (
                   <div className="absolute inset-0 flex items-center justify-center">
                     <Loader2 className="w-5 h-5 animate-spin" />
-                    <span className="sr-only">Sending message...</span>
                   </div>
                 )}
-                <span className={loading ? "opacity-0 flex items-center" : "flex items-center"}>
+                <span className={`flex items-center justify-center ${loading ? "opacity-0" : ""}`}>
                   Send Message <Send className="w-4 h-4 ml-2" />
                 </span>
               </Button>
