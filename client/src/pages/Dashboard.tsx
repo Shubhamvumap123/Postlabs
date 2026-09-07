@@ -28,7 +28,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     fetchJobs();
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const fetchJobs = async () => {
     try {
