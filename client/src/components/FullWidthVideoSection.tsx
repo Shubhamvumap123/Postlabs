@@ -33,8 +33,8 @@ export default function FullWidthVideoSection() {
         <video
           ref={videoElementRef}
           className="absolute top-0 left-0 w-full h-full object-cover"
-          // PERFORMANCE: preload="auto" to fetch metadata and first frame immediately for smoother playback without layout shifts.
-          preload="auto"
+          // PERFORMANCE: preload="none" to defer loading of below-the-fold content until necessary to improve page load performance.
+          preload="none"
           loop
           muted
           playsInline
