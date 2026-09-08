@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../lib/api';
 import { toast } from 'sonner';
@@ -86,24 +86,27 @@ const Dashboard = () => {
     setShowForm(true);
   };
 
-  const filteredJobs = jobs.filter(job => {
+  // PERFORMANCE: Memoize filtered jobs to prevent recalculation on unrelated state changes like form inputs
+  const filteredJobs = useMemo(() => jobs.filter(job => {
     const matchesSearch = job.company.toLowerCase().includes(search.toLowerCase()) || job.position.toLowerCase().includes(search.toLowerCase());
     const matchesStatus = statusFilter === 'All' || job.status === statusFilter;
     return matchesSearch && matchesStatus;
-  });
+  }), [jobs, search, statusFilter]);
 
-  // Analytics data
-  const statusCounts = jobs.reduce((acc, job) => {
-    acc[job.status] = (acc[job.status] || 0) + 1;
-    return acc;
-  }, {} as Record<string, number>);
+  // PERFORMANCE: Memoize analytics data generation to avoid O(n) array traversal on every render
+  const chartData = useMemo(() => {
+    const statusCounts = jobs.reduce((acc, job) => {
+      acc[job.status] = (acc[job.status] || 0) + 1;
+      return acc;
+    }, {} as Record<string, number>);
 
-  const chartData = [
-    { name: 'Applied', count: statusCounts['Applied'] || 0, color: '#3b82f6' },
-    { name: 'Interview', count: statusCounts['Interview'] || 0, color: '#eab308' },
-    { name: 'Offer', count: statusCounts['Offer'] || 0, color: '#22c55e' },
-    { name: 'Rejected', count: statusCounts['Rejected'] || 0, color: '#ef4444' },
-  ];
+    return [
+      { name: 'Applied', count: statusCounts['Applied'] || 0, color: '#3b82f6' },
+      { name: 'Interview', count: statusCounts['Interview'] || 0, color: '#eab308' },
+      { name: 'Offer', count: statusCounts['Offer'] || 0, color: '#22c55e' },
+      { name: 'Rejected', count: statusCounts['Rejected'] || 0, color: '#ef4444' },
+    ];
+  }, [jobs]);
 
   if (loading) return <div className="min-h-screen flex items-center justify-center bg-zinc-950 text-white">Loading...</div>;
 

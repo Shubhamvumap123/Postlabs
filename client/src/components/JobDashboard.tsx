@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Plus, Briefcase, Trash2, Edit2, LogOut, BarChart3, Search } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
@@ -119,14 +119,16 @@ export default function JobDashboard() {
     }
   };
 
-  const filteredJobs = jobs.filter(job => {
+  // PERFORMANCE: Memoize filtered jobs to prevent recalculation on unrelated state changes like form inputs
+  const filteredJobs = useMemo(() => jobs.filter(job => {
     const matchesSearch = job.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
                           job.company.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesStatus = filterStatus === 'All' || job.status === filterStatus;
     return matchesSearch && matchesStatus;
-  });
+  }), [jobs, searchQuery, filterStatus]);
 
-  const getAnalyticsData = () => {
+  // PERFORMANCE: Memoize analytics data generation to avoid O(n) array traversal on every render
+  const analyticsData = useMemo(() => {
     const stats = { Applied: 0, Interview: 0, Offer: 0, Rejected: 0 };
     jobs.forEach(job => {
       if (stats[job.status] !== undefined) {
@@ -137,7 +139,7 @@ export default function JobDashboard() {
       name: key,
       count: stats[key as keyof typeof stats]
     }));
-  };
+  }, [jobs]);
 
   return (
     <div className="container mx-auto px-4">
@@ -167,7 +169,7 @@ export default function JobDashboard() {
         {jobs.length > 0 ? (
           <div className="h-64 w-full">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={getAnalyticsData()} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+              <BarChart data={analyticsData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#3f3f46" vertical={false} />
                 <XAxis dataKey="name" stroke="#a1a1aa" tick={{ fill: '#a1a1aa' }} />
                 <YAxis allowDecimals={false} stroke="#a1a1aa" tick={{ fill: '#a1a1aa' }} />
