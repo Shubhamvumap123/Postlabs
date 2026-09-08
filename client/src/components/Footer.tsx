@@ -6,9 +6,6 @@ import { Loader2 } from "lucide-react";
 export default function Footer() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const sentinelRef = useRef<HTMLDivElement>(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const atBottom = useInView(sentinelRef, { margin: "0px 0px 50px 0px" });
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
    
@@ -33,8 +30,6 @@ export default function Footer() {
       document.head.removeChild(style);
     };
   }, []);
-
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -68,6 +63,8 @@ export default function Footer() {
     }
   };
 
+
+  const isInView = useInView(sentinelRef, { once: true });
 
   return (
     <>

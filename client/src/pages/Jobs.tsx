@@ -10,12 +10,12 @@ import { Input } from '../components/ui/input';
 
 const Dashboard = () => {
   const { user, logout } = useContext(AuthContext);
-  const [jobs, setJobs] = useState<any[]>([]);
+  const [jobs, setJobs] = useState<{_id: string, company: string, position: string, status: string, location?: string}[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('All');
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingJob, setEditingJob] = useState<any>(null);
+  const [editingJob, setEditingJob] = useState<{_id?: string, company: string, position: string, status: string, location?: string} | null>(null);
 
   useEffect(() => {
     fetchJobs();
@@ -26,14 +26,15 @@ const Dashboard = () => {
       setLoading(true);
       const res = await api.get('/jobs');
       setJobs(res.data);
-    } catch (err) {
+    } catch (err: unknown) {
       toast.error('Failed to fetch jobs');
+      console.error(err);
     } finally {
       setLoading(false);
     }
   };
 
-  const handleSaveJob = async (job: any) => {
+  const handleSaveJob = async (job: {_id?: string, company: string, position: string, status: string, location?: string}) => {
     try {
       if (job._id) {
         await api.put(`/jobs/${job._id}`, job);
@@ -45,8 +46,9 @@ const Dashboard = () => {
       fetchJobs();
       setIsModalOpen(false);
       setEditingJob(null);
-    } catch (err) {
+    } catch (err: unknown) {
       toast.error('Failed to save job');
+      console.error(err);
     }
   };
 
@@ -56,8 +58,9 @@ const Dashboard = () => {
         await api.delete(`/jobs/${id}`);
         toast.success('Job deleted');
         fetchJobs();
-      } catch (err) {
+      } catch (err: unknown) {
         toast.error('Failed to delete job');
+        console.error(err);
       }
     }
   };
