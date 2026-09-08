@@ -249,10 +249,10 @@ export default function JobDashboard() {
                     </span>
 
                     <div className="flex items-center gap-2 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity">
-                      <Button size="icon" variant="ghost" onClick={() => openEditModal(job)} className="text-zinc-400 hover:text-white hover:bg-zinc-800 h-8 w-8">
+                      <Button size="icon" variant="ghost" onClick={() => openEditModal(job)} className="text-zinc-400 hover:text-white hover:bg-zinc-800 h-8 w-8" aria-label={`Edit job: ${job.title}`} title="Edit">
                         <Edit2 className="w-4 h-4" />
                       </Button>
-                      <Button size="icon" variant="ghost" onClick={() => handleDelete(job._id)} className="text-red-400 hover:text-red-300 hover:bg-red-400/10 h-8 w-8">
+                      <Button size="icon" variant="ghost" onClick={() => handleDelete(job._id)} className="text-red-400 hover:text-red-300 hover:bg-red-400/10 h-8 w-8" aria-label={`Delete job: ${job.title}`} title="Delete">
                         <Trash2 className="w-4 h-4" />
                       </Button>
                     </div>
