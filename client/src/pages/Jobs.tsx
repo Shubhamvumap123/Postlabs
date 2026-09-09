@@ -10,11 +10,13 @@ import { Input } from '../components/ui/input';
 
 const Dashboard = () => {
   const { user, logout } = useContext(AuthContext);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [jobs, setJobs] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('All');
   const [isModalOpen, setIsModalOpen] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [editingJob, setEditingJob] = useState<any>(null);
 
   useEffect(() => {
@@ -26,13 +28,14 @@ const Dashboard = () => {
       setLoading(true);
       const res = await api.get('/jobs');
       setJobs(res.data);
-    } catch (err) {
+    } catch {
       toast.error('Failed to fetch jobs');
     } finally {
       setLoading(false);
     }
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleSaveJob = async (job: any) => {
     try {
       if (job._id) {
@@ -45,7 +48,7 @@ const Dashboard = () => {
       fetchJobs();
       setIsModalOpen(false);
       setEditingJob(null);
-    } catch (err) {
+    } catch {
       toast.error('Failed to save job');
     }
   };
@@ -56,7 +59,7 @@ const Dashboard = () => {
         await api.delete(`/jobs/${id}`);
         toast.success('Job deleted');
         fetchJobs();
-      } catch (err) {
+      } catch {
         toast.error('Failed to delete job');
       }
     }
@@ -88,7 +91,7 @@ const Dashboard = () => {
         <div className="flex justify-between items-center">
           <h1 className="text-2xl font-bold">Job Tracker Dashboard</h1>
           <div className="flex gap-4 items-center">
-            <span className="text-zinc-400">Welcome, {user.name}</span>
+            <span className="text-zinc-400">Welcome, {(user as { name?: string })?.name || 'User'}</span>
             <Button variant="outline" onClick={logout} className="border-zinc-700 hover:bg-zinc-800">Logout</Button>
           </div>
         </div>
