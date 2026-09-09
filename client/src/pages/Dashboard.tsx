@@ -26,10 +26,6 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const userInfo = JSON.parse(localStorage.getItem('userInfo') || '{}');
 
-  useEffect(() => {
-    fetchJobs();
-  }, []);
-
   const fetchJobs = async () => {
     try {
       const { data } = await api.get('/jobs');
@@ -39,11 +35,16 @@ const Dashboard = () => {
         localStorage.removeItem('userInfo');
         navigate('/login');
       }
-      toast.error('Failed to fetch jobs');
+      toast.error('Failed to load jobs');
     } finally {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    fetchJobs();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
 
   const handleLogout = () => {
     localStorage.removeItem('userInfo');
