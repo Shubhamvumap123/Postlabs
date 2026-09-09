@@ -197,12 +197,13 @@ export default function JobDashboard() {
             className="pl-10 bg-zinc-900 border-zinc-800 text-white w-full"
           />
         </div>
-        <div className="flex gap-2 overflow-x-auto pb-2 md:pb-0 hide-scrollbar">
+        <div className="flex gap-2 overflow-x-auto pb-2 md:pb-0 hide-scrollbar" role="group" aria-label="Filter jobs by status">
           {['All', 'Applied', 'Interview', 'Offer', 'Rejected'].map(statusOption => (
             <button
               key={statusOption}
               onClick={() => setFilterStatus(statusOption)}
-              className={`px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-colors ${
+              aria-pressed={filterStatus === statusOption}
+              className={`px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500 ${
                 filterStatus === statusOption
                   ? 'bg-purple-600/20 text-purple-400 border border-purple-500/50'
                   : 'bg-zinc-900 text-zinc-400 border border-zinc-800 hover:bg-zinc-800'
@@ -249,11 +250,11 @@ export default function JobDashboard() {
                     </span>
 
                     <div className="flex items-center gap-2 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity">
-                      <Button size="icon" variant="ghost" onClick={() => openEditModal(job)} className="text-zinc-400 hover:text-white hover:bg-zinc-800 h-8 w-8">
-                        <Edit2 className="w-4 h-4" />
+                      <Button size="icon" variant="ghost" onClick={() => openEditModal(job)} aria-label={`Edit job: ${job.title}`} className="text-zinc-400 hover:text-white hover:bg-zinc-800 h-8 w-8 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500">
+                        <Edit2 className="w-4 h-4" aria-hidden="true" />
                       </Button>
-                      <Button size="icon" variant="ghost" onClick={() => handleDelete(job._id)} className="text-red-400 hover:text-red-300 hover:bg-red-400/10 h-8 w-8">
-                        <Trash2 className="w-4 h-4" />
+                      <Button size="icon" variant="ghost" onClick={() => handleDelete(job._id)} aria-label={`Delete job: ${job.title}`} className="text-red-400 hover:text-red-300 hover:bg-red-400/10 h-8 w-8 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500">
+                        <Trash2 className="w-4 h-4" aria-hidden="true" />
                       </Button>
                     </div>
                   </div>
