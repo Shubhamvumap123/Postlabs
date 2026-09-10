@@ -8,14 +8,22 @@ import JobModal from '../components/JobModal';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 
+interface Job {
+  _id?: string;
+  company: string;
+  position: string;
+  status: string;
+  location?: string;
+}
+
 const Dashboard = () => {
   const { user, logout } = useContext(AuthContext);
-  const [jobs, setJobs] = useState<any[]>([]);
+  const [jobs, setJobs] = useState<Job[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('All');
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingJob, setEditingJob] = useState<any>(null);
+  const [editingJob, setEditingJob] = useState<Job | null>(null);
 
   useEffect(() => {
     fetchJobs();
@@ -26,14 +34,14 @@ const Dashboard = () => {
       setLoading(true);
       const res = await api.get('/jobs');
       setJobs(res.data);
-    } catch (err) {
+    } catch {
       toast.error('Failed to fetch jobs');
     } finally {
       setLoading(false);
     }
   };
 
-  const handleSaveJob = async (job: any) => {
+  const handleSaveJob = async (job: Job) => {
     try {
       if (job._id) {
         await api.put(`/jobs/${job._id}`, job);
@@ -45,7 +53,7 @@ const Dashboard = () => {
       fetchJobs();
       setIsModalOpen(false);
       setEditingJob(null);
-    } catch (err) {
+    } catch {
       toast.error('Failed to save job');
     }
   };
@@ -56,7 +64,7 @@ const Dashboard = () => {
         await api.delete(`/jobs/${id}`);
         toast.success('Job deleted');
         fetchJobs();
-      } catch (err) {
+      } catch {
         toast.error('Failed to delete job');
       }
     }
@@ -88,7 +96,7 @@ const Dashboard = () => {
         <div className="flex justify-between items-center">
           <h1 className="text-2xl font-bold">Job Tracker Dashboard</h1>
           <div className="flex gap-4 items-center">
-            <span className="text-zinc-400">Welcome, {user.name}</span>
+            <span className="text-zinc-400">Welcome, {(user as any)?.name}</span>
             <Button variant="outline" onClick={logout} className="border-zinc-700 hover:bg-zinc-800">Logout</Button>
           </div>
         </div>
@@ -146,7 +154,7 @@ const Dashboard = () => {
                         </span>
                         <div className="flex gap-2">
                           <button onClick={() => { setEditingJob(job); setIsModalOpen(true); }} className="text-zinc-400 hover:text-white"><Edit className="w-4 h-4" /></button>
-                          <button onClick={() => handleDelete(job._id)} className="text-zinc-400 hover:text-red-400"><Trash2 className="w-4 h-4" /></button>
+                          <button onClick={() => job._id && handleDelete(job._id)} className="text-zinc-400 hover:text-red-400"><Trash2 className="w-4 h-4" /></button>
                         </div>
                       </div>
                     </div>
