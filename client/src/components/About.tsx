@@ -1,6 +1,5 @@
 import { useEffect, useState, useMemo } from 'react';
 
-import { useEffect, useState, useMemo } from 'react';
 
 // Extract static text outside the component to prevent recreation on every render
 const STATIC_TEXT = "Post Labs is rethinking how digital media works for Canadians. Our mission is simple: make journalism profitable, sustainable, and trusted – built for Canadians, by Canadians.";
