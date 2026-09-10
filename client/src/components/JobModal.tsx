@@ -3,11 +3,18 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from './ui/dialog';
 import { Input } from './ui/input';
 import { Button } from './ui/button';
 
+interface Job {
+  _id?: string;
+  company: string;
+  position: string;
+  status: string;
+}
+
 interface JobModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSave: (job: any) => void;
-  job?: any;
+  onSave: (job: Job) => void;
+  job?: Job | null;
 }
 
 const JobModal = ({ isOpen, onClose, onSave, job }: JobModalProps) => {

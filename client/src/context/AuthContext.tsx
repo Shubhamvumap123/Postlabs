@@ -2,11 +2,20 @@ import { createContext, useState, useEffect } from 'react';
 import type { ReactNode } from 'react';
 import { jwtDecode } from 'jwt-decode';
 import { useNavigate } from 'react-router-dom';
-import api from '../lib/api/axios';
 import { toast } from 'sonner';
 
+interface User {
+  id: string;
+  name: string;
+  email: string;
+}
+
+interface JwtPayload {
+  user: User;
+}
+
 interface AuthContextType {
-  user: any;
+  user: User | null;
   login: (token: string) => void;
   logout: () => void;
 }
@@ -14,16 +23,16 @@ interface AuthContextType {
 export const AuthContext = createContext<AuthContextType>({ user: null, login: () => {}, logout: () => {} });
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<User | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (token) {
       try {
-        const decoded = jwtDecode(token);
+        const decoded = jwtDecode<JwtPayload>(token);
         setUser(decoded.user);
-      } catch (err) {
+      } catch {
         localStorage.removeItem('token');
       }
     }
