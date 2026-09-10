@@ -39,16 +39,18 @@ const JobCard = ({ job, onEdit, onDelete }: { job: Record<string, unknown>, onEd
         </div>
       </div>
 
-      <div className="flex justify-end gap-2 pt-4 border-t border-white/5 opacity-0 group-hover:opacity-100 transition-opacity">
+      <div className="flex justify-end gap-2 pt-4 border-t border-white/5 opacity-0 group-hover:opacity-100 focus-within:opacity-100 transition-opacity">
         <button
           onClick={onEdit}
-          className="p-1.5 text-zinc-400 hover:text-white rounded bg-zinc-800 hover:bg-zinc-700 transition-colors"
+          className="p-1.5 text-zinc-400 hover:text-white rounded bg-zinc-800 hover:bg-zinc-700 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-purple-500"
+          aria-label={`Edit job: ${String(job.position)} at ${String(job.company)}`}
         >
           <Edit2 className="w-4 h-4" />
         </button>
         <button
           onClick={onDelete}
-          className="p-1.5 text-zinc-400 hover:text-red-400 rounded bg-zinc-800 hover:bg-red-900/30 transition-colors"
+          className="p-1.5 text-zinc-400 hover:text-red-400 rounded bg-zinc-800 hover:bg-red-900/30 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-purple-500"
+          aria-label={`Delete job: ${String(job.position)} at ${String(job.company)}`}
         >
           <Trash2 className="w-4 h-4" />
         </button>
