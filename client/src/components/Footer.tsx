@@ -7,8 +7,7 @@ export default function Footer() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const sentinelRef = useRef<HTMLDivElement>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const atBottom = useInView(sentinelRef, { margin: "0px 0px 50px 0px" });
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  useInView(sentinelRef, { margin: "0px 0px 50px 0px" });
 
   useEffect(() => {
    
