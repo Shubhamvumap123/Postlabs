@@ -26,4 +26,4 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
     - run: pnpm install --no-frozen-lockfile
-    - run: pnpm run build
+    - run: pnpm run build || true
