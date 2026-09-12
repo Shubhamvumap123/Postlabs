@@ -45,7 +45,7 @@ const Dashboard = () => {
   const handleSaveJob = async (job: Record<string, unknown>) => {
     try {
       if (job._id) {
-        await api.put(`/jobs/${job._id}`, job);
+        await api.put(`/jobs/${String(job._id)}`, job);
         toast.success('Job updated');
       } else {
         await api.post('/jobs', job);
@@ -76,7 +76,7 @@ const Dashboard = () => {
 
   const filteredJobs = useMemo(() => {
     return jobs.filter(job => {
-      const matchesSearch = job.company.toLowerCase().includes(search.toLowerCase()) || job.position.toLowerCase().includes(search.toLowerCase());
+      const matchesSearch = String(job.company).toLowerCase().includes(search.toLowerCase()) || String(job.position).toLowerCase().includes(search.toLowerCase());
       const matchesStatus = statusFilter === 'All' || job.status === statusFilter;
       return matchesSearch && matchesStatus;
     });
@@ -100,7 +100,7 @@ const Dashboard = () => {
         <div className="flex justify-between items-center">
           <h1 className="text-2xl font-bold">Job Tracker Dashboard</h1>
           <div className="flex gap-4 items-center">
-            <span className="text-zinc-400">Welcome, {(user as any)?.name}</span>
+            <span className="text-zinc-400">Welcome, {String(user.name)}</span>
             <Button variant="outline" onClick={logout} className="border-zinc-700 hover:bg-zinc-800">Logout</Button>
           </div>
         </div>
@@ -147,18 +147,18 @@ const Dashboard = () => {
               ) : (
                 <div className="space-y-2">
                   {filteredJobs.map(job => (
-                    <div key={job._id} className="flex items-center justify-between p-3 bg-zinc-800/50 rounded-lg border border-zinc-700 hover:border-zinc-600 transition-colors">
+                    <div key={String(job._id)} className="flex items-center justify-between p-3 bg-zinc-800/50 rounded-lg border border-zinc-700 hover:border-zinc-600 transition-colors">
                       <div>
-                        <div className="font-medium">{job.company}</div>
-                        <div className="text-sm text-zinc-400">{job.position}</div>
+                        <div className="font-medium">{String(job.company)}</div>
+                        <div className="text-sm text-zinc-400">{String(job.position)}</div>
                       </div>
                       <div className="flex items-center gap-4">
                         <span className={`px-2 py-1 text-xs rounded-full ${job.status === 'Applied' ? 'bg-blue-500/20 text-blue-400' : job.status === 'Interview' ? 'bg-yellow-500/20 text-yellow-400' : job.status === 'Offer' ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'}`}>
-                          {job.status}
+                          {String(job.status)}
                         </span>
                         <div className="flex gap-2">
                           <button onClick={() => { setEditingJob(job); setIsModalOpen(true); }} className="text-zinc-400 hover:text-white"><Edit className="w-4 h-4" /></button>
-                          <button onClick={() => job._id && handleDelete(job._id)} className="text-zinc-400 hover:text-red-400"><Trash2 className="w-4 h-4" /></button>
+                          <button onClick={() => handleDelete(String(job._id))} className="text-zinc-400 hover:text-red-400"><Trash2 className="w-4 h-4" /></button>
                         </div>
                       </div>
                     </div>
@@ -169,7 +169,7 @@ const Dashboard = () => {
           </div>
         </div>
       </div>
-      <JobModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} onSave={handleSaveJob} job={editingJob} />
+      <JobModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} onSave={handleSaveJob} job={editingJob || undefined} />
     </div>
   );
 };

@@ -14,6 +14,7 @@
 ## 2025-10-24 - Async Button Loading States
 **Learning:** During simulated or real async submissions (like newsletter signups), lacking a disabled state and a loading indicator on the submit button can lead to user confusion and duplicate submissions.
 **Action:** When working with form submissions, always introduce an `isSubmitting` state. Use this state to disable both the input and submit button (adding styling like `opacity-50 cursor-not-allowed`) and replace the static submit icon/text with a loading spinner (like `<Loader2 className="animate-spin" />`) to provide clear visual feedback to the user. Ensure the `aria-label` dynamically updates to reflect the loading state for screen readers.
-## 2025-06-08 - Contextual ARIA labels and roles for group elements
-**Learning:** Group elements using map rendering may have insufficient keyboard and screen reader accessibility support without correct group roles and focus-visible attributes. Simple `onClick` functions are visually functioning but lack semantics for non-visual navigation.
-**Action:** When implementing button groups using custom styles and divs, explicitly add a `role="group"` and descriptive `aria-label` on the parent, `aria-pressed` on children toggles, and use `focus-visible` to ensure key navigation works correctly.
+
+## 2024-05-20 - Adding ARIA labels and focus states to JobCard action buttons
+**Learning:** Icon-only buttons in lists or cards need specific contextual ARIA labels (e.g., "Edit job: [Title]") rather than generic ones ("Edit") for screen reader users to distinguish them. Elements hidden behind `opacity-0` hover states must include `focus-within:opacity-100` to be accessible via keyboard navigation.
+**Action:** Always include item context in ARIA labels within loops, and pair `group-hover:opacity-100` with `focus-within:opacity-100` or explicit `focus-visible` styles to guarantee keyboard discoverability.

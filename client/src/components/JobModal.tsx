@@ -14,7 +14,7 @@ interface JobModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSave: (job: Record<string, unknown>) => void;
-  job?: Record<string, unknown> | null;
+  job?: Record<string, unknown>;
 }
 
 const JobModal = ({ isOpen, onClose, onSave, job }: JobModalProps) => {
