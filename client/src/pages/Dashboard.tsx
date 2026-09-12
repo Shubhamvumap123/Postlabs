@@ -86,14 +86,17 @@ const Dashboard = () => {
     setShowForm(true);
   };
 
-  // PERFORMANCE: Memoize filtered jobs to prevent recalculation on unrelated state changes like form inputs
-  const filteredJobs = useMemo(() => jobs.filter(job => {
-    const matchesSearch = job.company.toLowerCase().includes(search.toLowerCase()) || job.position.toLowerCase().includes(search.toLowerCase());
-    const matchesStatus = statusFilter === 'All' || job.status === statusFilter;
-    return matchesSearch && matchesStatus;
-  }), [jobs, search, statusFilter]);
+  // PERFORMANCE: Memoize filtered list to prevent expensive array filtering on every render unless dependencies change
+  const filteredJobs = useMemo(() => {
+    return jobs.filter(job => {
+      const matchesSearch = job.company.toLowerCase().includes(search.toLowerCase()) || job.position.toLowerCase().includes(search.toLowerCase());
+      const matchesStatus = statusFilter === 'All' || job.status === statusFilter;
+      return matchesSearch && matchesStatus;
+    });
+  }, [jobs, search, statusFilter]);
 
-  // PERFORMANCE: Memoize analytics data generation to avoid O(n) array traversal on every render
+  // Analytics data
+  // PERFORMANCE: Memoize chart data to avoid recalculating analytics on every render and to provide stable references to chart components
   const chartData = useMemo(() => {
     const statusCounts = jobs.reduce((acc, job) => {
       acc[job.status] = (acc[job.status] || 0) + 1;

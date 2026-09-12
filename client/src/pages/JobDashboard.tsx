@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
@@ -122,15 +122,19 @@ const JobDashboard = () => {
     }
   };
 
-  const filteredJobs = jobs.filter((job) => {
-    const matchesSearch = job.company.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                          job.position.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesFilter = filterStatus === 'All' || job.status === filterStatus;
-    return matchesSearch && matchesFilter;
-  });
+  // PERFORMANCE: Memoize filtered list to prevent expensive array filtering on every render unless dependencies change
+  const filteredJobs = useMemo(() => {
+    return jobs.filter((job) => {
+      const matchesSearch = job.company.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                            job.position.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesFilter = filterStatus === 'All' || job.status === filterStatus;
+      return matchesSearch && matchesFilter;
+    });
+  }, [jobs, searchTerm, filterStatus]);
 
   // Analytics Data
-  const getAnalyticsData = () => {
+  // PERFORMANCE: Memoize pie chart data to avoid recalculating analytics on every render and to provide stable references to chart components
+  const pieData = useMemo(() => {
     const statusCounts = { Applied: 0, Interview: 0, Offer: 0, Rejected: 0 };
     jobs.forEach(job => {
       if (statusCounts[job.status] !== undefined) {
@@ -141,9 +145,7 @@ const JobDashboard = () => {
       name: key,
       value: statusCounts[key as keyof typeof statusCounts]
     })).filter(item => item.value > 0);
-  };
-
-  const pieData = getAnalyticsData();
+  }, [jobs]);
 
   if (loading) {
     return <div className="min-h-screen flex items-center justify-center bg-zinc-950 text-white">Loading...</div>;
