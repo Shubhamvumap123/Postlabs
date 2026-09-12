@@ -8,7 +8,6 @@ interface Job {
   company: string;
   position: string;
   status: string;
-  location?: string;
 }
 
 interface JobModalProps {

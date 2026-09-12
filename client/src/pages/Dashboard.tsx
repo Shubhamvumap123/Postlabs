@@ -26,6 +26,11 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const userInfo = JSON.parse(localStorage.getItem('userInfo') || '{}');
 
+  useEffect(() => {
+    fetchJobs();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const fetchJobs = async () => {
     try {
       const { data } = await api.get('/jobs');
@@ -96,17 +101,17 @@ const Dashboard = () => {
     setShowForm(true);
   };
 
-  // PERFORMANCE: Memoize filtered list to prevent expensive array filtering on every render unless dependencies change
+  // PERFORMANCE: Memoize filtered jobs and extract search lowercasing outside the loop to avoid redundant operations on every render.
   const filteredJobs = useMemo(() => {
+    const lowerSearch = search.toLowerCase();
     return jobs.filter(job => {
-      const matchesSearch = job.company.toLowerCase().includes(search.toLowerCase()) || job.position.toLowerCase().includes(search.toLowerCase());
+      const matchesSearch = job.company.toLowerCase().includes(lowerSearch) || job.position.toLowerCase().includes(lowerSearch);
       const matchesStatus = statusFilter === 'All' || job.status === statusFilter;
       return matchesSearch && matchesStatus;
     });
   }, [jobs, search, statusFilter]);
 
-  // Analytics data
-  // PERFORMANCE: Memoize chart data to avoid recalculating analytics on every render and to provide stable references to chart components
+  // PERFORMANCE: Memoize analytics calculations to prevent unnecessary reductions and array allocations during unrelated state updates (e.g., form typing).
   const chartData = useMemo(() => {
     const statusCounts = jobs.reduce((acc, job) => {
       acc[job.status] = (acc[job.status] || 0) + 1;

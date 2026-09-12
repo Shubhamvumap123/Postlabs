@@ -13,7 +13,6 @@ interface Job {
   company: string;
   position: string;
   status: string;
-  location?: string;
 }
 
 const Dashboard = () => {
@@ -61,7 +60,8 @@ const Dashboard = () => {
     }
   };
 
-  const handleDelete = async (id: string) => {
+  const handleDelete = async (id?: string) => {
+    if (!id) return;
     if (confirm('Are you sure you want to delete this job?')) {
       try {
         await api.delete(`/jobs/${id}`);
