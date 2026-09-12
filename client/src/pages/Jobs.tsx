@@ -10,15 +10,16 @@ import { Input } from '../components/ui/input';
 
 const Dashboard = () => {
   const { user, logout } = useContext(AuthContext);
-  const [jobs, setJobs] = useState<{ _id: string, company: string, position: string, status: string }[]>([]);
+  const [jobs, setJobs] = useState<{ _id: string; company: string; position: string; status: string; location?: string }[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('All');
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingJob, setEditingJob] = useState<{ _id?: string, company: string, position: string, status: string } | null>(null);
+  const [editingJob, setEditingJob] = useState<{ _id?: string; company: string; position: string; status: string; location?: string } | null>(null);
 
   useEffect(() => {
     fetchJobs();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const fetchJobs = async () => {
@@ -33,7 +34,7 @@ const Dashboard = () => {
     }
   };
 
-  const handleSaveJob = async (job: { _id?: string, company: string, position: string, status: string }) => {
+  const handleSaveJob = async (job: { _id?: string; company: string; position: string; status: string; location?: string }) => {
     try {
       if (job._id) {
         await api.put(`/jobs/${job._id}`, job);

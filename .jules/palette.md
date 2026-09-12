@@ -14,3 +14,6 @@
 ## 2025-10-24 - Async Button Loading States
 **Learning:** During simulated or real async submissions (like newsletter signups), lacking a disabled state and a loading indicator on the submit button can lead to user confusion and duplicate submissions.
 **Action:** When working with form submissions, always introduce an `isSubmitting` state. Use this state to disable both the input and submit button (adding styling like `opacity-50 cursor-not-allowed`) and replace the static submit icon/text with a loading spinner (like `<Loader2 className="animate-spin" />`) to provide clear visual feedback to the user. Ensure the `aria-label` dynamically updates to reflect the loading state for screen readers.
+## 2026-09-07 - Unassociated Form Labels
+**Learning:** Found multiple instances where form inputs were missing 'id' attributes and labels were missing 'htmlFor' attributes, breaking screen reader associations.
+**Action:** Always ensure inputs have unique 'id's and labels use 'htmlFor' when building or reviewing forms.

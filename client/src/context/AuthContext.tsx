@@ -4,8 +4,15 @@ import { jwtDecode } from 'jwt-decode';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 
+interface User {
+  id?: string;
+  name?: string;
+  email?: string;
+  [key: string]: unknown;
+}
+
 interface AuthContextType {
-  user: { name: string, email: string, role?: string } | null;
+  user: User | null;
   login: (token: string) => void;
   logout: () => void;
 }
@@ -13,15 +20,15 @@ interface AuthContextType {
 export const AuthContext = createContext<AuthContextType>({ user: null, login: () => {}, logout: () => {} });
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [user, setUser] = useState<{ name: string, email: string, role?: string } | null>(null);
+  const [user, setUser] = useState<User | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (token) {
       try {
-        const decoded = jwtDecode(token) as { user?: { name: string, email: string, role?: string }, name?: string, email?: string, role?: string };
-        setUser(decoded.user || (decoded.name && decoded.email ? { name: decoded.name, email: decoded.email, role: decoded.role } : null));
+        const decoded = jwtDecode<{ user: User }>(token);
+        setUser(decoded.user);
       } catch {
         localStorage.removeItem('token');
       }
@@ -30,8 +37,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const login = (token: string) => {
     localStorage.setItem('token', token);
-    const decoded = jwtDecode(token) as { user?: { name: string, email: string, role?: string }, name?: string, email?: string, role?: string };
-    setUser(decoded.user || (decoded.name && decoded.email ? { name: decoded.name, email: decoded.email, role: decoded.role } : null));
+    const decoded = jwtDecode<{ user: User }>(token);
+    setUser(decoded.user);
     navigate('/jobs');
     toast.success('Logged in successfully');
   };

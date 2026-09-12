@@ -30,18 +30,18 @@ const Register = () => {
       <form onSubmit={handleSubmit} className="bg-zinc-900 p-8 rounded-lg shadow-xl w-full max-w-md space-y-4 text-zinc-100">
         <h2 className="text-2xl font-bold mb-6 text-center">Register for JobTracker</h2>
         <div>
-          <label className="block text-sm font-medium mb-1">Name</label>
-          <input type="text" value={name} onChange={e => setName(e.target.value)} required className="w-full p-2 bg-zinc-800 rounded border border-zinc-700" />
+          <label htmlFor="name" className="block text-sm font-medium mb-1">Name</label>
+          <input id="name" type="text" value={name} onChange={e => setName(e.target.value)} required className="w-full p-2 bg-zinc-800 rounded border border-zinc-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500" />
         </div>
         <div>
-          <label className="block text-sm font-medium mb-1">Email</label>
-          <input type="email" value={email} onChange={e => setEmail(e.target.value)} required className="w-full p-2 bg-zinc-800 rounded border border-zinc-700" />
+          <label htmlFor="email" className="block text-sm font-medium mb-1">Email</label>
+          <input id="email" type="email" value={email} onChange={e => setEmail(e.target.value)} required className="w-full p-2 bg-zinc-800 rounded border border-zinc-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500" />
         </div>
         <div>
-          <label className="block text-sm font-medium mb-1">Password</label>
-          <input type="password" value={password} onChange={e => setPassword(e.target.value)} required className="w-full p-2 bg-zinc-800 rounded border border-zinc-700" />
+          <label htmlFor="password" className="block text-sm font-medium mb-1">Password</label>
+          <input id="password" type="password" value={password} onChange={e => setPassword(e.target.value)} required className="w-full p-2 bg-zinc-800 rounded border border-zinc-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500" />
         </div>
-        <button type="submit" disabled={loading} className="w-full bg-blue-600 hover:bg-blue-700 p-2 rounded font-medium transition-colors">
+        <button type="submit" disabled={loading} className="w-full bg-blue-600 hover:bg-blue-700 p-2 rounded font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed">
           {loading ? 'Loading...' : 'Register'}
         </button>
         <p className="text-sm text-center mt-4">
