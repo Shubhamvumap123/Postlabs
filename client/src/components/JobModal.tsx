@@ -14,8 +14,8 @@ interface Job {
 interface JobModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSave: (job: { _id?: string; company: string; position: string; status: string }) => void;
-  job?: { _id?: string; company: string; position: string; status: string } | null;
+  onSave: (job: Job) => void;
+  job?: Job | null;
 }
 
 const JobModal = ({ isOpen, onClose, onSave, job }: JobModalProps) => {
@@ -42,6 +42,7 @@ const JobModal = ({ isOpen, onClose, onSave, job }: JobModalProps) => {
 
   return (
     <Dialog isOpen={isOpen} onClose={onClose} title={job ? 'Edit Job' : 'Add New Job'}>
+      <div className="bg-zinc-900 border-zinc-800 text-zinc-100 p-4 rounded-md">
         <form onSubmit={handleSubmit} className="space-y-4 mt-4">
           <div>
             <label className="text-sm text-zinc-400">Company</label>
@@ -62,6 +63,7 @@ const JobModal = ({ isOpen, onClose, onSave, job }: JobModalProps) => {
           </div>
           <Button type="submit" className="w-full bg-purple-600 hover:bg-purple-700">Save</Button>
         </form>
+      </div>
     </Dialog>
   );
 };

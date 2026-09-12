@@ -2,13 +2,7 @@ import { createContext, useState, useEffect } from 'react';
 import type { ReactNode } from 'react';
 import { jwtDecode } from 'jwt-decode';
 import { useNavigate } from 'react-router-dom';
-
-interface User {
-  id?: string;
-  name?: string;
-  email?: string;
-  [key: string]: unknown;
-}
+import { toast } from 'sonner';
 
 interface AuthContextType {
   user: unknown;
@@ -26,8 +20,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const token = localStorage.getItem('token');
     if (token) {
       try {
-        const decoded = jwtDecode(token);
-        setUser((decoded as { user: unknown }).user);
+        const decoded: { user?: unknown } = jwtDecode(token);
+        setUser(decoded.user);
       } catch {
         localStorage.removeItem('token');
       }
@@ -36,8 +30,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const login = (token: string) => {
     localStorage.setItem('token', token);
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const decoded: any = jwtDecode(token);
+    const decoded: { user?: unknown } = jwtDecode(token);
     setUser(decoded.user);
     navigate('/jobs');
     toast.success('Logged in successfully');

@@ -4,7 +4,7 @@ import { Loader2 } from "lucide-react";
 
 export default function Footer() {
   const sentinelRef = useRef<HTMLDivElement>(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const isInView = useInView(sentinelRef, { margin: "0px 0px 50px 0px" });
 
   useEffect(() => {
    
@@ -35,15 +35,11 @@ export default function Footer() {
     setIsSubmitting(true);
     const formData = new FormData(e.currentTarget);
     const email = formData.get("email") as string;
-    setIsSubmitting(true);
 
     // Capture the form element before the await
     const form = e.currentTarget;
-    setIsSubmitting(true);
 
-    setIsSubmitting(true);
     try {
-      setIsLoading(true);
       // SECURITY: In a real production app, never call the Mailchimp API directly from the client.
       // It exposes your API key. Always proxy these requests through your own backend.
       // This is a simulated "Demo Mode" for the UI.
@@ -189,7 +185,6 @@ export default function Footer() {
       {/* Sentinel element to trigger intersection observer when bottom is reached */}
       <div ref={sentinelRef} className="h-px w-full invisible" aria-hidden="true" />
     </footer>
-    <div ref={ref} className="w-full h-px" />
     </>
   );
 }

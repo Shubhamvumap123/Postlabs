@@ -13,6 +13,7 @@ interface Job {
   company: string;
   position: string;
   status: string;
+  location?: string;
 }
 
 const Dashboard = () => {
@@ -99,7 +100,7 @@ const Dashboard = () => {
         <div className="flex justify-between items-center">
           <h1 className="text-2xl font-bold">Job Tracker Dashboard</h1>
           <div className="flex gap-4 items-center">
-            <span className="text-zinc-400">Welcome, {(user as { name?: string })?.name || 'User'}</span>
+            <span className="text-zinc-400">Welcome, {(user as any)?.name}</span>
             <Button variant="outline" onClick={logout} className="border-zinc-700 hover:bg-zinc-800">Logout</Button>
           </div>
         </div>
@@ -157,7 +158,7 @@ const Dashboard = () => {
                         </span>
                         <div className="flex gap-2">
                           <button onClick={() => { setEditingJob(job); setIsModalOpen(true); }} className="text-zinc-400 hover:text-white"><Edit className="w-4 h-4" /></button>
-                          <button onClick={() => handleDelete(job._id)} className="text-zinc-400 hover:text-red-400"><Trash2 className="w-4 h-4" /></button>
+                          <button onClick={() => job._id && handleDelete(job._id)} className="text-zinc-400 hover:text-red-400"><Trash2 className="w-4 h-4" /></button>
                         </div>
                       </div>
                     </div>
