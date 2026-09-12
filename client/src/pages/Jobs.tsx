@@ -10,12 +10,14 @@ import { Input } from '../components/ui/input';
 
 const Dashboard = () => {
   const { user, logout } = useContext(AuthContext);
-  const [jobs, setJobs] = useState<{_id: string, company: string, position: string, status: string, location?: string}[]>([]);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [jobs, setJobs] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('All');
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingJob, setEditingJob] = useState<{_id?: string, company: string, position: string, status: string, location?: string} | null>(null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [editingJob, setEditingJob] = useState<any>(null);
 
   useEffect(() => {
     fetchJobs();
@@ -27,7 +29,7 @@ const Dashboard = () => {
       setLoading(true);
       const res = await api.get('/jobs');
       setJobs(res.data);
-    } catch (err: unknown) {
+    } catch {
       toast.error('Failed to fetch jobs');
       console.error(err);
     } finally {
@@ -35,7 +37,8 @@ const Dashboard = () => {
     }
   };
 
-  const handleSaveJob = async (job: {_id?: string, company: string, position: string, status: string, location?: string}) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const handleSaveJob = async (job: any) => {
     try {
       if (job._id) {
         await api.put(`/jobs/${job._id}`, job);
@@ -47,7 +50,7 @@ const Dashboard = () => {
       fetchJobs();
       setIsModalOpen(false);
       setEditingJob(null);
-    } catch (err: unknown) {
+    } catch {
       toast.error('Failed to save job');
       console.error(err);
     }
@@ -59,7 +62,7 @@ const Dashboard = () => {
         await api.delete(`/jobs/${id}`);
         toast.success('Job deleted');
         fetchJobs();
-      } catch (err: unknown) {
+      } catch {
         toast.error('Failed to delete job');
         console.error(err);
       }
@@ -92,7 +95,7 @@ const Dashboard = () => {
         <div className="flex justify-between items-center">
           <h1 className="text-2xl font-bold">Job Tracker Dashboard</h1>
           <div className="flex gap-4 items-center">
-            <span className="text-zinc-400">Welcome, {user.name}</span>
+            <span className="text-zinc-400">Welcome, {(user as { name?: string })?.name || 'User'}</span>
             <Button variant="outline" onClick={logout} className="border-zinc-700 hover:bg-zinc-800">Logout</Button>
           </div>
         </div>

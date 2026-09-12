@@ -14,8 +14,8 @@ interface Job {
 interface JobModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSave: (job: Job) => void;
-  job?: Job | null;
+  onSave: (job: { _id?: string; company: string; position: string; status: string }) => void;
+  job?: { _id?: string; company: string; position: string; status: string } | null;
 }
 
 const JobModal = ({ isOpen, onClose, onSave, job }: JobModalProps) => {

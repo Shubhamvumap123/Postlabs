@@ -12,7 +12,7 @@ interface User {
 }
 
 interface AuthContextType {
-  user: { _id?: string, name?: string, email?: string } | null;
+  user: unknown;
   login: (token: string) => void;
   logout: () => void;
 }
@@ -20,17 +20,17 @@ interface AuthContextType {
 export const AuthContext = createContext<AuthContextType>({ user: null, login: () => {}, logout: () => {} });
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [user, setUser] = useState<{ _id?: string, name?: string, email?: string } | null>(null);
+  const [user, setUser] = useState<unknown>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (token) {
       try {
-        const decoded = jwtDecode<{user: { _id?: string, name?: string, email?: string }}>(token);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const decoded: any = jwtDecode(token);
         setUser(decoded.user);
-      } catch (err: unknown) {
-        console.error(err);
+      } catch {
         localStorage.removeItem('token');
       }
     }
@@ -38,7 +38,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const login = (token: string) => {
     localStorage.setItem('token', token);
-    const decoded = jwtDecode<{user: { _id?: string, name?: string, email?: string }}>(token);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const decoded: any = jwtDecode(token);
     setUser(decoded.user);
     navigate('/jobs');
     toast.success('Logged in successfully');

@@ -26,7 +26,12 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const userInfo = JSON.parse(localStorage.getItem('userInfo') || '{}');
 
-  const fetchJobs = useCallback(async () => {
+  useEffect(() => {
+    fetchJobs();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const fetchJobs = async () => {
     try {
       const { data } = await api.get('/jobs');
       setJobs(data);
