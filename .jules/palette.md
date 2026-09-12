@@ -14,6 +14,6 @@
 ## 2025-10-24 - Async Button Loading States
 **Learning:** During simulated or real async submissions (like newsletter signups), lacking a disabled state and a loading indicator on the submit button can lead to user confusion and duplicate submissions.
 **Action:** When working with form submissions, always introduce an `isSubmitting` state. Use this state to disable both the input and submit button (adding styling like `opacity-50 cursor-not-allowed`) and replace the static submit icon/text with a loading spinner (like `<Loader2 className="animate-spin" />`) to provide clear visual feedback to the user. Ensure the `aria-label` dynamically updates to reflect the loading state for screen readers.
-## 2026-09-07 - Unassociated Form Labels
-**Learning:** Found multiple instances where form inputs were missing 'id' attributes and labels were missing 'htmlFor' attributes, breaking screen reader associations.
-**Action:** Always ensure inputs have unique 'id's and labels use 'htmlFor' when building or reviewing forms.
+## 2026-10-25 - Contextual ARIA labels and tooltips for icon-only dashboard actions
+**Learning:** When adding item-specific action buttons (like Edit or Delete) in a list or dashboard that rely solely on icons, a simple visual tooltip (`title="Edit"`) is not enough for accessibility. While it helps sighted mouse users, screen reader users need explicit `aria-label`s. Furthermore, generic `aria-label`s like "Edit" create ambiguity for screen reader users as they do not indicate *which* item is being affected when tabbing through a list.
+**Action:** When implementing icon-only item-specific actions in a list, always include the item's title in the `aria-label` (e.g., `aria-label={\`Edit job: \${job.title}\`}`) to provide specific context. Also include a standard `title` attribute to provide a native hover tooltip for visual usability.
