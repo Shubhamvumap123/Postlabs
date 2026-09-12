@@ -251,12 +251,12 @@ export default function JobDashboard() {
                       {job.status}
                     </span>
 
-                    <div className="flex items-center gap-2 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity">
-                      <Button size="icon" variant="ghost" onClick={() => openEditModal(job)} aria-label={`Edit job: ${job.title}`} className="text-zinc-400 hover:text-white hover:bg-zinc-800 h-8 w-8 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500">
-                        <Edit2 className="w-4 h-4" aria-hidden="true" />
+                    <div className="flex items-center gap-2 opacity-100 md:opacity-0 md:group-hover:opacity-100 focus-within:opacity-100 transition-opacity">
+                      <Button size="icon" variant="ghost" onClick={() => openEditModal(job)} className="text-zinc-400 hover:text-white hover:bg-zinc-800 h-8 w-8" aria-label={`Edit job: ${job.title}`}>
+                        <Edit2 className="w-4 h-4" />
                       </Button>
-                      <Button size="icon" variant="ghost" onClick={() => handleDelete(job._id)} aria-label={`Delete job: ${job.title}`} className="text-red-400 hover:text-red-300 hover:bg-red-400/10 h-8 w-8 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500">
-                        <Trash2 className="w-4 h-4" aria-hidden="true" />
+                      <Button size="icon" variant="ghost" onClick={() => handleDelete(job._id)} className="text-red-400 hover:text-red-300 hover:bg-red-400/10 h-8 w-8" aria-label={`Delete job: ${job.title}`}>
+                        <Trash2 className="w-4 h-4" />
                       </Button>
                     </div>
                   </div>
