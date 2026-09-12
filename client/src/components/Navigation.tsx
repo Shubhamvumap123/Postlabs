@@ -2,10 +2,8 @@ import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useScroll, useMotionValueEvent } from 'framer-motion';
 import { ThemeToggle } from './ThemeToggle';
-import { useScroll, useMotionValueEvent } from 'framer-motion';
 import { Home, LayoutDashboard, Settings, Mail } from 'lucide-react';
 import { cn } from '../lib/utils';
-import { useScroll, useMotionValueEvent } from 'framer-motion';
 
 const navItems = [
   { name: 'Home', path: '/', icon: Home },
@@ -17,8 +15,6 @@ const navItems = [
 const Navigation = () => {
   const [isVisible, setIsVisible] = useState(false);
   const location = useLocation();
-  const { scrollY } = useScroll();
-
   const { scrollY } = useScroll();
 
   // PERFORMANCE: Replaced manual rAF scroll event listener with Framer Motion's useScroll

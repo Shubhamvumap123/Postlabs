@@ -30,8 +30,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const token = localStorage.getItem('token');
     if (token) {
       try {
-        const decoded = jwtDecode(token) as { user: Record<string, unknown> };
-        setUser(decoded.user);
+        const decoded = jwtDecode(token);
+        setUser((decoded as Record<string, unknown>).user as Record<string, unknown> | null);
       } catch {
         localStorage.removeItem('token');
       }
