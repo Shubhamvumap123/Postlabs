@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../lib/api';
 import { toast } from 'sonner';
@@ -98,17 +98,15 @@ const Dashboard = () => {
     setShowForm(true);
   };
 
-  // PERFORMANCE: Memoize filtered jobs and extract search lowercasing outside the loop to avoid redundant operations on every render.
-  const filteredJobs = useMemo(() => {
-    const lowerSearch = search.toLowerCase();
-    return jobs.filter(job => {
-      const matchesSearch = job.company.toLowerCase().includes(lowerSearch) || job.position.toLowerCase().includes(lowerSearch);
-      const matchesStatus = statusFilter === 'All' || job.status === statusFilter;
-      return matchesSearch && matchesStatus;
-    });
-  }, [jobs, search, statusFilter]);
+  // PERFORMANCE: Memoize filtered jobs to prevent O(N) recalculations on every keystroke in the search bar or modal toggle.
+  const filteredJobs = useMemo(() => jobs.filter(job => {
+    const matchesSearch = job.company.toLowerCase().includes(search.toLowerCase()) || job.position.toLowerCase().includes(search.toLowerCase());
+    const matchesStatus = statusFilter === 'All' || job.status === statusFilter;
+    return matchesSearch && matchesStatus;
+  }), [jobs, search, statusFilter]);
 
-  // PERFORMANCE: Memoize analytics calculations to prevent unnecessary reductions and array allocations during unrelated state updates (e.g., form typing).
+  // Analytics data
+  // PERFORMANCE: Memoize chart data generation to prevent expensive reduce operations during unrelated re-renders.
   const chartData = useMemo(() => {
     const statusCounts = jobs.reduce((acc, job) => {
       acc[job.status] = (acc[job.status] || 0) + 1;
