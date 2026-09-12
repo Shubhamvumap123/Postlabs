@@ -24,11 +24,6 @@ const Dashboard = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingJob, setEditingJob] = useState<Record<string, unknown> | null>(null);
 
-  useEffect(() => {
-    fetchJobs();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   const fetchJobs = async () => {
     try {
       setLoading(true);
@@ -41,6 +36,10 @@ const Dashboard = () => {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    fetchJobs();
+  }, []);
 
   const handleSaveJob = async (job: Record<string, unknown>) => {
     try {
@@ -76,7 +75,9 @@ const Dashboard = () => {
 
   const filteredJobs = useMemo(() => {
     return jobs.filter(job => {
-      const matchesSearch = String(job.company).toLowerCase().includes(search.toLowerCase()) || String(job.position).toLowerCase().includes(search.toLowerCase());
+      const company = (job.company as string) || '';
+      const position = (job.position as string) || '';
+      const matchesSearch = company.toLowerCase().includes(search.toLowerCase()) || position.toLowerCase().includes(search.toLowerCase());
       const matchesStatus = statusFilter === 'All' || job.status === statusFilter;
       return matchesSearch && matchesStatus;
     });
@@ -85,8 +86,9 @@ const Dashboard = () => {
   const chartData = useMemo(() => {
     const counts = { Applied: 0, Interview: 0, Offer: 0, Rejected: 0 };
     jobs.forEach(job => {
-      if (counts[job.status as keyof typeof counts] !== undefined) {
-        counts[job.status as keyof typeof counts]++;
+      const status = job.status as string;
+      if (counts[status as keyof typeof counts] !== undefined) {
+        counts[status as keyof typeof counts]++;
       }
     });
     return Object.entries(counts).map(([name, value]) => ({ name, value }));
@@ -100,7 +102,7 @@ const Dashboard = () => {
         <div className="flex justify-between items-center">
           <h1 className="text-2xl font-bold">Job Tracker Dashboard</h1>
           <div className="flex gap-4 items-center">
-            <span className="text-zinc-400">Welcome, {String(user.name)}</span>
+            <span className="text-zinc-400">Welcome, {user.name as string}</span>
             <Button variant="outline" onClick={logout} className="border-zinc-700 hover:bg-zinc-800">Logout</Button>
           </div>
         </div>
@@ -147,18 +149,18 @@ const Dashboard = () => {
               ) : (
                 <div className="space-y-2">
                   {filteredJobs.map(job => (
-                    <div key={String(job._id)} className="flex items-center justify-between p-3 bg-zinc-800/50 rounded-lg border border-zinc-700 hover:border-zinc-600 transition-colors">
+                    <div key={job._id as string} className="flex items-center justify-between p-3 bg-zinc-800/50 rounded-lg border border-zinc-700 hover:border-zinc-600 transition-colors">
                       <div>
-                        <div className="font-medium">{String(job.company)}</div>
-                        <div className="text-sm text-zinc-400">{String(job.position)}</div>
+                        <div className="font-medium">{job.company as string}</div>
+                        <div className="text-sm text-zinc-400">{job.position as string}</div>
                       </div>
                       <div className="flex items-center gap-4">
                         <span className={`px-2 py-1 text-xs rounded-full ${job.status === 'Applied' ? 'bg-blue-500/20 text-blue-400' : job.status === 'Interview' ? 'bg-yellow-500/20 text-yellow-400' : job.status === 'Offer' ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'}`}>
-                          {String(job.status)}
+                          {job.status as string}
                         </span>
                         <div className="flex gap-2">
                           <button onClick={() => { setEditingJob(job); setIsModalOpen(true); }} className="text-zinc-400 hover:text-white"><Edit className="w-4 h-4" /></button>
-                          <button onClick={() => handleDelete(String(job._id))} className="text-zinc-400 hover:text-red-400"><Trash2 className="w-4 h-4" /></button>
+                          <button onClick={() => handleDelete(job._id as string)} className="text-zinc-400 hover:text-red-400"><Trash2 className="w-4 h-4" /></button>
                         </div>
                       </div>
                     </div>

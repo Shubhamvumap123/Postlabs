@@ -24,9 +24,10 @@ export const protect = (req: Request, res: Response, next: NextFunction): void =
   }
 
   try {
+    if (!process.env.JWT_SECRET) throw new Error('JWT_SECRET is not defined');
     const decoded = jwt.verify(
       token,
-      process.env.JWT_SECRET as string
+      process.env.JWT_SECRET
     ) as DecodedToken;
 
     (req as any).user = decoded;

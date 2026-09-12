@@ -14,7 +14,7 @@ interface JobModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSave: (job: Record<string, unknown>) => void;
-  job?: Record<string, unknown>;
+  job?: Record<string, unknown> | null;
 }
 
 const JobModal = ({ isOpen, onClose, onSave, job }: JobModalProps) => {
@@ -26,7 +26,7 @@ const JobModal = ({ isOpen, onClose, onSave, job }: JobModalProps) => {
     if (job) {
       setCompany(job.company as string);
       setPosition(job.position as string);
-      setStatus((job.status as string) || 'Applied');
+      setStatus(job.status as string);
     } else {
       setCompany('');
       setPosition('');

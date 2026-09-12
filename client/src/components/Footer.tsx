@@ -4,6 +4,7 @@ import { Loader2 } from "lucide-react";
 
 export default function Footer() {
   const sentinelRef = useRef<HTMLDivElement>(null);
+  const isInView = useInView(sentinelRef, { margin: "0px 0px 50px 0px" });
 
   useEffect(() => {
    

@@ -24,9 +24,10 @@ export const register = async (req: Request, res: Response): Promise<void> => {
 
     await user.save();
 
+    if (!process.env.JWT_SECRET) throw new Error('JWT_SECRET is not defined');
     const token = jwt.sign(
       { id: user._id, role: user.role },
-      process.env.JWT_SECRET as string,
+      process.env.JWT_SECRET,
       { expiresIn: '1d' }
     );
 
@@ -60,9 +61,10 @@ export const login = async (req: Request, res: Response): Promise<void> => {
       return;
     }
 
+    if (!process.env.JWT_SECRET) throw new Error('JWT_SECRET is not defined');
     const token = jwt.sign(
       { id: user._id, role: user.role },
-      process.env.JWT_SECRET as string,
+      process.env.JWT_SECRET,
       { expiresIn: '1d' }
     );
 

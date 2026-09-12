@@ -26,12 +26,19 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const userInfo = JSON.parse(localStorage.getItem('userInfo') || '{}');
 
-  const fetchJobs = useCallback(async () => {
+  const fetchJobs = async () => {
     try {
       const { data } = await api.get('/jobs');
       setJobs(data);
     } catch (err: unknown) {
-      if (err && typeof err === 'object' && 'response' in err && (err as { response?: { status?: number } }).response?.status === 401) {
+      console.error(err);
+      if (
+        typeof err === 'object' &&
+        err !== null &&
+        'response' in err &&
+        (err as Record<string, unknown>).response &&
+        ((err as Record<string, unknown>).response as Record<string, unknown>).status === 401
+      ) {
         localStorage.removeItem('userInfo');
         navigate('/login');
       }
@@ -44,6 +51,11 @@ const Dashboard = () => {
   useEffect(() => {
     fetchJobs();
   }, [fetchJobs]);
+
+  useEffect(() => {
+    fetchJobs();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleLogout = () => {
     localStorage.removeItem('userInfo');

@@ -30,8 +30,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const token = localStorage.getItem('token');
     if (token) {
       try {
-        const decoded = jwtDecode(token) as { user: Record<string, unknown> };
-        setUser(decoded.user);
+        const decoded = jwtDecode(token);
+        setUser((decoded as Record<string, unknown>).user as Record<string, unknown>);
       } catch {
         localStorage.removeItem('token');
       }
@@ -40,8 +40,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const login = (token: string) => {
     localStorage.setItem('token', token);
-    const decoded = jwtDecode(token) as { user: Record<string, unknown> };
-    setUser(decoded.user);
+    const decoded = jwtDecode(token);
+    setUser((decoded as Record<string, unknown>).user as Record<string, unknown>);
     navigate('/jobs');
     toast.success('Logged in successfully');
   };
