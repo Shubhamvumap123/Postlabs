@@ -6,8 +6,8 @@ import { Button } from './ui/button';
 interface JobModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSave: (job: any) => void;
-  job?: any;
+  onSave: (job: Record<string, unknown>) => void;
+  job?: Record<string, unknown> | null;
 }
 
 const JobModal = ({ isOpen, onClose, onSave, job }: JobModalProps) => {
@@ -17,9 +17,9 @@ const JobModal = ({ isOpen, onClose, onSave, job }: JobModalProps) => {
 
   useEffect(() => {
     if (job) {
-      setCompany(job.company);
-      setPosition(job.position);
-      setStatus(job.status);
+      setCompany(job.company as string);
+      setPosition(job.position as string);
+      setStatus((job.status as string) || 'Applied');
     } else {
       setCompany('');
       setPosition('');
