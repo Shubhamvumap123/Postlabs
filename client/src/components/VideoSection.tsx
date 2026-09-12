@@ -30,7 +30,7 @@ const VideoSection = () => {
             <video
               ref={video1Ref}
               className="absolute inset-0 h-full w-full object-cover"
-              // PERFORMANCE: preload="none" to defer loading of below-the-fold content until necessary to improve page load performance.
+              // PERFORMANCE: preload="none" for below-the-fold video to prevent blocking the initial page load.
               preload="none"
               loop
               muted
@@ -45,7 +45,7 @@ const VideoSection = () => {
             <video
               ref={video2Ref}
               className="absolute inset-0 h-full w-full object-cover opacity-0"
-              // PERFORMANCE: preload="none" to defer loading of below-the-fold content until necessary to improve page load performance.
+              // PERFORMANCE: preload="none" for below-the-fold video to prevent blocking the initial page load.
               preload="none"
               loop
               muted
