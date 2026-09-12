@@ -205,7 +205,7 @@ export default function JobDashboard() {
               key={statusOption}
               onClick={() => setFilterStatus(statusOption)}
               aria-pressed={filterStatus === statusOption}
-              className={`px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500 ${
+              className={`px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-colors outline-none focus-visible:ring-2 focus-visible:ring-purple-500 ${
                 filterStatus === statusOption
                   ? 'bg-purple-600/20 text-purple-400 border border-purple-500/50'
                   : 'bg-zinc-900 text-zinc-400 border border-zinc-800 hover:bg-zinc-800'
