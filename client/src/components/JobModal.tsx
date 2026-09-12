@@ -6,8 +6,8 @@ import { Button } from './ui/button';
 interface JobModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSave: (job: any) => void;
-  job?: any;
+  onSave: (job: Record<string, unknown>) => void;
+  job?: Record<string, unknown>;
 }
 
 const JobModal = ({ isOpen, onClose, onSave, job }: JobModalProps) => {
