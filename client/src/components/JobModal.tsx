@@ -13,8 +13,8 @@ interface Job {
 interface JobModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSave: (job: Job) => void;
-  job?: Job | null;
+  onSave: (job: Record<string, unknown>) => void;
+  job?: Record<string, unknown> | null;
 }
 
 const JobModal = ({ isOpen, onClose, onSave, job }: JobModalProps) => {

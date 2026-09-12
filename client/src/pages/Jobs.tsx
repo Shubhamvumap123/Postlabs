@@ -17,12 +17,12 @@ interface Job {
 
 const Dashboard = () => {
   const { user, logout } = useContext(AuthContext);
-  const [jobs, setJobs] = useState<Job[]>([]);
+  const [jobs, setJobs] = useState<Record<string, unknown>[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('All');
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingJob, setEditingJob] = useState<Job | null>(null);
+  const [editingJob, setEditingJob] = useState<Record<string, unknown> | null>(null);
 
   useEffect(() => {
     fetchJobs();
@@ -42,7 +42,7 @@ const Dashboard = () => {
     }
   };
 
-  const handleSaveJob = async (job: Job) => {
+  const handleSaveJob = async (job: Record<string, unknown>) => {
     try {
       if (job._id) {
         await api.put(`/jobs/${job._id}`, job);

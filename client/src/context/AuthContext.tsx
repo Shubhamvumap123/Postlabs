@@ -15,7 +15,7 @@ interface JwtPayload {
 }
 
 interface AuthContextType {
-  user: User | null;
+  user: Record<string, unknown> | null;
   login: (token: string) => void;
   logout: () => void;
 }
@@ -23,14 +23,14 @@ interface AuthContextType {
 export const AuthContext = createContext<AuthContextType>({ user: null, login: () => {}, logout: () => {} });
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<Record<string, unknown> | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (token) {
       try {
-        const decoded = jwtDecode<JwtPayload>(token);
+        const decoded = jwtDecode(token) as { user: Record<string, unknown> };
         setUser(decoded.user);
       } catch {
         localStorage.removeItem('token');
