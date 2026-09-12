@@ -15,8 +15,4 @@ const jobSchema = new mongoose.Schema({
   timestamps: true
 });
 
-// PERFORMANCE: Add compound index for the frequent getJobs query which filters by user and sorts by createdAt (-1).
-// This changes the query from an O(N) collection scan + in-memory sort to an O(log N) index lookup.
-jobSchema.index({ user: 1, createdAt: -1 });
-
 export default mongoose.model('Job', jobSchema);
