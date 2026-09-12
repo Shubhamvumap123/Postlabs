@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from './ui/dialog';
+import { Dialog } from './ui/dialog';
 import { Input } from './ui/input';
 import { Button } from './ui/button';
 
@@ -41,11 +41,7 @@ const JobModal = ({ isOpen, onClose, onSave, job }: JobModalProps) => {
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="bg-zinc-900 border-zinc-800 text-zinc-100">
-        <DialogHeader>
-          <DialogTitle>{job ? 'Edit Job' : 'Add New Job'}</DialogTitle>
-        </DialogHeader>
+    <Dialog isOpen={isOpen} onClose={onClose} title={job ? 'Edit Job' : 'Add New Job'}>
         <form onSubmit={handleSubmit} className="space-y-4 mt-4">
           <div>
             <label className="text-sm text-zinc-400">Company</label>
@@ -66,7 +62,6 @@ const JobModal = ({ isOpen, onClose, onSave, job }: JobModalProps) => {
           </div>
           <Button type="submit" className="w-full bg-purple-600 hover:bg-purple-700">Save</Button>
         </form>
-      </DialogContent>
     </Dialog>
   );
 };

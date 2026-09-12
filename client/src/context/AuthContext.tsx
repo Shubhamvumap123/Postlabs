@@ -12,7 +12,7 @@ interface User {
 }
 
 interface AuthContextType {
-  user: User | null;
+  user: { _id?: string, name?: string, email?: string } | null;
   login: (token: string) => void;
   logout: () => void;
 }
@@ -20,16 +20,17 @@ interface AuthContextType {
 export const AuthContext = createContext<AuthContextType>({ user: null, login: () => {}, logout: () => {} });
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<{ _id?: string, name?: string, email?: string } | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (token) {
       try {
-        const decoded = jwtDecode<{ user: User }>(token);
+        const decoded = jwtDecode<{user: { _id?: string, name?: string, email?: string }}>(token);
         setUser(decoded.user);
-      } catch {
+      } catch (err: unknown) {
+        console.error(err);
         localStorage.removeItem('token');
       }
     }
@@ -37,7 +38,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const login = (token: string) => {
     localStorage.setItem('token', token);
-    const decoded = jwtDecode<{ user: User }>(token);
+    const decoded = jwtDecode<{user: { _id?: string, name?: string, email?: string }}>(token);
     setUser(decoded.user);
     navigate('/jobs');
     toast.success('Logged in successfully');
