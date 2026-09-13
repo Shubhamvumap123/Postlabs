@@ -4,16 +4,6 @@ import { jwtDecode } from 'jwt-decode';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 
-interface User {
-  id: string;
-  name: string;
-  email: string;
-}
-
-interface JwtPayload {
-  user: User;
-}
-
 interface AuthContextType {
   user: Record<string, unknown> | null;
   login: (token: string) => void;
