@@ -29,7 +29,7 @@ const Dashboard = () => {
       setLoading(true);
       const res = await api.get('/jobs');
       setJobs(res.data);
-    } catch {
+    } catch (err) {
       toast.error('Failed to fetch jobs');
       console.error(err);
     } finally {
@@ -53,7 +53,7 @@ const Dashboard = () => {
       fetchJobs();
       setIsModalOpen(false);
       setEditingJob(null);
-    } catch {
+    } catch (err) {
       toast.error('Failed to save job');
       console.error(err);
     }
@@ -66,7 +66,7 @@ const Dashboard = () => {
         await api.delete(`/jobs/${id}`);
         toast.success('Job deleted');
         fetchJobs();
-      } catch {
+      } catch (err) {
         toast.error('Failed to delete job');
         console.error(err);
       }
@@ -74,10 +74,12 @@ const Dashboard = () => {
   };
 
   const filteredJobs = useMemo(() => {
+    // PERFORMANCE: Hoist search string manipulation outside the loop to prevent O(N) redundant allocations
+    const normalizedSearch = search.toLowerCase();
     return jobs.filter(job => {
       const company = (job.company as string) || '';
       const position = (job.position as string) || '';
-      const matchesSearch = company.toLowerCase().includes(search.toLowerCase()) || position.toLowerCase().includes(search.toLowerCase());
+      const matchesSearch = company.toLowerCase().includes(normalizedSearch) || position.toLowerCase().includes(normalizedSearch);
       const matchesStatus = statusFilter === 'All' || job.status === statusFilter;
       return matchesSearch && matchesStatus;
     });

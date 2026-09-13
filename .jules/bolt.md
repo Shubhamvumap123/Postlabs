@@ -23,3 +23,6 @@
 ## 2024-05-18 - Inverted Image Loading Strategies Anti-Pattern
 **Learning:** Found a systemic anti-pattern where critical above-the-fold images (Header logo, Hero down arrow) were intentionally deferred using `loading="lazy"`, actively delaying the Largest Contentful Paint (LCP) and worsening initial render times. Conversely, deeply nested below-the-fold images (e.g., in the Footer, PrivacySection, CardSection) were missing lazy loading entirely, bloating the initial payload.
 **Action:** Always eagerly load above-the-fold critical images (use `fetchPriority="high"` where appropriate) and explicitly apply `loading="lazy"` to all below-the-fold images. Never apply `loading="lazy"` to LCP elements.
+## 2023-10-18 - Hoisting expensive operations out of Array.prototype.filter
+**Learning:** Multiple dashboard components were redundantly converting the search term to lowercase inside useMemo loop iterations, leading to O(N) string allocations during filtering.
+**Action:** Always extract invariant computations, especially string manipulations, outside of list iteration loops within useMemo to minimize redundant CPU work.
