@@ -74,10 +74,12 @@ const Dashboard = () => {
   };
 
   const filteredJobs = useMemo(() => {
+    // PERFORMANCE: Hoist search string manipulation outside the loop to prevent O(N) redundant allocations
+    const normalizedSearch = search.toLowerCase();
     return jobs.filter(job => {
       const company = (job.company as string) || '';
       const position = (job.position as string) || '';
-      const matchesSearch = company.toLowerCase().includes(search.toLowerCase()) || position.toLowerCase().includes(search.toLowerCase());
+      const matchesSearch = company.toLowerCase().includes(normalizedSearch) || position.toLowerCase().includes(normalizedSearch);
       const matchesStatus = statusFilter === 'All' || job.status === statusFilter;
       return matchesSearch && matchesStatus;
     });
