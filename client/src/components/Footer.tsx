@@ -1,10 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
+import { useInView } from "framer-motion";
 
 export default function Footer() {
   const sentinelRef = useRef<HTMLDivElement>(null);
-  const isInView = useInView(sentinelRef, { margin: "0px 0px 50px 0px" });
+  const isFooterInView = useInView(sentinelRef, { margin: "0px 0px 50px 0px" });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
    
@@ -59,12 +61,10 @@ export default function Footer() {
   };
 
 
-  const isInView = useInView(sentinelRef, { once: true });
-
   return (
     <>
     <footer    className={ `bg-black text-white transition-all duration-700 ease-in-out z-50 
-        ${isInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-full"}
+        ${isFooterInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-full"}
       `}>
       {/* Marquee */}
       <div className="relative flex w-full overflow-hidden justify-start items-center py-16 md:py-10">
