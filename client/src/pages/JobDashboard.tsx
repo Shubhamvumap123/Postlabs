@@ -124,9 +124,11 @@ const JobDashboard = () => {
 
   // PERFORMANCE: Memoize filtered list to prevent expensive array filtering on every render unless dependencies change
   const filteredJobs = useMemo(() => {
+    // PERFORMANCE: Extract invariant string manipulation out of loop to save O(N) allocations
+    const query = searchTerm.toLowerCase();
     return jobs.filter((job) => {
-      const matchesSearch = job.company.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                            job.position.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesSearch = job.company.toLowerCase().includes(query) ||
+                            job.position.toLowerCase().includes(query);
       const matchesFilter = filterStatus === 'All' || job.status === filterStatus;
       return matchesSearch && matchesFilter;
     });
