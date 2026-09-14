@@ -8,12 +8,6 @@ import JobModal from '../components/JobModal';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 
-interface Job {
-  _id?: string;
-  company: string;
-  position: string;
-  status: string;
-}
 
 const Dashboard = () => {
   const { user, logout } = useContext(AuthContext);
