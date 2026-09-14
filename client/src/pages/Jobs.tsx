@@ -8,7 +8,7 @@ import JobModal from '../components/JobModal';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 
-interface Job {
+export interface Job {
   _id?: string;
   company: string;
   position: string;

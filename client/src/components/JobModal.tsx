@@ -3,7 +3,7 @@ import { Dialog } from './ui/dialog';
 import { Input } from './ui/input';
 import { Button } from './ui/button';
 
-interface Job {
+export interface Job {
   _id?: string;
   company: string;
   position: string;

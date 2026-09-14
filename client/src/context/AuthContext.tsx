@@ -10,7 +10,7 @@ interface User {
   email: string;
 }
 
-interface JwtPayload {
+export interface JwtPayload {
   user: User;
 }
 
