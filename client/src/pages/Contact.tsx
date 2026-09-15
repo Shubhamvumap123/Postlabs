@@ -103,13 +103,13 @@ const Contact = () => {
                   <label htmlFor="firstName" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
                     First Name
                   </label>
-                  <Input id="firstName" required placeholder="John" maxLength={100} />
+                  <Input id="firstName" required placeholder="John" maxLength={100} disabled={loading} />
                 </div>
                 <div className="space-y-2">
                   <label htmlFor="lastName" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
                     Last Name
                   </label>
-                  <Input id="lastName" required placeholder="Doe" maxLength={100} />
+                  <Input id="lastName" required placeholder="Doe" maxLength={100} disabled={loading} />
                 </div>
               </div>
 
@@ -117,7 +117,7 @@ const Contact = () => {
                 <label htmlFor="email" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
                   Email
                 </label>
-                <Input id="email" type="email" required placeholder="john@example.com" maxLength={254} />
+                <Input id="email" type="email" required placeholder="john@example.com" maxLength={254} disabled={loading} />
               </div>
 
               <div className="space-y-2">
@@ -128,7 +128,6 @@ const Contact = () => {
                 <textarea
                   id="message"
                   required
-                  maxLength={2000}
                   placeholder="How can we help you?"
                   maxLength={1000}
                   className="flex min-h-[120px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 resize-none"
@@ -142,9 +141,6 @@ const Contact = () => {
                 ) : (
                   <>Send Message <Send className="w-4 h-4 ml-2" aria-hidden="true" /></>
                 )}
-                <span className={`flex items-center ${loading ? 'opacity-0' : 'opacity-100'} transition-opacity`}>
-                  Send Message <Send className="w-4 h-4 ml-2" />
-                </span>
               </Button>
             </form>
           </motion.div>
