@@ -73,11 +73,13 @@ const Dashboard = () => {
     }
   };
 
+  // PERFORMANCE: Extracted invariant string operations outside the filter loop to prevent redundant O(N) memory allocations
   const filteredJobs = useMemo(() => {
+    const query = search.toLowerCase();
     return jobs.filter(job => {
       const company = (job.company as string) || '';
       const position = (job.position as string) || '';
-      const matchesSearch = company.toLowerCase().includes(search.toLowerCase()) || position.toLowerCase().includes(search.toLowerCase());
+      const matchesSearch = company.toLowerCase().includes(query) || position.toLowerCase().includes(query);
       const matchesStatus = statusFilter === 'All' || job.status === statusFilter;
       return matchesSearch && matchesStatus;
     });

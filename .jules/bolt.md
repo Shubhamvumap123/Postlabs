@@ -23,3 +23,6 @@
 ## 2024-05-18 - Inverted Image Loading Strategies Anti-Pattern
 **Learning:** Found a systemic anti-pattern where critical above-the-fold images (Header logo, Hero down arrow) were intentionally deferred using `loading="lazy"`, actively delaying the Largest Contentful Paint (LCP) and worsening initial render times. Conversely, deeply nested below-the-fold images (e.g., in the Footer, PrivacySection, CardSection) were missing lazy loading entirely, bloating the initial payload.
 **Action:** Always eagerly load above-the-fold critical images (use `fetchPriority="high"` where appropriate) and explicitly apply `loading="lazy"` to all below-the-fold images. Never apply `loading="lazy"` to LCP elements.
+## 2024-05-18 - Extracted Invariant String Operations from List Interactions
+**Learning:** Extracted invariant computations (such as string manipulations like `.toLowerCase()`) outside of list iteration loops (e.g., `.filter()`) within `useMemo` to prevent redundant O(N) memory allocations and minimize CPU work.
+**Action:** Identify operations taking up redundant memory or computations inside iterator loops and extract it prior to prevent redundant O(N) memory allocations.
