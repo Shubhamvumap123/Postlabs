@@ -37,7 +37,7 @@ const DashboardLayout = () => {
           })}
         </nav>
         <div className="p-4 border-t">
-          <div className="mb-4 text-sm font-medium px-2">{user?.name}</div>
+          <div className="mb-4 text-sm font-medium px-2">{user?.name as string}</div>
           <button
             onClick={logout}
             className="flex w-full items-center space-x-3 rounded-md px-3 py-2 text-sm font-medium text-red-500 hover:bg-red-500/10"

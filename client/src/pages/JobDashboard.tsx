@@ -158,7 +158,7 @@ const JobDashboard = () => {
         <div className="flex flex-col md:flex-row justify-between items-center gap-4 bg-zinc-900 p-6 rounded-xl border border-zinc-800">
           <div>
             <h1 className="text-2xl font-bold text-white">Job Tracker Dashboard</h1>
-            <p className="text-zinc-400">Welcome back, {user?.name}</p>
+            <p className="text-zinc-400">Welcome back, {user?.name as string}</p>
           </div>
           <div className="flex gap-4">
             <Button onClick={() => handleOpenModal()} className="bg-purple-600 hover:bg-purple-500">
