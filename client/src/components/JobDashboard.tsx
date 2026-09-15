@@ -282,8 +282,9 @@ export default function JobDashboard() {
             </h2>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-zinc-400 mb-1">Job Title</label>
+                <label htmlFor="job-title" className="block text-sm font-medium text-zinc-400 mb-1">Job Title</label>
                 <Input
+                  id="job-title"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
                   required
@@ -291,8 +292,9 @@ export default function JobDashboard() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-zinc-400 mb-1">Company</label>
+                <label htmlFor="job-company" className="block text-sm font-medium text-zinc-400 mb-1">Company</label>
                 <Input
+                  id="job-company"
                   value={company}
                   onChange={(e) => setCompany(e.target.value)}
                   required
@@ -300,8 +302,9 @@ export default function JobDashboard() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-zinc-400 mb-1">Status</label>
+                <label htmlFor="job-status" className="block text-sm font-medium text-zinc-400 mb-1">Status</label>
                 <select
+                  id="job-status"
                   value={status}
                   onChange={(e) => setStatus(e.target.value as "Applied" | "Interview" | "Offer" | "Rejected")}
                   className="w-full bg-zinc-950 border border-zinc-800 rounded-md px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-purple-500 appearance-none"
@@ -313,16 +316,18 @@ export default function JobDashboard() {
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium text-zinc-400 mb-1">Location (Optional)</label>
+                <label htmlFor="job-location" className="block text-sm font-medium text-zinc-400 mb-1">Location (Optional)</label>
                 <Input
+                  id="job-location"
                   value={location}
                   onChange={(e) => setLocation(e.target.value)}
                   className="bg-zinc-950 border-zinc-800 text-white"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-zinc-400 mb-1">Notes (Optional)</label>
+                <label htmlFor="job-notes" className="block text-sm font-medium text-zinc-400 mb-1">Notes (Optional)</label>
                 <textarea
+                  id="job-notes"
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
                   className="w-full bg-zinc-950 border border-zinc-800 rounded-md px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-purple-500 min-h-[80px] resize-y"
