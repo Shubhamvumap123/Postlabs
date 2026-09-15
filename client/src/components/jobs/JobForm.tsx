@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { api } from '../../lib/api';
+import api from '../../lib/api';
 import { useToast } from '../../hooks/use-toast';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
@@ -26,10 +26,10 @@ const JobForm = ({ job, onClose, onSuccess }: { job?: Record<string, unknown>, o
     setLoading(true);
     try {
       if (job) {
-        await api.jobs.update((job._id as string), formData);
+        await api.put(`/jobs/${job._id as string}`, formData);
         toast({ title: 'Success', description: 'Job updated' });
       } else {
-        await api.jobs.create(formData);
+        await api.post('/jobs', formData);
         toast({ title: 'Success', description: 'Job added' });
       }
       onSuccess();

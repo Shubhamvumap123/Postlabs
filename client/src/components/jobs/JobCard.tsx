@@ -1,6 +1,6 @@
 import { MapPin, DollarSign, Calendar, Edit2, Trash2 } from 'lucide-react';
 
-const statusColors = {
+const statusColors: Record<string, string> = {
   Applied: 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30',
   Interview: 'bg-purple-500/20 text-purple-400 border-purple-500/30',
   Offer: 'bg-green-500/20 text-green-400 border-green-500/30',

@@ -41,7 +41,7 @@ const DashboardLayout: React.FC = () => {
       <div className="flex-1 flex flex-col overflow-hidden">
         {/* Top Header */}
         <header className="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-6">
-          <h1 className="text-xl font-semibold text-gray-800">Welcome, {user?.name}</h1>
+          <h1 className="text-xl font-semibold text-gray-800">Welcome, {user?.name as string}</h1>
           <button
             onClick={handleLogout}
             className="flex items-center text-gray-600 hover:text-red-600"
