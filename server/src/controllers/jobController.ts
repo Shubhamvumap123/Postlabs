@@ -58,9 +58,11 @@ export const updateJob = async (req: Request, res: Response): Promise<void> => {
       return;
     }
 
+    const { title, company, status, location, notes } = req.body;
+
     job = await Job.findByIdAndUpdate(
       req.params.id,
-      { $set: req.body },
+      { $set: { title, company, status, location, notes } },
       { new: true }
     );
 
