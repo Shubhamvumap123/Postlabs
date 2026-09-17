@@ -23,9 +23,9 @@ const Header = () => {
             {/* PERFORMANCE: Eagerly load critical above-the-fold LCP image */}
             <img
               src="https://cdn.prod.website-files.com/681dfdff4444ca819f7050a2/68227dfdc407523fbe5b56e7_post-labs-logo.svg"
-              loading="eager"
+
               fetchPriority="high"
-              loading="eager"
+
               alt="Post Labs logo"
               className="h-8 md:h-10"
               style={{

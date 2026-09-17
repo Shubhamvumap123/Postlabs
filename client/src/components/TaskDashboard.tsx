@@ -75,7 +75,7 @@ export default function TaskDashboard() {
 
     const newTask: Task = {
       id: crypto.randomUUID(),
-      title: safeTitle,
+      title: newTaskTitle.trim(),
       status: 'Scheduled',
       category: newTaskCategory,
       createdAt: Date.now(),
@@ -297,9 +297,9 @@ export default function TaskDashboard() {
               onChange={(e) => setNewTaskTitle(e.target.value)}
               placeholder="e.g. Review system performance"
               className="bg-zinc-900 border-zinc-700 text-zinc-100 focus:ring-purple-500"
-              maxLength={200}
+
               autoFocus
-              maxLength={150}
+
             />
           </div>
           <div className="space-y-2">
