@@ -1,0 +1,56 @@
+--- client/src/pages/Dashboard.tsx
++++ client/src/pages/Dashboard.tsx
+@@ -25,23 +25,22 @@
+   const navigate = useNavigate();
+   const userInfo = JSON.parse(localStorage.getItem('userInfo') || '{}');
+
+-  const fetchJobs = async () => {
+-    try {
+-      const { data } = await api.get('/jobs');
+-      setJobs(data);
+-    } catch (err: unknown) {
+-      console.error(err);
+-      if (
+-        typeof err === 'object' &&
+-        err !== null &&
+-        'response' in err &&
+-        (err as Record<string, unknown>).response &&
+-        ((err as Record<string, unknown>).response as Record<string, unknown>).status === 401
+-      ) {
+-        localStorage.removeItem('userInfo');
+-        navigate('/login');
++  // Fix missing useCallback or remove dependency
++  useEffect(() => {
++    const fetchJobs = async () => {
++      try {
++        const { data } = await api.get('/jobs');
++        setJobs(data);
++      } catch (err: unknown) {
++        console.error(err);
++        if (
++          typeof err === 'object' && err !== null && 'response' in err &&
++          (err as Record<string, unknown>).response &&
++          ((err as Record<string, unknown>).response as Record<string, unknown>).status === 401
++        ) {
++          localStorage.removeItem('userInfo');
++          navigate('/login');
++        }
++        toast.error('Failed to load jobs');
++      } finally {
++        setLoading(false);
+       }
+-      toast.error('Failed to load jobs');
+-    } finally {
+-      setLoading(false);
+-    }
+-  }, [navigate]);
+-
+-  useEffect(() => {
+-    fetchJobs();
+-  }, [fetchJobs]);
+-
+-  useEffect(() => {
++    };
+     fetchJobs();
+     // eslint-disable-next-line react-hooks/exhaustive-deps
+   }, []);
