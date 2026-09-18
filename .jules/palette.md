@@ -18,3 +18,7 @@
 ## 2024-05-20 - Adding ARIA labels and focus states to JobCard action buttons
 **Learning:** Icon-only buttons in lists or cards need specific contextual ARIA labels (e.g., "Edit job: [Title]") rather than generic ones ("Edit") for screen reader users to distinguish them. Elements hidden behind `opacity-0` hover states must include `focus-within:opacity-100` to be accessible via keyboard navigation.
 **Action:** Always include item context in ARIA labels within loops, and pair `group-hover:opacity-100` with `focus-within:opacity-100` or explicit `focus-visible` styles to guarantee keyboard discoverability.
+
+## 2026-09-18 - Fix exclusive single-choice selections ARIA roles
+**Learning:** Using aria-pressed on exclusive choices incorrectly implies independent, multi-select toggle behavior to screen readers.
+**Action:** Use a radiogroup containing role="radio" elements (or a tablist with role="tab") with aria-checked for exclusive single-choice selections.

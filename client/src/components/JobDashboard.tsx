@@ -199,12 +199,13 @@ export default function JobDashboard() {
             className="pl-10 bg-zinc-900 border-zinc-800 text-white w-full"
           />
         </div>
-        <div className="flex gap-2 overflow-x-auto pb-2 md:pb-0 hide-scrollbar" role="group" aria-label="Filter jobs by status">
+        <div className="flex gap-2 overflow-x-auto pb-2 md:pb-0 hide-scrollbar" role="radiogroup" aria-label="Filter jobs by status">
           {['All', 'Applied', 'Interview', 'Offer', 'Rejected'].map(statusOption => (
             <button
               key={statusOption}
+              role="radio"
               onClick={() => setFilterStatus(statusOption)}
-              aria-pressed={filterStatus === statusOption}
+              aria-checked={filterStatus === statusOption}
               className={`px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-colors outline-none focus-visible:ring-2 focus-visible:ring-purple-500 ${
                 filterStatus === statusOption
                   ? 'bg-purple-600/20 text-purple-400 border border-purple-500/50'
