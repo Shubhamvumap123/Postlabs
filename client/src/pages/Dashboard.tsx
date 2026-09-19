@@ -46,11 +46,7 @@ const Dashboard = () => {
     } finally {
       setLoading(false);
     }
-  }, [navigate]);
-
-  useEffect(() => {
-    fetchJobs();
-  }, [fetchJobs]);
+  };
 
   useEffect(() => {
     fetchJobs();
@@ -99,11 +95,15 @@ const Dashboard = () => {
   };
 
   // PERFORMANCE: Memoize filtered jobs to prevent O(N) recalculations on every keystroke in the search bar or modal toggle.
-  const filteredJobs = useMemo(() => jobs.filter(job => {
-    const matchesSearch = job.company.toLowerCase().includes(search.toLowerCase()) || job.position.toLowerCase().includes(search.toLowerCase());
-    const matchesStatus = statusFilter === 'All' || job.status === statusFilter;
-    return matchesSearch && matchesStatus;
-  }), [jobs, search, statusFilter]);
+  const filteredJobs = useMemo(() => {
+    // PERFORMANCE: Extract invariant search string to prevent O(N) redundant string allocations during filter
+    const searchLower = search.toLowerCase();
+    return jobs.filter(job => {
+      const matchesSearch = job.company.toLowerCase().includes(searchLower) || job.position.toLowerCase().includes(searchLower);
+      const matchesStatus = statusFilter === 'All' || job.status === statusFilter;
+      return matchesSearch && matchesStatus;
+    });
+  }, [jobs, search, statusFilter]);
 
   // Analytics data
   // PERFORMANCE: Memoize chart data generation to prevent expensive reduce operations during unrelated re-renders.
