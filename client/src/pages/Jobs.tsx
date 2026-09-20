@@ -8,12 +8,6 @@ import JobModal from '../components/JobModal';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 
-interface Job {
-  _id?: string;
-  company: string;
-  position: string;
-  status: string;
-}
 
 const Dashboard = () => {
   const { user, logout } = useContext(AuthContext);
@@ -29,7 +23,7 @@ const Dashboard = () => {
       setLoading(true);
       const res = await api.get('/jobs');
       setJobs(res.data);
-    } catch {
+    } catch (err) {
       toast.error('Failed to fetch jobs');
       console.error(err);
     } finally {
@@ -53,7 +47,7 @@ const Dashboard = () => {
       fetchJobs();
       setIsModalOpen(false);
       setEditingJob(null);
-    } catch {
+    } catch (err) {
       toast.error('Failed to save job');
       console.error(err);
     }
@@ -66,7 +60,7 @@ const Dashboard = () => {
         await api.delete(`/jobs/${id}`);
         toast.success('Job deleted');
         fetchJobs();
-      } catch {
+      } catch (err) {
         toast.error('Failed to delete job');
         console.error(err);
       }
