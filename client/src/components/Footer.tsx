@@ -1,10 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
+import { useInView } from "framer-motion";
 
 export default function Footer() {
   const sentinelRef = useRef<HTMLDivElement>(null);
-  const isInView = useInView(sentinelRef, { margin: "0px 0px 50px 0px" });
+
 
   useEffect(() => {
    
@@ -29,6 +30,8 @@ export default function Footer() {
       document.head.removeChild(style);
     };
   }, []);
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -59,7 +62,7 @@ export default function Footer() {
   };
 
 
-  const isInView = useInView(sentinelRef, { once: true });
+  const isInView = useInView(sentinelRef, { once: true, margin: "0px 0px 50px 0px" });
 
   return (
     <>
