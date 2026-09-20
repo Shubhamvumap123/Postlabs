@@ -15,7 +15,7 @@ const JobCard = ({ job, onEdit, onDelete }: { job: Record<string, unknown>, onEd
           <h3 className="text-lg font-semibold text-white">{String(job.position)}</h3>
           <p className="text-zinc-400 font-medium">{String(job.company)}</p>
         </div>
-        <span className={`px-2.5 py-1 text-xs font-medium rounded-full border ${statusColors[String(job.status)]}`}>
+        <span className={`px-2.5 py-1 text-xs font-medium rounded-full border ${statusColors[String(job.status) as keyof typeof statusColors]}`}>
           {String(job.status)}
         </span>
       </div>

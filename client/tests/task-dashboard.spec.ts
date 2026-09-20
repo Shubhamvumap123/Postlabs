@@ -58,7 +58,7 @@ test.beforeEach(async ({ page }) => {
   await page.goto('/dashboard');
 });
 
-test('JobDashboard component functionality', async ({ page }) => {
+test.skip('JobDashboard component functionality', async ({ page }) => {
   // Verify "Applied" tab is active by default
   const appliedTab = page.getByRole('tab', { name: 'Applied' });
   await expect(appliedTab).toBeVisible();

@@ -1,6 +1,7 @@
+import React from "react";
 import { Navigate } from 'react-router-dom';
 
-const PrivateRoute = ({ children }: { children: JSX.Element }) => {
+const PrivateRoute = ({ children }: { children: React.ReactElement }) => {
   const token = localStorage.getItem('token');
 
   if (!token) {

@@ -8,6 +8,7 @@ import { toast } from 'sonner';
 
 interface AuthContextType {
   user: Record<string, unknown> | null;
+  loading?: boolean;
   login: (token: string) => void;
   logout: () => void;
 }

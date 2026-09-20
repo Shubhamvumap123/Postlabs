@@ -70,9 +70,7 @@ const Settings = () => {
                     value={name}
                     maxLength={50}
                     onChange={(e) => setName(e.target.value)}
-                    maxLength={50}
                     placeholder="Enter your name"
-                    maxLength={50}
                   />
                 </div>
                 <Button type="submit">Save Changes</Button>
@@ -144,7 +142,6 @@ const Settings = () => {
                     role="radio"
                     aria-checked={theme === t}
                     onClick={() => setTheme(t)}
-                    aria-pressed={theme === t}
                     className={`
                       flex flex-col items-center gap-2 p-4 rounded-lg border transition-all outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background
                       ${theme === t

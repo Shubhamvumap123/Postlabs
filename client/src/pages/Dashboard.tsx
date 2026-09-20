@@ -24,7 +24,7 @@ const Dashboard = () => {
   const [formData, setFormData] = useState({ company: '', position: '', status: 'Applied', location: '' });
 
   const navigate = useNavigate();
-  const userInfo = JSON.parse(localStorage.getItem('userInfo') || '{}');
+  const userInfo = JSON.parse(localStorage.getItem('user') || '{}');
 
   const fetchJobs = useCallback(async () => {
     try {
@@ -122,7 +122,7 @@ const Dashboard = () => {
     <div className="min-h-screen bg-zinc-950 text-zinc-100 p-6 font-sans">
       <header className="flex justify-between items-center mb-8 pb-4 border-b border-zinc-800">
         <div>
-          <h1 className="text-3xl font-bold">Dashboard</h1>
+          <h1 className="text-3xl font-bold">Job Tracker Dashboard</h1>
           <p className="text-zinc-400">Welcome, {userInfo.name}</p>
         </div>
         <button onClick={handleLogout} className="px-4 py-2 bg-zinc-800 hover:bg-zinc-700 rounded transition-colors">Logout</button>
