@@ -1,21 +1,14 @@
-import { createContext, useState, useEffect } from 'react';
+import { createContext, useState, useEffect, useContext } from 'react';
 import type { ReactNode } from 'react';
 import { jwtDecode } from 'jwt-decode';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 
-interface User {
-  id: string;
-  name: string;
-  email: string;
-}
 
-interface JwtPayload {
-  user: User;
-}
 
 interface AuthContextType {
   user: Record<string, unknown> | null;
+  loading?: boolean;
   login: (token: string) => void;
   logout: () => void;
 }
@@ -59,3 +52,5 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     </AuthContext.Provider>
   );
 };
+
+export const useAuth = () => useContext(AuthContext);

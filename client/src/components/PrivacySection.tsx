@@ -19,7 +19,6 @@ const PrivacySection: React.FC = () => {
         alt=""
         loading="lazy"
         className="w-40 h-40 absolute"
-        loading="lazy"
       />
     </div>
   </div>
@@ -46,7 +45,6 @@ const PrivacySection: React.FC = () => {
         alt=""
         loading="lazy"
         className="w-40 h-40 absolute"
-        loading="lazy"
       />
     </div>
   </motion.div>
@@ -72,7 +70,6 @@ const PrivacySection: React.FC = () => {
         alt=""
         loading="lazy"
         className="w-40 h-40 absolute"
-        loading="lazy"
       />
     </div>
   </motion.div>
