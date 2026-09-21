@@ -18,3 +18,7 @@
 ## 2024-05-20 - Adding ARIA labels and focus states to JobCard action buttons
 **Learning:** Icon-only buttons in lists or cards need specific contextual ARIA labels (e.g., "Edit job: [Title]") rather than generic ones ("Edit") for screen reader users to distinguish them. Elements hidden behind `opacity-0` hover states must include `focus-within:opacity-100` to be accessible via keyboard navigation.
 **Action:** Always include item context in ARIA labels within loops, and pair `group-hover:opacity-100` with `focus-within:opacity-100` or explicit `focus-visible` styles to guarantee keyboard discoverability.
+
+## 2026-09-21 - Enhance Button Accessibility in Data Tables
+**Learning:** In data tables with item-specific actions (like Edit/Delete), buttons without clear text (or even those with generic text like 'Edit') need `aria-label` attributes that include the specific item context (e.g., 'Edit job: Software Engineer at Google') to provide clear, unambiguous context for screen reader users. Furthermore, adding explicit `focus-visible` utility classes ensures clear keyboard focus indicators.
+**Action:** Always include the specific item's title or identifier in the label (e.g., `aria-label="Edit item: ${item.name}"`) for table row actions, and ensure all buttons have explicit `focus-visible` styles.
