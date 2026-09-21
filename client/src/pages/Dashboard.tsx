@@ -46,11 +46,7 @@ const Dashboard = () => {
     } finally {
       setLoading(false);
     }
-  }, [navigate]);
-
-  useEffect(() => {
-    fetchJobs();
-  }, [fetchJobs]);
+  };
 
   useEffect(() => {
     fetchJobs();
@@ -130,7 +126,7 @@ const Dashboard = () => {
           <h1 className="text-3xl font-bold">Dashboard</h1>
           <p className="text-zinc-400">Welcome, {userInfo.name}</p>
         </div>
-        <button onClick={handleLogout} className="px-4 py-2 bg-zinc-800 hover:bg-zinc-700 rounded transition-colors">Logout</button>
+        <button onClick={handleLogout} className="px-4 py-2 bg-zinc-800 hover:bg-zinc-700 rounded transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500">Logout</button>
       </header>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
@@ -155,7 +151,7 @@ const Dashboard = () => {
         <div className="bg-zinc-900 p-6 rounded-lg border border-zinc-800 col-span-1 md:col-span-2">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-xl font-semibold">Job Applications</h2>
-            <button onClick={() => { setShowForm(true); setEditId(null); setFormData({ company: '', position: '', status: 'Applied', location: '' }); }} className="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded font-medium transition-colors">
+            <button onClick={() => { setShowForm(true); setEditId(null); setFormData({ company: '', position: '', status: 'Applied', location: '' }); }} className="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500">
               + New Job
             </button>
           </div>
@@ -212,8 +208,8 @@ const Dashboard = () => {
                       </td>
                       <td className="p-3">{job.location || '-'}</td>
                       <td className="p-3 text-right space-x-2">
-                        <button onClick={() => handleEdit(job)} className="px-2 py-1 bg-zinc-700 hover:bg-zinc-600 rounded text-sm transition-colors">Edit</button>
-                        <button onClick={() => handleDelete(job._id)} className="px-2 py-1 bg-red-900/50 hover:bg-red-900 rounded text-sm text-red-200 transition-colors">Delete</button>
+                        <button onClick={() => handleEdit(job)} className="px-2 py-1 bg-zinc-700 hover:bg-zinc-600 rounded text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500" aria-label={`Edit job: ${job.position} at ${job.company}`}>Edit</button>
+                        <button onClick={() => handleDelete(job._id)} className="px-2 py-1 bg-red-900/50 hover:bg-red-900 rounded text-sm text-red-200 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500" aria-label={`Delete job: ${job.position} at ${job.company}`}>Delete</button>
                       </td>
                     </tr>
                   ))
