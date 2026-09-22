@@ -99,11 +99,15 @@ const Dashboard = () => {
   };
 
   // PERFORMANCE: Memoize filtered jobs to prevent O(N) recalculations on every keystroke in the search bar or modal toggle.
-  const filteredJobs = useMemo(() => jobs.filter(job => {
-    const matchesSearch = job.company.toLowerCase().includes(search.toLowerCase()) || job.position.toLowerCase().includes(search.toLowerCase());
-    const matchesStatus = statusFilter === 'All' || job.status === statusFilter;
-    return matchesSearch && matchesStatus;
-  }), [jobs, search, statusFilter]);
+  const filteredJobs = useMemo(() => {
+    // PERFORMANCE: Extract invariant toLowerCase() to prevent redundant O(N) string allocations
+    const lowerSearch = search.toLowerCase();
+    return jobs.filter(job => {
+      const matchesSearch = job.company.toLowerCase().includes(lowerSearch) || job.position.toLowerCase().includes(lowerSearch);
+      const matchesStatus = statusFilter === 'All' || job.status === statusFilter;
+      return matchesSearch && matchesStatus;
+    });
+  }, [jobs, search, statusFilter]);
 
   // Analytics data
   // PERFORMANCE: Memoize chart data generation to prevent expensive reduce operations during unrelated re-renders.
