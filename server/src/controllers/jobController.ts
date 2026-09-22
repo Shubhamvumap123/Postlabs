@@ -58,9 +58,17 @@ export const updateJob = async (req: Request, res: Response): Promise<void> => {
       return;
     }
 
+    const allowedUpdates = ['title', 'company', 'status', 'location', 'notes', 'position', 'workLocation', 'jobType'];
+    const updateData: any = {};
+    for (const key of allowedUpdates) {
+      if (req.body[key] !== undefined) {
+        updateData[key] = req.body[key];
+      }
+    }
+
     job = await Job.findByIdAndUpdate(
       req.params.id,
-      { $set: req.body },
+      { $set: updateData },
       { new: true }
     );
 

@@ -27,9 +27,17 @@ export const getJobs = async (req: AuthRequest, res: Response): Promise<void> =>
 
 export const updateJob = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
+    const allowedUpdates = ['title', 'company', 'status', 'location', 'notes', 'position', 'workLocation', 'jobType'];
+    const updateData: any = {};
+    for (const key of allowedUpdates) {
+      if (req.body[key] !== undefined) {
+        updateData[key] = req.body[key];
+      }
+    }
+
     const job = await Job.findOneAndUpdate(
       { _id: req.params.id, userId: req.user!.userId },
-      req.body,
+      updateData,
       { new: true, runValidators: true }
     );
     if (!job) { res.status(404).json({ message: 'Job not found' }); return; }
