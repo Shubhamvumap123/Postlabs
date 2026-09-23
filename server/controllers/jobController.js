@@ -44,9 +44,18 @@ export const updateJob = async (req, res) => {
       return res.status(401).json({ message: 'User not authorized' });
     }
 
+    // SECURITY: Whitelist allowed fields to prevent Mass Assignment vulnerability
+    const allowedUpdates = ['title', 'company', 'status', 'location', 'notes'];
+    const updateData = {};
+    allowedUpdates.forEach(key => {
+      if (req.body[key] !== undefined) {
+        updateData[key] = req.body[key];
+      }
+    });
+
     const updatedJob = await Job.findByIdAndUpdate(
       req.params.id,
-      req.body,
+      updateData,
       { new: true, runValidators: true }
     );
 
