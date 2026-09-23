@@ -58,9 +58,18 @@ export const updateJob = async (req: Request, res: Response): Promise<void> => {
       return;
     }
 
+    // SECURITY: Whitelist allowed fields to prevent Mass Assignment vulnerability
+    const allowedUpdates = ['company', 'position', 'status', 'location', 'salary', 'notes'];
+    const updateData: { [key: string]: string | undefined } = {};
+    allowedUpdates.forEach(key => {
+      if (req.body[key] !== undefined) {
+        updateData[key] = req.body[key];
+      }
+    });
+
     job = await Job.findByIdAndUpdate(
       req.params.id,
-      { $set: req.body },
+      { $set: updateData },
       { new: true }
     );
 
