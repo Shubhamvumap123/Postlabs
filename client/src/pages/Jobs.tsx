@@ -74,10 +74,11 @@ const Dashboard = () => {
   };
 
   const filteredJobs = useMemo(() => {
+    const searchLower = search.toLowerCase();
     return jobs.filter(job => {
       const company = (job.company as string) || '';
       const position = (job.position as string) || '';
-      const matchesSearch = company.toLowerCase().includes(search.toLowerCase()) || position.toLowerCase().includes(search.toLowerCase());
+      const matchesSearch = company.toLowerCase().includes(searchLower) || position.toLowerCase().includes(searchLower);
       const matchesStatus = statusFilter === 'All' || job.status === statusFilter;
       return matchesSearch && matchesStatus;
     });
