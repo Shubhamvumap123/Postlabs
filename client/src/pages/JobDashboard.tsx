@@ -217,10 +217,10 @@ const JobDashboard = () => {
                           {job.status}
                         </span>
                         <div className="flex gap-2">
-                          <button onClick={() => handleOpenModal(job)} className="p-2 text-zinc-400 hover:text-white rounded-md hover:bg-zinc-700 transition-colors">
+                          <button onClick={() => handleOpenModal(job)} className="p-2 text-zinc-400 hover:text-white rounded-md hover:bg-zinc-700 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-purple-500" aria-label={`Edit job: ${job.position}`}>
                             <Edit2 className="w-4 h-4" />
                           </button>
-                          <button onClick={() => handleDelete(job._id)} className="p-2 text-zinc-400 hover:text-red-400 rounded-md hover:bg-zinc-700 transition-colors">
+                          <button onClick={() => handleDelete(job._id)} className="p-2 text-zinc-400 hover:text-red-400 rounded-md hover:bg-zinc-700 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-purple-500" aria-label={`Delete job: ${job.position}`}>
                             <Trash2 className="w-4 h-4" />
                           </button>
                         </div>
