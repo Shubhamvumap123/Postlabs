@@ -46,11 +46,7 @@ const Dashboard = () => {
     } finally {
       setLoading(false);
     }
-  }, [navigate]);
-
-  useEffect(() => {
-    fetchJobs();
-  }, [fetchJobs]);
+  };
 
   useEffect(() => {
     fetchJobs();
