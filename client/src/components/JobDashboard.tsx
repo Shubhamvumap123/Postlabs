@@ -120,12 +120,16 @@ export default function JobDashboard() {
   };
 
   // PERFORMANCE: Memoize filtered jobs to prevent recalculation on unrelated state changes like form inputs
-  const filteredJobs = useMemo(() => jobs.filter(job => {
-    const matchesSearch = job.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                          job.company.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesStatus = filterStatus === 'All' || job.status === filterStatus;
-    return matchesSearch && matchesStatus;
-  }), [jobs, searchQuery, filterStatus]);
+  const filteredJobs = useMemo(() => {
+    // PERFORMANCE: Extract invariant toLowerCase() computation outside the filter loop to prevent redundant O(N) memory allocations
+    const lowerSearchQuery = searchQuery.toLowerCase();
+    return jobs.filter(job => {
+      const matchesSearch = job.title.toLowerCase().includes(lowerSearchQuery) ||
+                            job.company.toLowerCase().includes(lowerSearchQuery);
+      const matchesStatus = filterStatus === 'All' || job.status === filterStatus;
+      return matchesSearch && matchesStatus;
+    });
+  }, [jobs, searchQuery, filterStatus]);
 
   // PERFORMANCE: Memoize analytics data generation to avoid O(n) array traversal on every render
   const analyticsData = useMemo(() => {
