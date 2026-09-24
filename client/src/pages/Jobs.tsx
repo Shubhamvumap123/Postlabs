@@ -74,10 +74,12 @@ const Dashboard = () => {
   };
 
   const filteredJobs = useMemo(() => {
+    // PERFORMANCE: Extract invariant toLowerCase() computation outside the filter loop to prevent redundant O(N) memory allocations
+    const lowerSearch = search.toLowerCase();
     return jobs.filter(job => {
       const company = (job.company as string) || '';
       const position = (job.position as string) || '';
-      const matchesSearch = company.toLowerCase().includes(search.toLowerCase()) || position.toLowerCase().includes(search.toLowerCase());
+      const matchesSearch = company.toLowerCase().includes(lowerSearch) || position.toLowerCase().includes(lowerSearch);
       const matchesStatus = statusFilter === 'All' || job.status === statusFilter;
       return matchesSearch && matchesStatus;
     });
