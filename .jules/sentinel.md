@@ -7,3 +7,8 @@
 **Vulnerability:** JWT authentication mechanisms were falling back to hardcoded strings like 'secret' or 'fallback_secret' if the JWT_SECRET environment variable was missing.
 **Learning:** This fallback meant that if a production environment accidentally missed the secret configuration, the app would transparently use a weak, known secret, exposing tokens to forgery without failing loudly.
 **Prevention:** Never use OR (||) fallback values for critical secrets. Instead, explicitly check if the secret is defined and throw an error or crash the process to fail securely.
+
+## 2024-09-25 - Prevent Mass Assignment in Express Controllers
+**Vulnerability:** Application controllers used req.body directly in findByIdAndUpdate, which allowed a malicious user to overwrite unintended fields like the user ID or other sensitive database properties.
+**Learning:** Relying on simple object destructuring or direct assignment of untrusted req.body objects to database update operations creates a Mass Assignment vulnerability. Data loss regressions can occur if missing fields map to undefined in updates.
+**Prevention:** Always construct an update payload dynamically using an explicit whitelist array of permitted fields. Check if req.body[field] is defined rather than destructuring to avoid accidentally setting fields to undefined.
