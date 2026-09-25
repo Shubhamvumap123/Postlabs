@@ -306,30 +306,14 @@ export default function TaskDashboard() {
             <label className="text-sm font-medium text-zinc-300" id="category-label">
               Category
             </label>
-            <div className="flex gap-2" role="radiogroup" aria-labelledby="category-label">
-              {filters.map((filter, index) => (
+            <div className="flex gap-2" role="group" aria-labelledby="category-label">
+              {filters.map(filter => (
                 <button
                   key={filter.id}
-                  id={`filter-${filter.id}`}
                   type="button"
                   role="radio"
                   aria-checked={newTaskCategory === filter.id}
-                  tabIndex={newTaskCategory === filter.id ? 0 : -1}
                   onClick={() => setNewTaskCategory(filter.id)}
-                  onKeyDown={(e) => {
-                    let newIndex = index;
-                    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
-                      newIndex = index === filters.length - 1 ? 0 : index + 1;
-                    } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
-                      newIndex = index === 0 ? filters.length - 1 : index - 1;
-                    }
-                    if (newIndex !== index) {
-                      e.preventDefault();
-                      setNewTaskCategory(filters[newIndex].id);
-                      const nextBtn = document.getElementById(`filter-${filters[newIndex].id}`);
-                      nextBtn?.focus();
-                    }
-                  }}
                   className={cn(
                     "flex-1 flex flex-col items-center justify-center p-3 rounded-lg border text-xs gap-1 transition-all outline-none focus-visible:ring-2 focus-visible:ring-purple-500",
                     newTaskCategory === filter.id
