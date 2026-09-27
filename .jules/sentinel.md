@@ -7,3 +7,8 @@
 **Vulnerability:** JWT authentication mechanisms were falling back to hardcoded strings like 'secret' or 'fallback_secret' if the JWT_SECRET environment variable was missing.
 **Learning:** This fallback meant that if a production environment accidentally missed the secret configuration, the app would transparently use a weak, known secret, exposing tokens to forgery without failing loudly.
 **Prevention:** Never use OR (||) fallback values for critical secrets. Instead, explicitly check if the secret is defined and throw an error or crash the process to fail securely.
+
+## 2024-09-27 - Mass Assignment in Job Controller
+**Vulnerability:** A Mass Assignment vulnerability was present in the updateJob endpoint. `req.body` was passed directly into `findByIdAndUpdate` and `findOneAndUpdate`, allowing unauthorized fields (like user associations) to be modified.
+**Learning:** Passing `req.body` directly to database update operations allows malicious users to update fields they shouldn't have access to, potentially leading to privilege escalation or data corruption. Omitted fields in simple destructuring also evaluate to undefined, overwriting existing data.
+**Prevention:** Whitelist permitted fields dynamically by building an update object and conditionally adding keys based on valid input, rather than blindly trusting `req.body`.
