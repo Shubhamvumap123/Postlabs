@@ -18,3 +18,7 @@
 ## 2024-05-20 - Adding ARIA labels and focus states to JobCard action buttons
 **Learning:** Icon-only buttons in lists or cards need specific contextual ARIA labels (e.g., "Edit job: [Title]") rather than generic ones ("Edit") for screen reader users to distinguish them. Elements hidden behind `opacity-0` hover states must include `focus-within:opacity-100` to be accessible via keyboard navigation.
 **Action:** Always include item context in ARIA labels within loops, and pair `group-hover:opacity-100` with `focus-within:opacity-100` or explicit `focus-visible` styles to guarantee keyboard discoverability.
+
+## 2025-05-18 - Roving TabIndex for Radiogroups
+**Learning:** When creating exclusive, single-choice selection components using W3C ARIA guidelines (like `role="radiogroup"` and `role="radio"`), simply adding the roles and `aria-checked` is insufficient. Without a roving `tabIndex` and arrow-key navigation, the component introduces an accessibility regression and becomes non-compliant for keyboard-only users, who expect to navigate radio groups with arrow keys rather than the Tab key.
+**Action:** When converting toggle buttons to radio groups or building custom single-choice selections, always implement a roving `tabIndex` (`tabIndex={isActive ? 0 : -1}`) and `onKeyDown` handlers for Arrow keys (Up/Down/Left/Right) to shift focus and update the selected state simultaneously.
