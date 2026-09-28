@@ -7,3 +7,8 @@
 **Vulnerability:** JWT authentication mechanisms were falling back to hardcoded strings like 'secret' or 'fallback_secret' if the JWT_SECRET environment variable was missing.
 **Learning:** This fallback meant that if a production environment accidentally missed the secret configuration, the app would transparently use a weak, known secret, exposing tokens to forgery without failing loudly.
 **Prevention:** Never use OR (||) fallback values for critical secrets. Instead, explicitly check if the secret is defined and throw an error or crash the process to fail securely.
+
+## 2026-09-28 - Mass Assignment in Job Update Routes
+**Vulnerability:** Job update routes were passing the entire `req.body` payload directly into Mongoose's `findOneAndUpdate` and `findByIdAndUpdate` methods, exposing a Mass Assignment vulnerability.
+**Learning:** Trusting raw `req.body` blindly in database update calls allows attackers to inject sensitive fields (like `user` ID, `_id`, or `role`) into the update payload. If the schema doesn't strictly reject these, attackers can overwrite records, leading to unauthorized ownership transfer or privilege escalation.
+**Prevention:** Never pass raw `req.body` to update operations. Always use explicit field whitelisting (an allowlist of permitted keys) to construct the `updateData` object before executing the database query.
