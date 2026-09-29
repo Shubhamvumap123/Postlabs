@@ -79,7 +79,15 @@ export const updateJob = async (req: AuthRequest, res: Response): Promise<void> 
       return;
     }
 
-    const updatedJob = await Job.findOneAndUpdate({ _id: id }, req.body, {
+    const allowedUpdates = ['company', 'position', 'status', 'workLocation', 'jobType'];
+    const updatePayload: any = {};
+    allowedUpdates.forEach(field => {
+      if (req.body[field] !== undefined) {
+        updatePayload[field] = req.body[field];
+      }
+    });
+
+    const updatedJob = await Job.findOneAndUpdate({ _id: id }, updatePayload, {
       new: true,
       runValidators: true,
     });
