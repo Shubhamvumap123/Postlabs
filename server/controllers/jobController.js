@@ -11,14 +11,14 @@ export const getJobs = async (req, res) => {
 
 export const createJob = async (req, res) => {
   try {
-    const { title, company, status, location, notes } = req.body;
+    const { position, company, status, location, notes } = req.body;
 
-    if (!title || !company) {
-      return res.status(400).json({ message: 'Title and company are required' });
+    if (!position || !company) {
+      return res.status(400).json({ message: 'Position and company are required' });
     }
 
     const job = await Job.create({
-      title,
+      position,
       company,
       status,
       location,
@@ -44,9 +44,17 @@ export const updateJob = async (req, res) => {
       return res.status(401).json({ message: 'User not authorized' });
     }
 
+    const allowedUpdates = ['position', 'company', 'status', 'location', 'notes'];
+    const updateData = {};
+    allowedUpdates.forEach((key) => {
+      if (req.body[key] !== undefined) {
+        updateData[key] = req.body[key];
+      }
+    });
+
     const updatedJob = await Job.findByIdAndUpdate(
       req.params.id,
-      req.body,
+      updateData,
       { new: true, runValidators: true }
     );
 
