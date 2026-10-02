@@ -313,7 +313,7 @@ export default function TaskDashboard() {
                   type="button"
                   role="radio"
                   aria-checked={newTaskCategory === filter.id}
-                  tabIndex={newTaskCategory === filter.id ? 0 : -1}
+                  tabIndex={newTaskCategory === filter.id || (!newTaskCategory && index === 0) ? 0 : -1}
                   id={`category-${filter.id}`}
                   onClick={() => setNewTaskCategory(filter.id)}
                   onKeyDown={(e) => {
@@ -325,7 +325,7 @@ export default function TaskDashboard() {
                     }
                     if (newIndex !== index) {
                       e.preventDefault();
-                      setNewTaskCategory(filters[newIndex].id as FilterId);
+                      setNewTaskCategory(filters[newIndex].id);
                       const nextBtn = document.getElementById(`category-${filters[newIndex].id}`);
                       nextBtn?.focus();
                     }
