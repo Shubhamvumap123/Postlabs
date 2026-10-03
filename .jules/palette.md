@@ -18,3 +18,7 @@
 ## 2024-05-20 - Adding ARIA labels and focus states to JobCard action buttons
 **Learning:** Icon-only buttons in lists or cards need specific contextual ARIA labels (e.g., "Edit job: [Title]") rather than generic ones ("Edit") for screen reader users to distinguish them. Elements hidden behind `opacity-0` hover states must include `focus-within:opacity-100` to be accessible via keyboard navigation.
 **Action:** Always include item context in ARIA labels within loops, and pair `group-hover:opacity-100` with `focus-within:opacity-100` or explicit `focus-visible` styles to guarantee keyboard discoverability.
+
+## 2026-10-03 - Add empty state CTA in Job Dashboard
+**Learning:** When a list is empty, simply stating 'No items found' leaves users at a dead end, forcing them to scan the UI for the primary action button. Providing a contextual Call-to-Action (CTA) directly within the empty state reduces cognitive load and provides a smoother onboarding flow.
+**Action:** Always include a clear, actionable CTA (like an 'Add item' button) inside empty state messages to guide the user's next step intuitively.
