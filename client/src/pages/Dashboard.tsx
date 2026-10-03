@@ -46,11 +46,11 @@ const Dashboard = () => {
     } finally {
       setLoading(false);
     }
-  }, [navigate]);
+  };
 
   useEffect(() => {
     fetchJobs();
-  }, [fetchJobs]);
+  }, []); // fetchJobs is not memoized, so removing it from dependency array or memoizing it. Here we use [] to match typical fetch on mount behavior (and match the eslint-disable block below it)
 
   useEffect(() => {
     fetchJobs();
@@ -99,11 +99,15 @@ const Dashboard = () => {
   };
 
   // PERFORMANCE: Memoize filtered jobs to prevent O(N) recalculations on every keystroke in the search bar or modal toggle.
-  const filteredJobs = useMemo(() => jobs.filter(job => {
-    const matchesSearch = job.company.toLowerCase().includes(search.toLowerCase()) || job.position.toLowerCase().includes(search.toLowerCase());
-    const matchesStatus = statusFilter === 'All' || job.status === statusFilter;
-    return matchesSearch && matchesStatus;
-  }), [jobs, search, statusFilter]);
+  const filteredJobs = useMemo(() => {
+    // PERFORMANCE: Extract invariant computation outside of list iteration loop to prevent redundant O(N) memory allocations
+    const lowerSearch = search.toLowerCase();
+    return jobs.filter(job => {
+      const matchesSearch = job.company.toLowerCase().includes(lowerSearch) || job.position.toLowerCase().includes(lowerSearch);
+      const matchesStatus = statusFilter === 'All' || job.status === statusFilter;
+      return matchesSearch && matchesStatus;
+    });
+  }, [jobs, search, statusFilter]);
 
   // Analytics data
   // PERFORMANCE: Memoize chart data generation to prevent expensive reduce operations during unrelated re-renders.
