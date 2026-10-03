@@ -46,11 +46,11 @@ const Dashboard = () => {
     } finally {
       setLoading(false);
     }
-  }, [navigate]);
+  };
 
   useEffect(() => {
     fetchJobs();
-  }, [fetchJobs]);
+  }, []); // fetchJobs is not memoized, so removing it from dependency array or memoizing it. Here we use [] to match typical fetch on mount behavior (and match the eslint-disable block below it)
 
   useEffect(() => {
     fetchJobs();
