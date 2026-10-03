@@ -23,3 +23,7 @@
 ## 2024-05-18 - Inverted Image Loading Strategies Anti-Pattern
 **Learning:** Found a systemic anti-pattern where critical above-the-fold images (Header logo, Hero down arrow) were intentionally deferred using `loading="lazy"`, actively delaying the Largest Contentful Paint (LCP) and worsening initial render times. Conversely, deeply nested below-the-fold images (e.g., in the Footer, PrivacySection, CardSection) were missing lazy loading entirely, bloating the initial payload.
 **Action:** Always eagerly load above-the-fold critical images (use `fetchPriority="high"` where appropriate) and explicitly apply `loading="lazy"` to all below-the-fold images. Never apply `loading="lazy"` to LCP elements.
+
+## 2026-06-15 - Extract Invariant String Methods outside Loops
+**Learning:** Calling invariant string manipulations like `.toLowerCase()` inside an array `.filter()` loop forces the engine to redundantly recalculate the same value and allocate new memory on every single iteration (O(N) operations).
+**Action:** Always extract invariant computations (like converting search queries to lowercase) outside of iteration loops, storing them in a variable before the loop begins to reduce memory allocation and improve O(N) array processing performance.
