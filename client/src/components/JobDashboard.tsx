@@ -267,8 +267,16 @@ export default function JobDashboard() {
         ) : (
           <div className="p-12 text-center text-zinc-500 flex flex-col items-center">
             <Briefcase className="w-12 h-12 mb-4 opacity-20" />
-            <p>No jobs found.</p>
-            <p className="text-sm mt-1">Add a job to start tracking your applications.</p>
+            <p className="text-zinc-400 font-medium mb-1">No jobs found.</p>
+            <p className="text-sm mb-4">Add a job to start tracking your applications.</p>
+            <Button
+              onClick={openAddModal}
+              variant="outline"
+              className="text-zinc-300 border-zinc-700 hover:bg-zinc-800 hover:text-white cursor-pointer"
+            >
+              <Plus className="w-4 h-4 mr-2" />
+              Add your first job
+            </Button>
           </div>
         )}
       </div>
