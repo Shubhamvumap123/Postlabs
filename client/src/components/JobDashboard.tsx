@@ -199,12 +199,29 @@ export default function JobDashboard() {
             className="pl-10 bg-zinc-900 border-zinc-800 text-white w-full"
           />
         </div>
-        <div className="flex gap-2 overflow-x-auto pb-2 md:pb-0 hide-scrollbar" role="group" aria-label="Filter jobs by status">
-          {['All', 'Applied', 'Interview', 'Offer', 'Rejected'].map(statusOption => (
+        <div className="flex gap-2 overflow-x-auto pb-2 md:pb-0 hide-scrollbar" role="radiogroup" aria-label="Filter jobs by status">
+          {['All', 'Applied', 'Interview', 'Offer', 'Rejected'].map((statusOption, index, arr) => (
             <button
               key={statusOption}
+              id={`filter-${statusOption}`}
+              role="radio"
+              aria-checked={filterStatus === statusOption}
+              tabIndex={filterStatus === statusOption ? 0 : -1}
               onClick={() => setFilterStatus(statusOption)}
-              aria-pressed={filterStatus === statusOption}
+              onKeyDown={(e) => {
+                let newIndex = index;
+                if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+                  newIndex = index === arr.length - 1 ? 0 : index + 1;
+                } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+                  newIndex = index === 0 ? arr.length - 1 : index - 1;
+                }
+                if (newIndex !== index) {
+                  e.preventDefault();
+                  const nextStatus = arr[newIndex];
+                  setFilterStatus(nextStatus);
+                  document.getElementById(`filter-${nextStatus}`)?.focus();
+                }
+              }}
               className={`px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-colors outline-none focus-visible:ring-2 focus-visible:ring-purple-500 ${
                 filterStatus === statusOption
                   ? 'bg-purple-600/20 text-purple-400 border border-purple-500/50'

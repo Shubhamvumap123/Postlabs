@@ -18,3 +18,7 @@
 ## 2024-05-20 - Adding ARIA labels and focus states to JobCard action buttons
 **Learning:** Icon-only buttons in lists or cards need specific contextual ARIA labels (e.g., "Edit job: [Title]") rather than generic ones ("Edit") for screen reader users to distinguish them. Elements hidden behind `opacity-0` hover states must include `focus-within:opacity-100` to be accessible via keyboard navigation.
 **Action:** Always include item context in ARIA labels within loops, and pair `group-hover:opacity-100` with `focus-within:opacity-100` or explicit `focus-visible` styles to guarantee keyboard discoverability.
+
+## 2026-10-04 - ARIA Radiogroup Keyboard Accessibility
+**Learning:** When converting exclusive single-choice toggle buttons (aria-pressed) to standard ARIA radiogroups (role=radio), standard keyboard navigation is broken unless a roving tabindex and arrow-key event handlers are added. Native HTML radios handle this automatically, but custom ARIA buttons require manual implementation.
+**Action:** Always implement roving tabindex (tabIndex={0} for active, -1 for inactive) and arrow-key navigation (up/down/left/right) when applying role="radio" to custom components.
