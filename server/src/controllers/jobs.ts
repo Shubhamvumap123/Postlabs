@@ -2,6 +2,15 @@ import { Response } from 'express';
 import { AuthRequest } from '../middleware/auth';
 import Job from '../models/Job';
 
+interface UpdatePayload {
+  company?: string;
+  position?: string;
+  status?: 'Applied' | 'Interview' | 'Offer' | 'Rejected';
+  location?: string;
+  salary?: string;
+  notes?: string;
+}
+
 export const createJob = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const job = await Job.create({ ...req.body, userId: req.user!.userId });
@@ -27,13 +36,14 @@ export const getJobs = async (req: AuthRequest, res: Response): Promise<void> =>
 
 export const updateJob = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
-    const allowedUpdates = ['company', 'position', 'status', 'location', 'salary', 'notes'];
-    const updatePayload: any = {};
-    allowedUpdates.forEach(key => {
-      if (req.body[key] !== undefined) {
-        updatePayload[key] = req.body[key];
-      }
-    });
+    const body = req.body || {};
+    const updatePayload: UpdatePayload = {};
+    if (body.company !== undefined) updatePayload.company = body.company;
+    if (body.position !== undefined) updatePayload.position = body.position;
+    if (body.status !== undefined) updatePayload.status = body.status;
+    if (body.location !== undefined) updatePayload.location = body.location;
+    if (body.salary !== undefined) updatePayload.salary = body.salary;
+    if (body.notes !== undefined) updatePayload.notes = body.notes;
 
     const job = await Job.findOneAndUpdate(
       { _id: req.params.id, userId: req.user!.userId },

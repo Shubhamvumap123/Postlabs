@@ -44,13 +44,13 @@ export const updateJob = async (req, res) => {
       return res.status(401).json({ message: 'User not authorized' });
     }
 
-    const allowedUpdates = ['title', 'company', 'status', 'location', 'notes'];
+    const body = req.body || {};
     const updatePayload = {};
-    allowedUpdates.forEach(key => {
-      if (req.body[key] !== undefined) {
-        updatePayload[key] = req.body[key];
-      }
-    });
+    if (body.title !== undefined) updatePayload.title = body.title;
+    if (body.company !== undefined) updatePayload.company = body.company;
+    if (body.status !== undefined) updatePayload.status = body.status;
+    if (body.location !== undefined) updatePayload.location = body.location;
+    if (body.notes !== undefined) updatePayload.notes = body.notes;
 
     const updatedJob = await Job.findByIdAndUpdate(
       req.params.id,
