@@ -1,6 +1,14 @@
 import { Request, Response } from 'express';
 import Job from '../models/Job';
 
+interface UpdatePayload {
+  company?: string;
+  position?: string;
+  status?: 'Applied' | 'Interview' | 'Offer' | 'Rejected';
+  workLocation?: string;
+  jobType?: string;
+}
+
 interface AuthRequest extends Request {
   user?: any;
 }
@@ -79,7 +87,15 @@ export const updateJob = async (req: AuthRequest, res: Response): Promise<void> 
       return;
     }
 
-    const updatedJob = await Job.findOneAndUpdate({ _id: id }, req.body, {
+    const body = req.body || {};
+    const updatePayload: UpdatePayload = {};
+    if (body.company !== undefined) updatePayload.company = body.company;
+    if (body.position !== undefined) updatePayload.position = body.position;
+    if (body.status !== undefined) updatePayload.status = body.status;
+    if (body.workLocation !== undefined) updatePayload.workLocation = body.workLocation;
+    if (body.jobType !== undefined) updatePayload.jobType = body.jobType;
+
+    const updatedJob = await Job.findOneAndUpdate({ _id: id }, updatePayload, {
       new: true,
       runValidators: true,
     });

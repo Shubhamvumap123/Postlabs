@@ -44,9 +44,17 @@ export const updateJob = async (req, res) => {
       return res.status(401).json({ message: 'User not authorized' });
     }
 
+    const body = req.body || {};
+    const updatePayload = {};
+    if (body.title !== undefined) updatePayload.title = body.title;
+    if (body.company !== undefined) updatePayload.company = body.company;
+    if (body.status !== undefined) updatePayload.status = body.status;
+    if (body.location !== undefined) updatePayload.location = body.location;
+    if (body.notes !== undefined) updatePayload.notes = body.notes;
+
     const updatedJob = await Job.findByIdAndUpdate(
       req.params.id,
-      req.body,
+      updatePayload,
       { new: true, runValidators: true }
     );
 
