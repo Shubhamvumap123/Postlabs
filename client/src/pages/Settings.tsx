@@ -136,15 +136,28 @@ const Settings = () => {
               </div>
 
               <div className="grid grid-cols-3 gap-4" role="radiogroup" aria-label="Theme preference">
-                {['light', 'dark', 'system'].map((t) => (
+                {['light', 'dark', 'system'].map((t, index, array) => (
                   <button
                     type="button"
-                    aria-pressed={theme === t}
                     key={t}
                     role="radio"
                     aria-checked={theme === t}
+                    tabIndex={theme === t ? 0 : -1}
                     onClick={() => setTheme(t)}
-                    aria-pressed={theme === t}
+                    onKeyDown={(e) => {
+                      let nextIndex = index;
+                      if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+                        nextIndex = (index + 1) % array.length;
+                      } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+                        nextIndex = (index - 1 + array.length) % array.length;
+                      }
+                      if (nextIndex !== index) {
+                        e.preventDefault();
+                        const nextTheme = array[nextIndex];
+                        setTheme(nextTheme);
+                        (e.currentTarget.parentElement?.children[nextIndex] as HTMLElement)?.focus();
+                      }
+                    }}
                     className={`
                       flex flex-col items-center gap-2 p-4 rounded-lg border transition-all outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background
                       ${theme === t
