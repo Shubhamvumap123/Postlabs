@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../lib/api';
 import { toast } from 'sonner';
@@ -26,7 +26,7 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const userInfo = JSON.parse(localStorage.getItem('userInfo') || '{}');
 
-  const fetchJobs = async () => {
+  const fetchJobs = useCallback(async () => {
     try {
       const { data } = await api.get('/jobs');
       setJobs(data);
@@ -99,11 +99,15 @@ const Dashboard = () => {
   };
 
   // PERFORMANCE: Memoize filtered jobs to prevent O(N) recalculations on every keystroke in the search bar or modal toggle.
-  const filteredJobs = useMemo(() => jobs.filter(job => {
-    const matchesSearch = job.company.toLowerCase().includes(search.toLowerCase()) || job.position.toLowerCase().includes(search.toLowerCase());
-    const matchesStatus = statusFilter === 'All' || job.status === statusFilter;
-    return matchesSearch && matchesStatus;
-  }), [jobs, search, statusFilter]);
+  const filteredJobs = useMemo(() => {
+    // PERFORMANCE: Extract invariant string computation outside of loop to prevent redundant O(N) memory allocations
+    const searchLower = search.toLowerCase();
+    return jobs.filter(job => {
+      const matchesSearch = job.company.toLowerCase().includes(searchLower) || job.position.toLowerCase().includes(searchLower);
+      const matchesStatus = statusFilter === 'All' || job.status === statusFilter;
+      return matchesSearch && matchesStatus;
+    });
+  }, [jobs, search, statusFilter]);
 
   // Analytics data
   // PERFORMANCE: Memoize chart data generation to prevent expensive reduce operations during unrelated re-renders.
