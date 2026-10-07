@@ -120,9 +120,9 @@ export default function JobDashboard() {
   };
 
   // PERFORMANCE: Memoize filtered jobs to prevent recalculation on unrelated state changes like form inputs.
-  // Extracted searchQuery.toLowerCase() outside the filter loop to prevent redundant O(N) memory allocations.
+  // Extracted searchQuery string processing outside the filter loop to prevent redundant O(N) memory allocations.
   const filteredJobs = useMemo(() => {
-    const queryLower = searchQuery.toLowerCase();
+    const queryLower = (searchQuery || '').toLowerCase();
     return jobs.filter(job => {
       const matchesSearch = job.title.toLowerCase().includes(queryLower) ||
                             job.company.toLowerCase().includes(queryLower);

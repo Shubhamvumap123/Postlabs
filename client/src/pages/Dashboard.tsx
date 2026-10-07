@@ -99,9 +99,9 @@ const Dashboard = () => {
   };
 
   // PERFORMANCE: Memoize filtered jobs to prevent O(N) recalculations on every keystroke in the search bar or modal toggle.
-  // Extracted search.toLowerCase() outside the filter loop to prevent redundant O(N) memory allocations and string operations.
+  // Extracted search string processing outside the filter loop to prevent redundant O(N) memory allocations and string operations.
   const filteredJobs = useMemo(() => {
-    const searchLower = search.toLowerCase();
+    const searchLower = (search || '').toLowerCase();
     return jobs.filter(job => {
       const matchesSearch = job.company.toLowerCase().includes(searchLower) || job.position.toLowerCase().includes(searchLower);
       const matchesStatus = statusFilter === 'All' || job.status === statusFilter;
