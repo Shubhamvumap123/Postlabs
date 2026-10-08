@@ -53,15 +53,9 @@ export const createJob = async (req: AuthRequest, res: Response): Promise<void> 
       return;
     }
 
-    const allowedFields = ['company', 'position', 'status', 'workLocation', 'jobType'];
-    const jobData: any = { user: req.user._id };
-    allowedFields.forEach(field => {
-      if (req.body[field] !== undefined) {
-        jobData[field] = req.body[field];
-      }
-    });
+    req.body.user = req.user._id;
 
-    const job = await Job.create(jobData);
+    const job = await Job.create(req.body);
 
     res.status(201).json({ job });
   } catch (error: any) {
@@ -85,13 +79,10 @@ export const updateJob = async (req: AuthRequest, res: Response): Promise<void> 
       return;
     }
 
-    const allowedUpdates = ['company', 'position', 'status', 'workLocation', 'jobType'];
-    const updateData: any = {};
-    allowedUpdates.forEach(field => {
-      if (req.body[field] !== undefined) {
-        updateData[field] = req.body[field];
-      }
-    });
+    // Prevent mass assignment of restricted fields
+    const updateData = { ...req.body };
+    delete updateData.user;
+    delete updateData._id;
 
     const updatedJob = await Job.findOneAndUpdate({ _id: id }, updateData, {
       new: true,

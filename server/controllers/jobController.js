@@ -44,13 +44,10 @@ export const updateJob = async (req, res) => {
       return res.status(401).json({ message: 'User not authorized' });
     }
 
-    const allowedUpdates = ['title', 'company', 'status', 'location', 'notes'];
-    const updateData = {};
-    allowedUpdates.forEach(field => {
-      if (req.body[field] !== undefined) {
-        updateData[field] = req.body[field];
-      }
-    });
+    // Prevent mass assignment of restricted fields
+    const updateData = { ...req.body };
+    delete updateData.user;
+    delete updateData._id;
 
     const updatedJob = await Job.findByIdAndUpdate(
       req.params.id,
