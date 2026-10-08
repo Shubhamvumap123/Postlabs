@@ -79,7 +79,12 @@ export const updateJob = async (req: AuthRequest, res: Response): Promise<void> 
       return;
     }
 
-    const updatedJob = await Job.findOneAndUpdate({ _id: id }, req.body, {
+    // Prevent mass assignment of restricted fields
+    const updateData = { ...req.body };
+    delete updateData.user;
+    delete updateData._id;
+
+    const updatedJob = await Job.findOneAndUpdate({ _id: id }, updateData, {
       new: true,
       runValidators: true,
     });
