@@ -53,9 +53,15 @@ export const createJob = async (req: AuthRequest, res: Response): Promise<void> 
       return;
     }
 
-    req.body.user = req.user._id;
+    const allowedFields = ['company', 'position', 'status', 'workLocation', 'jobType'];
+    const jobData: any = { user: req.user._id };
+    allowedFields.forEach(field => {
+      if (req.body[field] !== undefined) {
+        jobData[field] = req.body[field];
+      }
+    });
 
-    const job = await Job.create(req.body);
+    const job = await Job.create(jobData);
 
     res.status(201).json({ job });
   } catch (error: any) {
@@ -79,7 +85,15 @@ export const updateJob = async (req: AuthRequest, res: Response): Promise<void> 
       return;
     }
 
-    const updatedJob = await Job.findOneAndUpdate({ _id: id }, req.body, {
+    const allowedUpdates = ['company', 'position', 'status', 'workLocation', 'jobType'];
+    const updateData: any = {};
+    allowedUpdates.forEach(field => {
+      if (req.body[field] !== undefined) {
+        updateData[field] = req.body[field];
+      }
+    });
+
+    const updatedJob = await Job.findOneAndUpdate({ _id: id }, updateData, {
       new: true,
       runValidators: true,
     });
