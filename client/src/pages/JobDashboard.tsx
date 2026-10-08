@@ -133,6 +133,11 @@ const JobDashboard = () => {
   }, [jobs, searchTerm, filterStatus]);
 
   // Analytics Data
+  // PERFORMANCE: Memoize offer count using reduce to prevent O(N) array allocation on every render
+  const offerCount = useMemo(() =>
+    jobs.reduce((count, job) => count + (job.status === 'Offer' ? 1 : 0), 0),
+  [jobs]);
+
   // PERFORMANCE: Memoize pie chart data to avoid recalculating analytics on every render and to provide stable references to chart components
   const pieData = useMemo(() => {
     const statusCounts = { Applied: 0, Interview: 0, Offer: 0, Rejected: 0 };
@@ -242,7 +247,7 @@ const JobDashboard = () => {
                   <p className="text-xs text-zinc-400 mt-1">Total Apps</p>
                 </div>
                 <div className="bg-zinc-800/50 p-4 rounded-lg text-center">
-                  <p className="text-3xl font-bold text-green-400">{jobs.filter(j => j.status === 'Offer').length}</p>
+                  <p className="text-3xl font-bold text-green-400">{offerCount}</p>
                   <p className="text-xs text-zinc-400 mt-1">Offers</p>
                 </div>
               </div>
