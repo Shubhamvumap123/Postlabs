@@ -23,3 +23,11 @@
 ## 2024-05-18 - Inverted Image Loading Strategies Anti-Pattern
 **Learning:** Found a systemic anti-pattern where critical above-the-fold images (Header logo, Hero down arrow) were intentionally deferred using `loading="lazy"`, actively delaying the Largest Contentful Paint (LCP) and worsening initial render times. Conversely, deeply nested below-the-fold images (e.g., in the Footer, PrivacySection, CardSection) were missing lazy loading entirely, bloating the initial payload.
 **Action:** Always eagerly load above-the-fold critical images (use `fetchPriority="high"` where appropriate) and explicitly apply `loading="lazy"` to all below-the-fold images. Never apply `loading="lazy"` to LCP elements.
+
+## 2026-10-10 - Redundant String Manipulation in React Array Iterators Bottleneck
+**Learning:** Calling `.toLowerCase()` or other string manipulations directly inside an array iterator like `.filter()` or `.map()` forces the engine to recalculate the same invariant value (like a search term) (N)$ times for every element in the array. In a React component, if this iteration is triggered frequently (e.g., on every keystroke), the redundant string allocations create significant CPU overhead and garbage collection pressure, leading to input lag.
+**Action:** Always extract invariant computations (like `.toLowerCase()`) outside of array iterators and cache them in a variable within the `useMemo` block before the loop begins to ensure they are calculated exactly once ((1)$) per render cycle.
+
+## 2026-10-10 - Redundant Array Allocation in JSX Render Blocks
+**Learning:** Executing array transformation methods like `.filter()` directly inside JSX (e.g., `{jobs.filter(j => j.status === 'Offer').length}`) creates a new array reference on every single render cycle. Even if the underlying data hasn't changed, any unrelated state update (like typing in an input field) will force this (N)$ allocation and subsequent garbage collection, severely degrading performance in large lists.
+**Action:** Never perform array transformations or allocations directly in JSX. Extract operations like `.filter().length` into a `useMemo` block, and prefer using `.reduce()` to calculate counts directly without allocating an intermediate array in memory.

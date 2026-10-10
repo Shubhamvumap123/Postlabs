@@ -124,13 +124,19 @@ const JobDashboard = () => {
 
   // PERFORMANCE: Memoize filtered list to prevent expensive array filtering on every render unless dependencies change
   const filteredJobs = useMemo(() => {
+    const lowerSearchTerm = searchTerm.toLowerCase();
     return jobs.filter((job) => {
-      const matchesSearch = job.company.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                            job.position.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesSearch = job.company.toLowerCase().includes(lowerSearchTerm) ||
+                            job.position.toLowerCase().includes(lowerSearchTerm);
       const matchesFilter = filterStatus === 'All' || job.status === filterStatus;
       return matchesSearch && matchesFilter;
     });
   }, [jobs, searchTerm, filterStatus]);
+
+  // PERFORMANCE: Memoize offers count to prevent redundant O(N) array allocation on every render
+  const offersCount = useMemo(() => {
+    return jobs.reduce((count, job) => count + (job.status === 'Offer' ? 1 : 0), 0);
+  }, [jobs]);
 
   // Analytics Data
   // PERFORMANCE: Memoize pie chart data to avoid recalculating analytics on every render and to provide stable references to chart components
@@ -242,7 +248,7 @@ const JobDashboard = () => {
                   <p className="text-xs text-zinc-400 mt-1">Total Apps</p>
                 </div>
                 <div className="bg-zinc-800/50 p-4 rounded-lg text-center">
-                  <p className="text-3xl font-bold text-green-400">{jobs.filter(j => j.status === 'Offer').length}</p>
+                  <p className="text-3xl font-bold text-green-400">{offersCount}</p>
                   <p className="text-xs text-zinc-400 mt-1">Offers</p>
                 </div>
               </div>
