@@ -58,9 +58,13 @@ export const updateJob = async (req: Request, res: Response): Promise<void> => {
       return;
     }
 
+    const updateData = { ...req.body };
+    delete updateData.user;
+    delete updateData._id;
+
     job = await Job.findByIdAndUpdate(
       req.params.id,
-      { $set: req.body },
+      { $set: updateData },
       { new: true }
     );
 
