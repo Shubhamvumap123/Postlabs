@@ -159,8 +159,8 @@ const Dashboard = () => {
                           {job.status as string}
                         </span>
                         <div className="flex gap-2">
-                          <button onClick={() => { setEditingJob(job); setIsModalOpen(true); }} className="text-zinc-400 hover:text-white"><Edit className="w-4 h-4" /></button>
-                          <button onClick={() => handleDelete(job._id as string)} className="text-zinc-400 hover:text-red-400"><Trash2 className="w-4 h-4" /></button>
+                          <button onClick={() => { setEditingJob(job); setIsModalOpen(true); }} className="p-1 rounded text-zinc-400 hover:text-white hover:bg-zinc-700/50 outline-none focus-visible:ring-2 focus-visible:ring-purple-500 transition-colors" aria-label={`Edit job at ${job.company as string}`}><Edit className="w-4 h-4" /></button>
+                          <button onClick={() => handleDelete(job._id as string)} className="p-1 rounded text-zinc-400 hover:text-red-400 hover:bg-red-400/10 outline-none focus-visible:ring-2 focus-visible:ring-purple-500 transition-colors" aria-label={`Delete job at ${job.company as string}`}><Trash2 className="w-4 h-4" /></button>
                         </div>
                       </div>
                     </div>
