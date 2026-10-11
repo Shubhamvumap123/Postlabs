@@ -51,8 +51,9 @@ export default function Auth() {
         <form onSubmit={handleSubmit} className="space-y-4">
           {!isLogin && (
             <div className="space-y-2">
-              <label className="text-sm font-medium text-zinc-300">Name</label>
+              <label htmlFor="name" className="text-sm font-medium text-zinc-300">Name</label>
               <Input
+                id="name"
                 value={name}
                 onChange={e => setName(e.target.value)}
                 placeholder="John Doe"
@@ -62,8 +63,9 @@ export default function Auth() {
             </div>
           )}
           <div className="space-y-2">
-            <label className="text-sm font-medium text-zinc-300">Email</label>
+            <label htmlFor="email" className="text-sm font-medium text-zinc-300">Email</label>
             <Input
+              id="email"
               type="email"
               value={email}
               onChange={e => setEmail(e.target.value)}
@@ -73,8 +75,9 @@ export default function Auth() {
             />
           </div>
           <div className="space-y-2">
-            <label className="text-sm font-medium text-zinc-300">Password</label>
+            <label htmlFor="password" className="text-sm font-medium text-zinc-300">Password</label>
             <Input
+              id="password"
               type="password"
               value={password}
               onChange={e => setPassword(e.target.value)}
