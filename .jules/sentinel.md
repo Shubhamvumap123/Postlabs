@@ -7,3 +7,8 @@
 **Vulnerability:** JWT authentication mechanisms were falling back to hardcoded strings like 'secret' or 'fallback_secret' if the JWT_SECRET environment variable was missing.
 **Learning:** This fallback meant that if a production environment accidentally missed the secret configuration, the app would transparently use a weak, known secret, exposing tokens to forgery without failing loudly.
 **Prevention:** Never use OR (||) fallback values for critical secrets. Instead, explicitly check if the secret is defined and throw an error or crash the process to fail securely.
+
+## 2026-10-12 - Mass Assignment Prevention Pattern
+**Vulnerability:** Mass assignment in job update controllers allowing arbitrary field modification.
+**Learning:** Due to schema property discrepancies between .js and .ts files in this repository, standard hardcoded field allowlists cannot be used reliably.
+**Prevention:** Use a blocklist approach by cloning the request body and explicitly deleting restricted fields (like user, userId, _id) before passing it to update operations.
