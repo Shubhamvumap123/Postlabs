@@ -124,9 +124,10 @@ const JobDashboard = () => {
 
   // PERFORMANCE: Memoize filtered list to prevent expensive array filtering on every render unless dependencies change
   const filteredJobs = useMemo(() => {
+    const searchTermLower = searchTerm.toLowerCase();
     return jobs.filter((job) => {
-      const matchesSearch = job.company.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                            job.position.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesSearch = job.company.toLowerCase().includes(searchTermLower) ||
+                            job.position.toLowerCase().includes(searchTermLower);
       const matchesFilter = filterStatus === 'All' || job.status === filterStatus;
       return matchesSearch && matchesFilter;
     });
@@ -145,6 +146,11 @@ const JobDashboard = () => {
       name: key,
       value: statusCounts[key as keyof typeof statusCounts]
     })).filter(item => item.value > 0);
+  }, [jobs]);
+
+  // PERFORMANCE: Extract inline array operation from JSX into useMemo to avoid O(N) allocation on re-render
+  const offerCount = useMemo(() => {
+    return jobs.reduce((count, job) => count + (job.status === 'Offer' ? 1 : 0), 0);
   }, [jobs]);
 
   if (loading) {
@@ -242,7 +248,7 @@ const JobDashboard = () => {
                   <p className="text-xs text-zinc-400 mt-1">Total Apps</p>
                 </div>
                 <div className="bg-zinc-800/50 p-4 rounded-lg text-center">
-                  <p className="text-3xl font-bold text-green-400">{jobs.filter(j => j.status === 'Offer').length}</p>
+                  <p className="text-3xl font-bold text-green-400">{offerCount}</p>
                   <p className="text-xs text-zinc-400 mt-1">Offers</p>
                 </div>
               </div>
