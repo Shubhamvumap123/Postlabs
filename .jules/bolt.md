@@ -23,3 +23,11 @@
 ## 2024-05-18 - Inverted Image Loading Strategies Anti-Pattern
 **Learning:** Found a systemic anti-pattern where critical above-the-fold images (Header logo, Hero down arrow) were intentionally deferred using `loading="lazy"`, actively delaying the Largest Contentful Paint (LCP) and worsening initial render times. Conversely, deeply nested below-the-fold images (e.g., in the Footer, PrivacySection, CardSection) were missing lazy loading entirely, bloating the initial payload.
 **Action:** Always eagerly load above-the-fold critical images (use `fetchPriority="high"` where appropriate) and explicitly apply `loading="lazy"` to all below-the-fold images. Never apply `loading="lazy"` to LCP elements.
+
+## 2026-10-14 - Inline Array Filtering Bottleneck
+**Learning:** Executing inline array methods that return length (like `.filter().length`) directly within JSX render blocks forces redundant O(N) array allocations on every render, even when the underlying data hasn't changed, especially when sharing a component with frequently updated states (like text inputs).
+**Action:** Always extract `.filter().length` operations from JSX into a `useMemo` hook, utilizing `.reduce()` to directly calculate the count without creating unnecessary intermediate array allocations, preventing memory bloat and CPU overhead during unrelated state changes.
+
+## 2026-10-14 - Invariant Loop Computations Bottleneck
+**Learning:** Placing invariant computations (like `.toLowerCase()`) inside array iteration callbacks (like `.filter()`) forces the JavaScript engine to redundantly recalculate the same value O(N) times per render, wasting CPU cycles and memory allocations.
+**Action:** Always extract invariant computations outside of list iteration loops (e.g., within the `useMemo` callback but before the `return data.filter(...)` block) to ensure they are calculated only once per state change, not once per array item.
