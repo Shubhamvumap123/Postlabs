@@ -18,3 +18,7 @@
 ## 2024-05-20 - Adding ARIA labels and focus states to JobCard action buttons
 **Learning:** Icon-only buttons in lists or cards need specific contextual ARIA labels (e.g., "Edit job: [Title]") rather than generic ones ("Edit") for screen reader users to distinguish them. Elements hidden behind `opacity-0` hover states must include `focus-within:opacity-100` to be accessible via keyboard navigation.
 **Action:** Always include item context in ARIA labels within loops, and pair `group-hover:opacity-100` with `focus-within:opacity-100` or explicit `focus-visible` styles to guarantee keyboard discoverability.
+
+## 2025-05-18 - Form Semantics and Focus Visibility
+**Learning:** Icon-only action buttons ('Edit', 'Delete') in lists or table rows present ambiguous context for screen reader users when multiple instances exist on a single page. Without explicit `id` attributes on input elements correctly bound to their corresponding `htmlFor` labels, form elements become inaccessible, relying solely on visual proximity. Missing explicit focus states (`focus-visible`) makes navigating these elements via keyboard confusing and difficult.
+**Action:** When implementing repeating interactive components, always include the contextual item identifier (e.g., `job.position`) in the `aria-label`. Additionally, strictly ensure explicit `<label htmlFor="...">` to `<input id="...">` bindings for form inputs, regardless of visual layout, and apply clear `focus-visible:ring-2` styles on all actionable elements.
