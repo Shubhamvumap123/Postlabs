@@ -18,3 +18,7 @@
 ## 2024-05-20 - Adding ARIA labels and focus states to JobCard action buttons
 **Learning:** Icon-only buttons in lists or cards need specific contextual ARIA labels (e.g., "Edit job: [Title]") rather than generic ones ("Edit") for screen reader users to distinguish them. Elements hidden behind `opacity-0` hover states must include `focus-within:opacity-100` to be accessible via keyboard navigation.
 **Action:** Always include item context in ARIA labels within loops, and pair `group-hover:opacity-100` with `focus-within:opacity-100` or explicit `focus-visible` styles to guarantee keyboard discoverability.
+
+## 2026-10-18 - Context-specific ARIA labels for list items
+**Learning:** When adding ARIA labels to action buttons within a list or dashboard, the label must include the specific item's title or identifier (e.g. 'Edit job: Software Engineer at Google') rather than generic text ('Edit job'). Without this, screen reader users hear duplicate 'Edit job' announcements for every item in the list and cannot distinguish between them.
+**Action:** Always interpolate item-specific data into aria-labels for repeated list actions to ensure context is maintained outside of visual flow.
