@@ -7,3 +7,8 @@
 **Vulnerability:** JWT authentication mechanisms were falling back to hardcoded strings like 'secret' or 'fallback_secret' if the JWT_SECRET environment variable was missing.
 **Learning:** This fallback meant that if a production environment accidentally missed the secret configuration, the app would transparently use a weak, known secret, exposing tokens to forgery without failing loudly.
 **Prevention:** Never use OR (||) fallback values for critical secrets. Instead, explicitly check if the secret is defined and throw an error or crash the process to fail securely.
+
+## 2026-10-18 - Fix Mass Assignment in Job Controllers
+**Vulnerability:** Job updates and creations were passing req.body directly to Mongoose findOneAndUpdate and create, allowing attackers to override sensitive fields like user, userId, or _id.
+**Learning:** Due to schema property discrepancies between .js and .ts files, hardcoded field allowlists shouldn't be used here. The most robust approach for this codebase is cloning the request body and explicitly deleting restricted fields. Also, .js and .ts files exist side-by-side and both must be patched.
+**Prevention:** Never pass req.body directly into update/create operations without explicitly deleting protected fields (e.g. user, _id) or using a strict allowlist. Ensure both .js and .ts backend files are kept consistent.
