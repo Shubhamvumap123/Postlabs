@@ -129,7 +129,12 @@ const JobsList: React.FC = () => {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                       <div className="flex justify-end space-x-3">
-                        <Link to={`/edit-job/${job._id}`} className="text-blue-600 hover:text-blue-900">
+                        <Link
+                          to={`/edit-job/${job._id}`}
+                          className="text-blue-600 hover:text-blue-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 rounded"
+                          aria-label={`Edit job: ${job.position} at ${job.company}`}
+                          title="Edit job"
+                        >
                           <Edit2 className="h-5 w-5" />
                         </Link>
                         <button
@@ -138,7 +143,9 @@ const JobsList: React.FC = () => {
                               deleteMutation.mutate(job._id);
                             }
                           }}
-                          className="text-red-600 hover:text-red-900"
+                          className="text-red-600 hover:text-red-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-600 rounded"
+                          aria-label={`Delete job: ${job.position} at ${job.company}`}
+                          title="Delete job"
                         >
                           <Trash2 className="h-5 w-5" />
                         </button>
