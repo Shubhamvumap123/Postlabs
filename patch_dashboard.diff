@@ -1,0 +1,45 @@
+<<<<<<< SEARCH
+  const fetchJobs = async () => {
+    try {
+      const { data } = await api.get('/jobs');
+      setJobs(data);
+    } catch (err: unknown) {
+      console.error(err);
+      if (
+        typeof err === 'object' &&
+        err !== null &&
+        'response' in err &&
+        (err as Record<string, unknown>).response &&
+        ((err as Record<string, unknown>).response as Record<string, unknown>).status === 401
+      ) {
+        localStorage.removeItem('userInfo');
+        navigate('/login');
+      }
+      toast.error('Failed to load jobs');
+    } finally {
+      setLoading(false);
+    }
+  }, [navigate]);
+=======
+  const fetchJobs = useMemo(() => async () => {
+    try {
+      const { data } = await api.get('/jobs');
+      setJobs(data);
+    } catch (err: unknown) {
+      console.error(err);
+      if (
+        typeof err === 'object' &&
+        err !== null &&
+        'response' in err &&
+        (err as Record<string, unknown>).response &&
+        ((err as Record<string, unknown>).response as Record<string, unknown>).status === 401
+      ) {
+        localStorage.removeItem('userInfo');
+        navigate('/login');
+      }
+      toast.error('Failed to load jobs');
+    } finally {
+      setLoading(false);
+    }
+  }, [navigate]);
+>>>>>>> REPLACE
