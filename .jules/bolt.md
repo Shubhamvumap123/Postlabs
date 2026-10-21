@@ -23,3 +23,7 @@
 ## 2024-05-18 - Inverted Image Loading Strategies Anti-Pattern
 **Learning:** Found a systemic anti-pattern where critical above-the-fold images (Header logo, Hero down arrow) were intentionally deferred using `loading="lazy"`, actively delaying the Largest Contentful Paint (LCP) and worsening initial render times. Conversely, deeply nested below-the-fold images (e.g., in the Footer, PrivacySection, CardSection) were missing lazy loading entirely, bloating the initial payload.
 **Action:** Always eagerly load above-the-fold critical images (use `fetchPriority="high"` where appropriate) and explicitly apply `loading="lazy"` to all below-the-fold images. Never apply `loading="lazy"` to LCP elements.
+
+## 2026-10-21 - Inline array operations in React
+**Learning:** Found an inline `.filter().length` array operation executing on every React render (`jobs.filter(j => j.status === 'Offer').length`), causing O(N) inline memory allocation and array traversal even when unrelated components re-render.
+**Action:** Extracted the inline array operation into a `useMemo` hook that uses `.reduce()` to eliminate redundant intermediate arrays and prevent unnecessary computations during render loops.
