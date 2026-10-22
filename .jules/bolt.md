@@ -23,3 +23,7 @@
 ## 2024-05-18 - Inverted Image Loading Strategies Anti-Pattern
 **Learning:** Found a systemic anti-pattern where critical above-the-fold images (Header logo, Hero down arrow) were intentionally deferred using `loading="lazy"`, actively delaying the Largest Contentful Paint (LCP) and worsening initial render times. Conversely, deeply nested below-the-fold images (e.g., in the Footer, PrivacySection, CardSection) were missing lazy loading entirely, bloating the initial payload.
 **Action:** Always eagerly load above-the-fold critical images (use `fetchPriority="high"` where appropriate) and explicitly apply `loading="lazy"` to all below-the-fold images. Never apply `loading="lazy"` to LCP elements.
+
+## 2024-10-22 - Extract invariant computations out of filter loops
+**Learning:** Discovered a codebase-specific anti-pattern where string manipulations like .toLowerCase() on search state are performed inside .filter() loops during array filtering across multiple dashboard components. This causes redundant O(N) memory allocations per render cycle.
+**Action:** Always extract invariant computations on state variables to the outer scope of useMemo hooks before iterating through arrays.
