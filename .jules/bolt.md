@@ -23,3 +23,7 @@
 ## 2024-05-18 - Inverted Image Loading Strategies Anti-Pattern
 **Learning:** Found a systemic anti-pattern where critical above-the-fold images (Header logo, Hero down arrow) were intentionally deferred using `loading="lazy"`, actively delaying the Largest Contentful Paint (LCP) and worsening initial render times. Conversely, deeply nested below-the-fold images (e.g., in the Footer, PrivacySection, CardSection) were missing lazy loading entirely, bloating the initial payload.
 **Action:** Always eagerly load above-the-fold critical images (use `fetchPriority="high"` where appropriate) and explicitly apply `loading="lazy"` to all below-the-fold images. Never apply `loading="lazy"` to LCP elements.
+
+## 2024-05-24 - Extract inline array operations from JSX render blocks
+**Learning:** Calling inline array operations like .filter().length in JSX render blocks triggers redundant O(N) intermediate array allocations on every render.
+**Action:** Extract invariant array computations outside of render blocks into useMemo hooks using .reduce() to prevent redundant intermediate array allocations and minimize memory churn.
