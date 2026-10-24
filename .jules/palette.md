@@ -18,3 +18,7 @@
 ## 2024-05-20 - Adding ARIA labels and focus states to JobCard action buttons
 **Learning:** Icon-only buttons in lists or cards need specific contextual ARIA labels (e.g., "Edit job: [Title]") rather than generic ones ("Edit") for screen reader users to distinguish them. Elements hidden behind `opacity-0` hover states must include `focus-within:opacity-100` to be accessible via keyboard navigation.
 **Action:** Always include item context in ARIA labels within loops, and pair `group-hover:opacity-100` with `focus-within:opacity-100` or explicit `focus-visible` styles to guarantee keyboard discoverability.
+
+## 2024-05-18 - Form Accessibility and ID Collisions
+**Learning:** When addressing accessibility issues by adding explicit label associations (`htmlFor` and `id`), using generic IDs like `company` or `status` can lead to DOM ID collisions if multiple components (like a Dashboard and a Modal) are rendered on the same page. This breaks accessibility and causes label clicks to focus the wrong input.
+**Action:** When adding explicit label associations across multiple components, always prefix the `id` attributes with the component context (e.g., `modal-company`, `dashboard-company`) or use React's `useId()` hook to guarantee global uniqueness.

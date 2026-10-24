@@ -37,12 +37,12 @@ export default function Signup() {
         <h2 className="text-2xl font-bold mb-6 text-center">Sign Up</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium mb-1">Email</label>
-            <Input type="email" value={email} onChange={e => setEmail(e.target.value)} required className="bg-zinc-800 border-zinc-700" />
+            <label htmlFor="email" className="block text-sm font-medium mb-1">Email</label>
+            <Input id="email" type="email" value={email} onChange={e => setEmail(e.target.value)} required className="bg-zinc-800 border-zinc-700" />
           </div>
           <div>
-            <label className="block text-sm font-medium mb-1">Password</label>
-            <Input type="password" value={password} onChange={e => setPassword(e.target.value)} required className="bg-zinc-800 border-zinc-700" />
+            <label htmlFor="password" className="block text-sm font-medium mb-1">Password</label>
+            <Input id="password" type="password" value={password} onChange={e => setPassword(e.target.value)} required className="bg-zinc-800 border-zinc-700" />
           </div>
           <Button type="submit" className="w-full bg-purple-600 hover:bg-purple-500">Sign Up</Button>
         </form>
