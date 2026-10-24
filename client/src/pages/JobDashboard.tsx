@@ -124,9 +124,10 @@ const JobDashboard = () => {
 
   // PERFORMANCE: Memoize filtered list to prevent expensive array filtering on every render unless dependencies change
   const filteredJobs = useMemo(() => {
+    const lowerQuery = searchTerm.toLowerCase();
     return jobs.filter((job) => {
-      const matchesSearch = job.company.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                            job.position.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesSearch = job.company.toLowerCase().includes(lowerQuery) ||
+                            job.position.toLowerCase().includes(lowerQuery);
       const matchesFilter = filterStatus === 'All' || job.status === filterStatus;
       return matchesSearch && matchesFilter;
     });
