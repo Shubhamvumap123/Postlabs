@@ -147,6 +147,11 @@ const JobDashboard = () => {
     })).filter(item => item.value > 0);
   }, [jobs]);
 
+  // PERFORMANCE: Memoize the offers count calculation to avoid redundant O(N) array filtering on every render cycle (e.g., when typing in search)
+  const offersCount = useMemo(() => {
+    return jobs.filter(j => j.status === 'Offer').length;
+  }, [jobs]);
+
   if (loading) {
     return <div className="min-h-screen flex items-center justify-center bg-zinc-950 text-white">Loading...</div>;
   }
@@ -242,7 +247,7 @@ const JobDashboard = () => {
                   <p className="text-xs text-zinc-400 mt-1">Total Apps</p>
                 </div>
                 <div className="bg-zinc-800/50 p-4 rounded-lg text-center">
-                  <p className="text-3xl font-bold text-green-400">{jobs.filter(j => j.status === 'Offer').length}</p>
+                  <p className="text-3xl font-bold text-green-400">{offersCount}</p>
                   <p className="text-xs text-zinc-400 mt-1">Offers</p>
                 </div>
               </div>
