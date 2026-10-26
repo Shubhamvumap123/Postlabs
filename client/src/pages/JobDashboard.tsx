@@ -132,6 +132,9 @@ const JobDashboard = () => {
     });
   }, [jobs, searchTerm, filterStatus]);
 
+  // PERFORMANCE: Memoize offer count to prevent O(N) recalculations on every render
+  const offerCount = useMemo(() => jobs.reduce((count, j) => j.status === 'Offer' ? count + 1 : count, 0), [jobs]);
+
   // Analytics Data
   // PERFORMANCE: Memoize pie chart data to avoid recalculating analytics on every render and to provide stable references to chart components
   const pieData = useMemo(() => {
@@ -242,7 +245,7 @@ const JobDashboard = () => {
                   <p className="text-xs text-zinc-400 mt-1">Total Apps</p>
                 </div>
                 <div className="bg-zinc-800/50 p-4 rounded-lg text-center">
-                  <p className="text-3xl font-bold text-green-400">{jobs.filter(j => j.status === 'Offer').length}</p>
+                  <p className="text-3xl font-bold text-green-400">{offerCount}</p>
                   <p className="text-xs text-zinc-400 mt-1">Offers</p>
                 </div>
               </div>
