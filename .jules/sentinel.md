@@ -7,3 +7,8 @@
 **Vulnerability:** JWT authentication mechanisms were falling back to hardcoded strings like 'secret' or 'fallback_secret' if the JWT_SECRET environment variable was missing.
 **Learning:** This fallback meant that if a production environment accidentally missed the secret configuration, the app would transparently use a weak, known secret, exposing tokens to forgery without failing loudly.
 **Prevention:** Never use OR (||) fallback values for critical secrets. Instead, explicitly check if the secret is defined and throw an error or crash the process to fail securely.
+
+## 2026-10-26 - Mass Assignment Vulnerability in MongoDB Controllers
+**Vulnerability:** Job creation and update endpoints directly passed `req.body` into MongoDB operations (`findOneAndUpdate`, `create`, `findByIdAndUpdate`). This mass assignment vulnerability allowed attackers to inject restricted fields (e.g., `user`, `userId`, `_id`) and potentially escalate privileges or take over other users' jobs.
+**Learning:** Relying purely on client-side constraints or assumed input structures is unsafe. Since TypeScript files and their JavaScript equivalents had different schemas, a simple allowlist wasn't feasible. The vulnerability demonstrated that implicit trust in `req.body` directly compromises the database layer.
+**Prevention:** Always sanitize `req.body` before passing it to database operations. Explicitly delete restricted fields (like `_id`, `user`, `userId`, `role`) from a cloned request body object before executing the query.
