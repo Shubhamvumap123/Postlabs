@@ -32,8 +32,14 @@ export const getJob = async (req: Request, res: Response): Promise<void> => {
 
 export const createJob = async (req: Request, res: Response): Promise<void> => {
   try {
+    // Security: Prevent Mass Assignment by filtering restricted fields
+    const jobData = { ...req.body };
+    delete jobData._id;
+    delete jobData.user;
+    delete jobData.userId;
+
     const newJob = new Job({
-      ...req.body,
+      ...jobData,
       user: (req as any).user.id,
     });
 
@@ -58,9 +64,15 @@ export const updateJob = async (req: Request, res: Response): Promise<void> => {
       return;
     }
 
+    // Security: Prevent Mass Assignment by filtering restricted fields
+    const updateData = { ...req.body };
+    delete updateData._id;
+    delete updateData.user;
+    delete updateData.userId;
+
     job = await Job.findByIdAndUpdate(
       req.params.id,
-      { $set: req.body },
+      { $set: updateData },
       { new: true }
     );
 

@@ -44,9 +44,15 @@ export const updateJob = async (req, res) => {
       return res.status(401).json({ message: 'User not authorized' });
     }
 
+    // Security: Prevent Mass Assignment by filtering restricted fields
+    const updateData = { ...req.body };
+    delete updateData._id;
+    delete updateData.user;
+    delete updateData.userId;
+
     const updatedJob = await Job.findByIdAndUpdate(
       req.params.id,
-      req.body,
+      updateData,
       { new: true, runValidators: true }
     );
 
