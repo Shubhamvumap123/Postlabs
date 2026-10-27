@@ -134,17 +134,20 @@ const JobDashboard = () => {
 
   // Analytics Data
   // PERFORMANCE: Memoize pie chart data to avoid recalculating analytics on every render and to provide stable references to chart components
-  const pieData = useMemo(() => {
+  const { pieData, offerCount } = useMemo(() => {
     const statusCounts = { Applied: 0, Interview: 0, Offer: 0, Rejected: 0 };
     jobs.forEach(job => {
       if (statusCounts[job.status] !== undefined) {
         statusCounts[job.status]++;
       }
     });
-    return Object.keys(statusCounts).map(key => ({
-      name: key,
-      value: statusCounts[key as keyof typeof statusCounts]
-    })).filter(item => item.value > 0);
+    return {
+      pieData: Object.keys(statusCounts).map(key => ({
+        name: key,
+        value: statusCounts[key as keyof typeof statusCounts]
+      })).filter(item => item.value > 0),
+      offerCount: statusCounts.Offer
+    };
   }, [jobs]);
 
   if (loading) {
@@ -242,7 +245,7 @@ const JobDashboard = () => {
                   <p className="text-xs text-zinc-400 mt-1">Total Apps</p>
                 </div>
                 <div className="bg-zinc-800/50 p-4 rounded-lg text-center">
-                  <p className="text-3xl font-bold text-green-400">{jobs.filter(j => j.status === 'Offer').length}</p>
+                  <p className="text-3xl font-bold text-green-400">{offerCount}</p>
                   <p className="text-xs text-zinc-400 mt-1">Offers</p>
                 </div>
               </div>
