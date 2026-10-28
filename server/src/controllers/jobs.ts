@@ -4,7 +4,13 @@ import Job from '../models/Job';
 
 export const createJob = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
-    const job = await Job.create({ ...req.body, userId: req.user!.userId });
+    // Security: Prevent Mass Assignment
+    const createData = { ...req.body };
+    delete createData.user;
+    delete createData.userId;
+    delete createData._id;
+
+    const job = await Job.create({ ...createData, userId: req.user!.userId });
     res.status(201).json(job);
   } catch (err) {
     res.status(500).json({ message: 'Error creating job', error: err });
@@ -27,9 +33,15 @@ export const getJobs = async (req: AuthRequest, res: Response): Promise<void> =>
 
 export const updateJob = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
+    // Security: Prevent Mass Assignment
+    const updateData = { ...req.body };
+    delete updateData.user;
+    delete updateData.userId;
+    delete updateData._id;
+
     const job = await Job.findOneAndUpdate(
       { _id: req.params.id, userId: req.user!.userId },
-      req.body,
+      updateData,
       { new: true, runValidators: true }
     );
     if (!job) { res.status(404).json({ message: 'Job not found' }); return; }
