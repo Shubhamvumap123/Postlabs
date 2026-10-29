@@ -45,8 +45,9 @@ const JobForm = ({ job, onClose, onSuccess }: { job?: Record<string, unknown>, o
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div>
-        <label className="block text-sm font-medium text-zinc-400 mb-1">Company *</label>
+        <label htmlFor="job-form-company" className="block text-sm font-medium text-zinc-400 mb-1">Company *</label>
         <Input
+          id="job-form-company"
           name="company"
           value={formData.company}
           onChange={handleChange}
@@ -55,8 +56,9 @@ const JobForm = ({ job, onClose, onSuccess }: { job?: Record<string, unknown>, o
         />
       </div>
       <div>
-        <label className="block text-sm font-medium text-zinc-400 mb-1">Position *</label>
+        <label htmlFor="job-form-position" className="block text-sm font-medium text-zinc-400 mb-1">Position *</label>
         <Input
+          id="job-form-position"
           name="position"
           value={formData.position}
           onChange={handleChange}
@@ -65,8 +67,9 @@ const JobForm = ({ job, onClose, onSuccess }: { job?: Record<string, unknown>, o
         />
       </div>
       <div>
-        <label className="block text-sm font-medium text-zinc-400 mb-1">Status</label>
+        <label htmlFor="job-form-status" className="block text-sm font-medium text-zinc-400 mb-1">Status</label>
         <select
+          id="job-form-status"
           name="status"
           value={formData.status}
           onChange={handleChange}
@@ -80,8 +83,9 @@ const JobForm = ({ job, onClose, onSuccess }: { job?: Record<string, unknown>, o
       </div>
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm font-medium text-zinc-400 mb-1">Location</label>
+          <label htmlFor="job-form-location" className="block text-sm font-medium text-zinc-400 mb-1">Location</label>
           <Input
+            id="job-form-location"
             name="location"
             value={formData.location}
             onChange={handleChange}
@@ -89,8 +93,9 @@ const JobForm = ({ job, onClose, onSuccess }: { job?: Record<string, unknown>, o
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-zinc-400 mb-1">Salary</label>
+          <label htmlFor="job-form-salary" className="block text-sm font-medium text-zinc-400 mb-1">Salary</label>
           <Input
+            id="job-form-salary"
             name="salary"
             value={formData.salary}
             onChange={handleChange}
@@ -100,8 +105,9 @@ const JobForm = ({ job, onClose, onSuccess }: { job?: Record<string, unknown>, o
         </div>
       </div>
       <div>
-        <label className="block text-sm font-medium text-zinc-400 mb-1">Notes</label>
+        <label htmlFor="job-form-notes" className="block text-sm font-medium text-zinc-400 mb-1">Notes</label>
         <textarea
+          id="job-form-notes"
           name="notes"
           value={formData.notes}
           onChange={handleChange}
