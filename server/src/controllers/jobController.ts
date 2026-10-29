@@ -58,9 +58,15 @@ export const updateJob = async (req: Request, res: Response): Promise<void> => {
       return;
     }
 
+    // Security: Prevent Mass Assignment by cloning body and removing protected fields
+    const updateData = { ...req.body };
+    delete updateData.user;
+    delete updateData.userId;
+    delete updateData._id;
+
     job = await Job.findByIdAndUpdate(
       req.params.id,
-      { $set: req.body },
+      { $set: updateData },
       { new: true }
     );
 
