@@ -18,3 +18,7 @@
 ## 2024-05-20 - Adding ARIA labels and focus states to JobCard action buttons
 **Learning:** Icon-only buttons in lists or cards need specific contextual ARIA labels (e.g., "Edit job: [Title]") rather than generic ones ("Edit") for screen reader users to distinguish them. Elements hidden behind `opacity-0` hover states must include `focus-within:opacity-100` to be accessible via keyboard navigation.
 **Action:** Always include item context in ARIA labels within loops, and pair `group-hover:opacity-100` with `focus-within:opacity-100` or explicit `focus-visible` styles to guarantee keyboard discoverability.
+
+## 2025-05-20 - Adding Accessibility HTML Attributes to Form Inputs
+**Learning:** In React components like JobForm and JobModal, failing to link label elements with inputs using 'htmlFor' and 'id' negatively impacts accessibility and form usability, breaking explicit form field associations.
+**Action:** When working on form fields, consistently employ 'htmlFor' on labels that map precisely to 'id' attributes on associated form fields.
