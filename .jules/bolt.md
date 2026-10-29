@@ -23,3 +23,11 @@
 ## 2024-05-18 - Inverted Image Loading Strategies Anti-Pattern
 **Learning:** Found a systemic anti-pattern where critical above-the-fold images (Header logo, Hero down arrow) were intentionally deferred using `loading="lazy"`, actively delaying the Largest Contentful Paint (LCP) and worsening initial render times. Conversely, deeply nested below-the-fold images (e.g., in the Footer, PrivacySection, CardSection) were missing lazy loading entirely, bloating the initial payload.
 **Action:** Always eagerly load above-the-fold critical images (use `fetchPriority="high"` where appropriate) and explicitly apply `loading="lazy"` to all below-the-fold images. Never apply `loading="lazy"` to LCP elements.
+
+## 2026-10-29 - Extracted Inline Array Filter Bottleneck
+**Learning:** Performing inline array  operations inside the JSX render tree, particularly to compute scalar values like  (e.g., `jobs.filter(j => j.status === 'Offer').length`), causes an O(N) intermediate array allocation and execution on *every single render*. In components like `JobDashboard` where state updates frequently (like typing in a search bar), this becomes a noticeable bottleneck as the array grows.
+**Action:** Always extract such inline array operations into a `useMemo` hook outside the render tree, and preferentially use `.reduce()` instead of `.filter().length` to compute scalar values directly without allocating a new intermediate array.
+
+## 2024-10-29 - Extracted Inline Array Filter Bottleneck
+**Learning:** Performing inline array `.filter()` operations inside the JSX render tree, particularly to compute scalar values like `.length` (e.g., `jobs.filter(j => j.status === 'Offer').length`), causes an O(N) intermediate array allocation and execution on *every single render*. In components like `JobDashboard` where state updates frequently (like typing in a search bar), this becomes a noticeable bottleneck as the array grows.
+**Action:** Always extract such inline array operations into a `useMemo` hook outside the render tree, and preferentially use `.reduce()` instead of `.filter().length` to compute scalar values directly without allocating a new intermediate array.
