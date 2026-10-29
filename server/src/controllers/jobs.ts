@@ -27,9 +27,15 @@ export const getJobs = async (req: AuthRequest, res: Response): Promise<void> =>
 
 export const updateJob = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
+    // Security: Prevent Mass Assignment by cloning body and removing protected fields
+    const updateData = { ...req.body };
+    delete updateData.user;
+    delete updateData.userId;
+    delete updateData._id;
+
     const job = await Job.findOneAndUpdate(
       { _id: req.params.id, userId: req.user!.userId },
-      req.body,
+      updateData,
       { new: true, runValidators: true }
     );
     if (!job) { res.status(404).json({ message: 'Job not found' }); return; }
