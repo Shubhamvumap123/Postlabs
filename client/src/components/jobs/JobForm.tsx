@@ -1,10 +1,11 @@
-import { useState } from 'react';
+import { useState, useId } from 'react';
 import { api } from '../../lib/api';
 import { useToast } from '../../hooks/use-toast';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 
 const JobForm = ({ job, onClose, onSuccess }: { job?: Record<string, unknown>, onClose: () => void, onSuccess: () => void }) => {
+  const formId = useId();
   const [formData, setFormData] = useState({
     company: (job?.company as string) || '',
     position: (job?.position as string) || '',
@@ -45,8 +46,9 @@ const JobForm = ({ job, onClose, onSuccess }: { job?: Record<string, unknown>, o
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div>
-        <label className="block text-sm font-medium text-zinc-400 mb-1">Company *</label>
+        <label htmlFor={`${formId}-company`} className="block text-sm font-medium text-zinc-400 mb-1">Company *</label>
         <Input
+          id={`${formId}-company`}
           name="company"
           value={formData.company}
           onChange={handleChange}
@@ -55,8 +57,9 @@ const JobForm = ({ job, onClose, onSuccess }: { job?: Record<string, unknown>, o
         />
       </div>
       <div>
-        <label className="block text-sm font-medium text-zinc-400 mb-1">Position *</label>
+        <label htmlFor={`${formId}-position`} className="block text-sm font-medium text-zinc-400 mb-1">Position *</label>
         <Input
+          id={`${formId}-position`}
           name="position"
           value={formData.position}
           onChange={handleChange}
@@ -65,8 +68,9 @@ const JobForm = ({ job, onClose, onSuccess }: { job?: Record<string, unknown>, o
         />
       </div>
       <div>
-        <label className="block text-sm font-medium text-zinc-400 mb-1">Status</label>
+        <label htmlFor={`${formId}-status`} className="block text-sm font-medium text-zinc-400 mb-1">Status</label>
         <select
+          id={`${formId}-status`}
           name="status"
           value={formData.status}
           onChange={handleChange}
@@ -80,8 +84,9 @@ const JobForm = ({ job, onClose, onSuccess }: { job?: Record<string, unknown>, o
       </div>
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm font-medium text-zinc-400 mb-1">Location</label>
+          <label htmlFor={`${formId}-location`} className="block text-sm font-medium text-zinc-400 mb-1">Location</label>
           <Input
+            id={`${formId}-location`}
             name="location"
             value={formData.location}
             onChange={handleChange}
@@ -89,8 +94,9 @@ const JobForm = ({ job, onClose, onSuccess }: { job?: Record<string, unknown>, o
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-zinc-400 mb-1">Salary</label>
+          <label htmlFor={`${formId}-salary`} className="block text-sm font-medium text-zinc-400 mb-1">Salary</label>
           <Input
+            id={`${formId}-salary`}
             name="salary"
             value={formData.salary}
             onChange={handleChange}
@@ -100,8 +106,9 @@ const JobForm = ({ job, onClose, onSuccess }: { job?: Record<string, unknown>, o
         </div>
       </div>
       <div>
-        <label className="block text-sm font-medium text-zinc-400 mb-1">Notes</label>
+        <label htmlFor={`${formId}-notes`} className="block text-sm font-medium text-zinc-400 mb-1">Notes</label>
         <textarea
+          id={`${formId}-notes`}
           name="notes"
           value={formData.notes}
           onChange={handleChange}
