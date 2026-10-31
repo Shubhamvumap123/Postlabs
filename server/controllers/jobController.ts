@@ -53,9 +53,12 @@ export const createJob = async (req: AuthRequest, res: Response): Promise<void> 
       return;
     }
 
-    req.body.user = req.user._id;
+    const jobData = { ...req.body };
+    delete jobData._id;
+    delete jobData.userId;
+    jobData.user = req.user._id;
 
-    const job = await Job.create(req.body);
+    const job = await Job.create(jobData);
 
     res.status(201).json({ job });
   } catch (error: any) {
@@ -79,7 +82,12 @@ export const updateJob = async (req: AuthRequest, res: Response): Promise<void> 
       return;
     }
 
-    const updatedJob = await Job.findOneAndUpdate({ _id: id }, req.body, {
+    const updateData = { ...req.body };
+    delete updateData.user;
+    delete updateData.userId;
+    delete updateData._id;
+
+    const updatedJob = await Job.findOneAndUpdate({ _id: id }, updateData, {
       new: true,
       runValidators: true,
     });
