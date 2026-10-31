@@ -32,8 +32,14 @@ export const getJob = async (req: Request, res: Response): Promise<void> => {
 
 export const createJob = async (req: Request, res: Response): Promise<void> => {
   try {
+    const jobData = { ...req.body };
+    delete jobData.user;
+    delete jobData.userId;
+    delete jobData._id;
+
+    // Security Note: Prevent Mass Assignment
     const newJob = new Job({
-      ...req.body,
+      ...jobData,
       user: (req as any).user.id,
     });
 
@@ -58,9 +64,15 @@ export const updateJob = async (req: Request, res: Response): Promise<void> => {
       return;
     }
 
+    const updateData = { ...req.body };
+    delete updateData.user;
+    delete updateData.userId;
+    delete updateData._id;
+
+    // Security Note: Prevent Mass Assignment
     job = await Job.findByIdAndUpdate(
       req.params.id,
-      { $set: req.body },
+      { $set: updateData },
       { new: true }
     );
 
