@@ -32,8 +32,13 @@ export const getJob = async (req: Request, res: Response): Promise<void> => {
 
 export const createJob = async (req: Request, res: Response): Promise<void> => {
   try {
+    const createData = { ...req.body };
+    delete createData.user;
+    delete createData.userId;
+    delete createData._id;
+
     const newJob = new Job({
-      ...req.body,
+      ...createData,
       user: (req as any).user.id,
     });
 
@@ -58,9 +63,14 @@ export const updateJob = async (req: Request, res: Response): Promise<void> => {
       return;
     }
 
+    const updateData = { ...req.body };
+    delete updateData.user;
+    delete updateData.userId;
+    delete updateData._id;
+
     job = await Job.findByIdAndUpdate(
       req.params.id,
-      { $set: req.body },
+      { $set: updateData },
       { new: true }
     );
 
