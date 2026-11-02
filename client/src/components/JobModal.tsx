@@ -44,16 +44,16 @@ const JobModal = ({ isOpen, onClose, onSave, job }: JobModalProps) => {
       <div className="bg-zinc-900 border-zinc-800 text-zinc-100 p-4 rounded-md">
         <form onSubmit={handleSubmit} className="space-y-4 mt-4">
           <div>
-            <label className="text-sm text-zinc-400">Company</label>
-            <Input value={company} onChange={(e) => setCompany(e.target.value)} required className="bg-zinc-800 border-zinc-700" />
+            <label htmlFor="modal-company" className="text-sm text-zinc-400">Company</label>
+            <Input id="modal-company" value={company} onChange={(e) => setCompany(e.target.value)} required className="bg-zinc-800 border-zinc-700" />
           </div>
           <div>
-            <label className="text-sm text-zinc-400">Position</label>
-            <Input value={position} onChange={(e) => setPosition(e.target.value)} required className="bg-zinc-800 border-zinc-700" />
+            <label htmlFor="modal-position" className="text-sm text-zinc-400">Position</label>
+            <Input id="modal-position" value={position} onChange={(e) => setPosition(e.target.value)} required className="bg-zinc-800 border-zinc-700" />
           </div>
           <div>
-            <label className="text-sm text-zinc-400">Status</label>
-            <select value={status} onChange={(e) => setStatus(e.target.value)} className="w-full bg-zinc-800 border border-zinc-700 rounded-md p-2 text-white outline-none">
+            <label htmlFor="modal-status" className="text-sm text-zinc-400">Status</label>
+            <select id="modal-status" value={status} onChange={(e) => setStatus(e.target.value)} className="w-full bg-zinc-800 border border-zinc-700 rounded-md p-2 text-white outline-none">
               <option value="Applied">Applied</option>
               <option value="Interview">Interview</option>
               <option value="Offer">Offer</option>
