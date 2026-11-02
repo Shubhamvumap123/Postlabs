@@ -147,6 +147,10 @@ const JobDashboard = () => {
     })).filter(item => item.value > 0);
   }, [jobs]);
 
+  // PERFORMANCE: Extract inline array operations from JSX into useMemo using reduce
+  // to prevent redundant O(N) intermediate array allocations during unrelated state changes
+  const offerCount = useMemo(() => jobs.reduce((count, job) => job.status === 'Offer' ? count + 1 : count, 0), [jobs]);
+
   if (loading) {
     return <div className="min-h-screen flex items-center justify-center bg-zinc-950 text-white">Loading...</div>;
   }
@@ -242,7 +246,7 @@ const JobDashboard = () => {
                   <p className="text-xs text-zinc-400 mt-1">Total Apps</p>
                 </div>
                 <div className="bg-zinc-800/50 p-4 rounded-lg text-center">
-                  <p className="text-3xl font-bold text-green-400">{jobs.filter(j => j.status === 'Offer').length}</p>
+                  <p className="text-3xl font-bold text-green-400">{offerCount}</p>
                   <p className="text-xs text-zinc-400 mt-1">Offers</p>
                 </div>
               </div>
