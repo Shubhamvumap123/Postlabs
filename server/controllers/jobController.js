@@ -17,7 +17,15 @@ export const createJob = async (req, res) => {
       return res.status(400).json({ message: 'Title and company are required' });
     }
 
+    // Security: Explicitly construct job object to prevent mass assignment of restricted fields
+    const jobData = { ...req.body };
+    delete jobData.user;
+    delete jobData.userId;
+    delete jobData._id;
+    jobData.user = req.user._id;
+
     const job = await Job.create({
+      ...jobData,
       title,
       company,
       status,
@@ -44,9 +52,15 @@ export const updateJob = async (req, res) => {
       return res.status(401).json({ message: 'User not authorized' });
     }
 
+    // Security: Strip restricted fields before update to prevent privilege escalation via mass assignment
+    const updateData = { ...req.body };
+    delete updateData.user;
+    delete updateData.userId;
+    delete updateData._id;
+
     const updatedJob = await Job.findByIdAndUpdate(
       req.params.id,
-      req.body,
+      updateData,
       { new: true, runValidators: true }
     );
 
