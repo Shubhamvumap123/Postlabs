@@ -7,3 +7,8 @@
 **Vulnerability:** JWT authentication mechanisms were falling back to hardcoded strings like 'secret' or 'fallback_secret' if the JWT_SECRET environment variable was missing.
 **Learning:** This fallback meant that if a production environment accidentally missed the secret configuration, the app would transparently use a weak, known secret, exposing tokens to forgery without failing loudly.
 **Prevention:** Never use OR (||) fallback values for critical secrets. Instead, explicitly check if the secret is defined and throw an error or crash the process to fail securely.
+
+## 2026-11-03 - Prevent Mass Assignment in Controllers
+**Vulnerability:** Job creation and update endpoints were vulnerable to Mass Assignment because they directly passed req.body to MongoDB update operations.
+**Learning:** Bypassing schema validation by passing full user payloads directly to the ODM allows attackers to overwrite restricted fields like user, userId, or _id, potentially escalating privileges.
+**Prevention:** Never pass req.body directly. Always clone the payload and explicitly delete restricted fields (like user, userId, _id), or destructure only explicitly permitted fields before passing to database methods.
