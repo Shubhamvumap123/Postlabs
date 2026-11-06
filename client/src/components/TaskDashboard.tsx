@@ -75,7 +75,7 @@ export default function TaskDashboard() {
 
     const newTask: Task = {
       id: crypto.randomUUID(),
-      title: safeTitle,
+      title: newTaskTitle,
       status: 'Scheduled',
       category: newTaskCategory,
       createdAt: Date.now(),
