@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 
@@ -58,8 +58,6 @@ export default function Footer() {
     }
   };
 
-
-  const isInView = useInView(sentinelRef, { once: true });
 
   return (
     <>
