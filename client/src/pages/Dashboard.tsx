@@ -161,14 +161,18 @@ const Dashboard = () => {
           </div>
 
           <div className="flex gap-4 mb-6">
+            <label htmlFor="dashboard-search" className="sr-only">Search company or position</label>
             <input
+              id="dashboard-search"
               type="text"
               placeholder="Search company or position..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="flex-1 p-2 bg-zinc-800 rounded border border-zinc-700 focus:outline-none focus:border-blue-500"
             />
+            <label htmlFor="dashboard-status-filter" className="sr-only">Filter by status</label>
             <select
+              id="dashboard-status-filter"
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
               className="p-2 bg-zinc-800 rounded border border-zinc-700 focus:outline-none focus:border-blue-500"
@@ -212,8 +216,8 @@ const Dashboard = () => {
                       </td>
                       <td className="p-3">{job.location || '-'}</td>
                       <td className="p-3 text-right space-x-2">
-                        <button onClick={() => handleEdit(job)} className="px-2 py-1 bg-zinc-700 hover:bg-zinc-600 rounded text-sm transition-colors">Edit</button>
-                        <button onClick={() => handleDelete(job._id)} className="px-2 py-1 bg-red-900/50 hover:bg-red-900 rounded text-sm text-red-200 transition-colors">Delete</button>
+                        <button onClick={() => handleEdit(job)} aria-label={`Edit job: ${job.position} at ${job.company}`} className="px-2 py-1 bg-zinc-700 hover:bg-zinc-600 rounded text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500">Edit</button>
+                        <button onClick={() => handleDelete(job._id)} aria-label={`Delete job: ${job.position} at ${job.company}`} className="px-2 py-1 bg-red-900/50 hover:bg-red-900 rounded text-sm text-red-200 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500">Delete</button>
                       </td>
                     </tr>
                   ))
@@ -230,16 +234,16 @@ const Dashboard = () => {
             <h2 className="text-xl font-bold mb-4">{editId ? 'Edit Job' : 'Add Job'}</h2>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium mb-1">Company</label>
-                <input required type="text" value={formData.company} onChange={e => setFormData({...formData, company: e.target.value})} className="w-full p-2 bg-zinc-800 rounded border border-zinc-700" />
+                <label htmlFor="dashboard-company" className="block text-sm font-medium mb-1">Company</label>
+                <input id="dashboard-company" required type="text" value={formData.company} onChange={e => setFormData({...formData, company: e.target.value})} className="w-full p-2 bg-zinc-800 rounded border border-zinc-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500" />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-1">Position</label>
-                <input required type="text" value={formData.position} onChange={e => setFormData({...formData, position: e.target.value})} className="w-full p-2 bg-zinc-800 rounded border border-zinc-700" />
+                <label htmlFor="dashboard-position" className="block text-sm font-medium mb-1">Position</label>
+                <input id="dashboard-position" required type="text" value={formData.position} onChange={e => setFormData({...formData, position: e.target.value})} className="w-full p-2 bg-zinc-800 rounded border border-zinc-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500" />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-1">Status</label>
-                <select value={formData.status} onChange={e => setFormData({...formData, status: e.target.value})} className="w-full p-2 bg-zinc-800 rounded border border-zinc-700">
+                <label htmlFor="dashboard-status" className="block text-sm font-medium mb-1">Status</label>
+                <select id="dashboard-status" value={formData.status} onChange={e => setFormData({...formData, status: e.target.value})} className="w-full p-2 bg-zinc-800 rounded border border-zinc-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500">
                   <option value="Applied">Applied</option>
                   <option value="Interview">Interview</option>
                   <option value="Offer">Offer</option>
@@ -247,8 +251,8 @@ const Dashboard = () => {
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium mb-1">Location</label>
-                <input type="text" value={formData.location} onChange={e => setFormData({...formData, location: e.target.value})} className="w-full p-2 bg-zinc-800 rounded border border-zinc-700" />
+                <label htmlFor="dashboard-location" className="block text-sm font-medium mb-1">Location</label>
+                <input id="dashboard-location" type="text" value={formData.location} onChange={e => setFormData({...formData, location: e.target.value})} className="w-full p-2 bg-zinc-800 rounded border border-zinc-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500" />
               </div>
               <div className="flex justify-end space-x-2 pt-2">
                 <button type="button" onClick={() => setShowForm(false)} className="px-4 py-2 bg-zinc-800 hover:bg-zinc-700 rounded transition-colors">Cancel</button>
