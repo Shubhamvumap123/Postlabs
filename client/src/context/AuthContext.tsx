@@ -10,10 +10,6 @@ interface User {
   email: string;
 }
 
-interface JwtPayload {
-  user: User;
-}
-
 interface AuthContextType {
   user: Record<string, unknown> | null;
   login: (token: string) => void;
