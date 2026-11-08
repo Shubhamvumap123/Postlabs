@@ -12,4 +12,5 @@ function replaceRegex(file, regex, replacement) {
 
 replaceRegex('client/src/pages/Dashboard.tsx', /import \{ useState, useEffect, useMemo \} from 'react';/, 'import { useState, useEffect, useMemo, useCallback } from \'react\';');
 replaceRegex('client/src/pages/Dashboard.tsx', /const fetchJobs = async \(\) => \{/, 'const fetchJobs = useCallback(async () => {');
-replaceRegex('client/src/pages/Dashboard.tsx', /  \}, \[navigate\]\);/, '  // eslint-disable-next-line react-hooks/exhaustive-deps\n  }, [navigate]);');
+replaceRegex('client/src/pages/Dashboard.tsx', /  \}, \[navigate\]\);/, '  // eslint-disable-next-line react-hooks/exhaustive-deps\n  }, []);');
+replaceRegex('client/src/pages/Dashboard.tsx', /  useEffect\(\(\) => \{\n    fetchJobs\(\);\n  \}, \[fetchJobs\]\);\n/, '');
