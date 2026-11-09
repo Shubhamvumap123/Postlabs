@@ -242,7 +242,8 @@ const JobDashboard = () => {
                   <p className="text-xs text-zinc-400 mt-1">Total Apps</p>
                 </div>
                 <div className="bg-zinc-800/50 p-4 rounded-lg text-center">
-                  <p className="text-3xl font-bold text-green-400">{jobs.filter(j => j.status === 'Offer').length}</p>
+                  {/* PERFORMANCE: Reuse memoized pieData instead of O(N) inline filtering to prevent redundant array iterations on every render */}
+                  <p className="text-3xl font-bold text-green-400">{pieData.find(d => d.name === 'Offer')?.value || 0}</p>
                   <p className="text-xs text-zinc-400 mt-1">Offers</p>
                 </div>
               </div>
