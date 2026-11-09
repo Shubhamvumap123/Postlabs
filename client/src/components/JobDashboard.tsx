@@ -191,8 +191,10 @@ export default function JobDashboard() {
       {/* Filters and Search */}
       <div className="flex flex-col md:flex-row gap-4 mb-6">
         <div className="relative flex-1">
+          <label htmlFor="dashboard-job-search" className="sr-only">Search jobs</label>
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-zinc-400 w-4 h-4" />
           <Input
+            id="dashboard-job-search"
             placeholder="Search by title or company..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
@@ -282,8 +284,9 @@ export default function JobDashboard() {
             </h2>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-zinc-400 mb-1">Job Title</label>
+                <label htmlFor="dashboard-job-title" className="block text-sm font-medium text-zinc-400 mb-1">Job Title</label>
                 <Input
+                  id="dashboard-job-title"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
                   required
@@ -291,8 +294,9 @@ export default function JobDashboard() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-zinc-400 mb-1">Company</label>
+                <label htmlFor="dashboard-job-company" className="block text-sm font-medium text-zinc-400 mb-1">Company</label>
                 <Input
+                  id="dashboard-job-company"
                   value={company}
                   onChange={(e) => setCompany(e.target.value)}
                   required
@@ -300,8 +304,9 @@ export default function JobDashboard() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-zinc-400 mb-1">Status</label>
+                <label htmlFor="dashboard-job-status" className="block text-sm font-medium text-zinc-400 mb-1">Status</label>
                 <select
+                  id="dashboard-job-status"
                   value={status}
                   onChange={(e) => setStatus(e.target.value as "Applied" | "Interview" | "Offer" | "Rejected")}
                   className="w-full bg-zinc-950 border border-zinc-800 rounded-md px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-purple-500 appearance-none"
@@ -313,16 +318,18 @@ export default function JobDashboard() {
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium text-zinc-400 mb-1">Location (Optional)</label>
+                <label htmlFor="dashboard-job-location" className="block text-sm font-medium text-zinc-400 mb-1">Location (Optional)</label>
                 <Input
+                  id="dashboard-job-location"
                   value={location}
                   onChange={(e) => setLocation(e.target.value)}
                   className="bg-zinc-950 border-zinc-800 text-white"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-zinc-400 mb-1">Notes (Optional)</label>
+                <label htmlFor="dashboard-job-notes" className="block text-sm font-medium text-zinc-400 mb-1">Notes (Optional)</label>
                 <textarea
+                  id="dashboard-job-notes"
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
                   className="w-full bg-zinc-950 border border-zinc-800 rounded-md px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-purple-500 min-h-[80px] resize-y"
