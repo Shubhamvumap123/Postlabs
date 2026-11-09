@@ -75,7 +75,7 @@ export default function TaskDashboard() {
 
     const newTask: Task = {
       id: crypto.randomUUID(),
-      title: safeTitle,
+      title: newTaskTitle,
       status: 'Scheduled',
       category: newTaskCategory,
       createdAt: Date.now(),
@@ -288,18 +288,14 @@ export default function TaskDashboard() {
             <label htmlFor="title" className="text-sm font-medium text-zinc-300">
               Task Title
             </label>
-            {/* SECURITY: Added input length limit to prevent excessively large storage allocation and potential DoS */}
             <Input
               id="title"
               value={newTaskTitle}
-              // SECURITY: Add input length limits to prevent client-side DoS/memory exhaustion
               maxLength={100}
               onChange={(e) => setNewTaskTitle(e.target.value)}
               placeholder="e.g. Review system performance"
               className="bg-zinc-900 border-zinc-700 text-zinc-100 focus:ring-purple-500"
-              maxLength={200}
               autoFocus
-              maxLength={150}
             />
           </div>
           <div className="space-y-2">
