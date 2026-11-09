@@ -7,3 +7,8 @@
 **Vulnerability:** JWT authentication mechanisms were falling back to hardcoded strings like 'secret' or 'fallback_secret' if the JWT_SECRET environment variable was missing.
 **Learning:** This fallback meant that if a production environment accidentally missed the secret configuration, the app would transparently use a weak, known secret, exposing tokens to forgery without failing loudly.
 **Prevention:** Never use OR (||) fallback values for critical secrets. Instead, explicitly check if the secret is defined and throw an error or crash the process to fail securely.
+
+## 2026-11-09 - Prevent Mass Assignment in Express Controllers
+**Vulnerability:** Job updates directly passed req.body to Mongoose update functions, allowing clients to override protected fields like user, userId, or _id.
+**Learning:** Directly passing client payloads to database update operations without sanitization causes Mass Assignment. Hardcoded allowlists are brittle due to schema discrepancies between TS/JS, so cloning the request body and explicitly deleting restricted fields is a robust approach here.
+**Prevention:** Never pass req.body directly to update operations. Always clone the body and explicitly remove sensitive fields (user, _id, userId), or use a validation library to enforce a strict payload schema.
