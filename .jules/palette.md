@@ -18,3 +18,7 @@
 ## 2024-05-20 - Adding ARIA labels and focus states to JobCard action buttons
 **Learning:** Icon-only buttons in lists or cards need specific contextual ARIA labels (e.g., "Edit job: [Title]") rather than generic ones ("Edit") for screen reader users to distinguish them. Elements hidden behind `opacity-0` hover states must include `focus-within:opacity-100` to be accessible via keyboard navigation.
 **Action:** Always include item context in ARIA labels within loops, and pair `group-hover:opacity-100` with `focus-within:opacity-100` or explicit `focus-visible` styles to guarantee keyboard discoverability.
+
+## 2025-10-24 - Explicit Label Associations in Modals
+**Learning:** Implicit label associations (wrapping the input inside the label) or missing label associations completely (having a <label> next to an <input> without htmlFor) make forms significantly less accessible and reduce usability since the label text itself isn't clickable to focus the input.
+**Action:** When auditing or implementing forms, especially in custom UI modals, always ensure explicit <label> to <input>/<select>/<textarea> mapping via the htmlFor and id attributes, using context-specific prefixes (like dashboard- or modal-) to prevent DOM id collisions.
